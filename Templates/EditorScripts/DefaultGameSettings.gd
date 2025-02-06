@@ -1,13 +1,13 @@
 @tool extends EditorScript
 
-#Auto edit your settings to the ideal Pixel Game Settings
+#Auto edit your settings to the ideal Settings (not for pixel games)
 #File > Run 
 
 #Note: 640x360 resolution scales well to 720, 1080, and 1440.
 func _run() -> void:
 	#Size of the viewport
-	ProjectSettings.set("display/window/size/viewport_width", 320)
-	ProjectSettings.set("display/window/size/viewport_height", 180)
+	ProjectSettings.set("display/window/size/viewport_width", 1280)
+	ProjectSettings.set("display/window/size/viewport_height", 720)
 	
 	#Size of the window
 	ProjectSettings.set("display/window/size/window_width_override", 640)
