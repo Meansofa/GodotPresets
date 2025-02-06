@@ -8,8 +8,8 @@ var editor_variables := EditorVariables.new()
 #Note: 640x360 resolution scales well to 720, 1080, and 1440.
 func _run() -> void:
 	
-	editor_variables.viewport_size = Vector2(320, 180) #Size of the viewport
-	editor_variables.window_size = Vector2(640, 360) #Size of the window
+	editor_variables.viewport_size = Vector2(180, 320) #Size of the viewport
+	editor_variables.window_size = Vector2(360, 640) #Size of the window
 	
 	#Layer Names
 	ProjectSettings.set("layer_names/2d_physics/layer_1", "Player")
