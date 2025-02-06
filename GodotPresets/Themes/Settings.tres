@@ -1,0 +1,31 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b0gmwwwx35qm2"]
+
+[ext_resource type="Texture2D" uid="uid://cc7pngssvpa63" path="res://Assets/Panel.png" id="1_diks3"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aglsn"]
+texture = ExtResource("1_diks3")
+texture_margin_left = 18.0
+texture_margin_top = 37.9
+texture_margin_right = 20.0
+region_rect = Rect2(21, -0.250122, 535, 290.4)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s1pn2"]
+texture = ExtResource("1_diks3")
+texture_margin_left = 18.0
+texture_margin_top = 17.0
+texture_margin_right = 20.0
+region_rect = Rect2(21, 20.5, 535, 269.65)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uejke"]
+texture = ExtResource("1_diks3")
+texture_margin_left = 18.0
+texture_margin_top = 37.9
+texture_margin_right = 20.0
+expand_margin_bottom = 12.0
+region_rect = Rect2(21, -0.250122, 535, 290.4)
+
+[resource]
+Button/styles/hover = SubResource("StyleBoxTexture_aglsn")
+Button/styles/normal = SubResource("StyleBoxTexture_s1pn2")
+Button/styles/pressed = SubResource("StyleBoxTexture_uejke")
+VBoxContainer/constants/separation = 40
