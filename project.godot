@@ -1,26 +1,4 @@
-; Engine configuration file.
-; It's best edited using the editor UI and not directly,
-; since the parameters that go here are not all obvious.
-;
-; Format:
-;   [section] ; section goes between []
-;   param=value ; assign values to parameters
-
 config_version=5
-
-input="meow"
-
-[addons]
-
-resources_spreadsheet_view/array_color_tint=100.0
-resources_spreadsheet_view/color_rows=true
-resources_spreadsheet_view/array_min_width=128.0
-resources_spreadsheet_view/resource_preview_size=32.0
-resources_spreadsheet_view/clip_headers=false
-resources_spreadsheet_view/dupe_arrays=true
-resources_spreadsheet_view/context_menu_on_leftclick=false
-resources_spreadsheet_view/fold_docks=true
-resources_spreadsheet_view/resource_cell_label_mode=1
 
 [application]
 
@@ -36,19 +14,16 @@ buses/default_bus_layout="res://Templates/EditorScripts/default_bus_layout.tres"
 [autoload]
 
 Shaker="*res://addons/shaker/src/Shaker.gd"
-Signal_Debugger="*res://addons/SignalVisualizer/Debugger/SignalDebugger.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/window_width_override=640
-window/size/window_height_override=360
+window/size/window_width_override=576
+window/size/window_height_override=324
 window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/SignalVisualizer/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/Trail/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg", "res://addons/shaker/plugin.cfg", "res://addons/tile_bit_tools/plugin.cfg")
+enabled=PackedStringArray("res://addons/shaker/plugin.cfg", "res://addons/tile_bit_tools/plugin.cfg")
 
 [file_customization]
 
@@ -69,9 +44,9 @@ Player=""
 [layer_names]
 
 2d_physics/layer_1="Player"
-2d_physics/layer_2="Enemies"
-2d_physics/layer_3="Hazards"
-2d_physics/layer_4="Environment"
+2d_physics/layer_2="Hazards"
+2d_physics/layer_3="Environment"
+2d_physics/layer_4="Enemies"
 2d_physics/layer_5="Coins"
 
 [rendering]

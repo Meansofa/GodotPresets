@@ -23,6 +23,6 @@ func _run() -> void:
 	ProjectSettings.set("display/window/stretch/mode", "canvas_items") #for full screen
 	ProjectSettings.set("display/window/size/resizable", true) #resizable
 	ProjectSettings.set("rendering/textures/canvas_textures/default_texture_filter", "Nearest") #for pixel art(makes pixel art much clearer)
-	ProjectSettings.set("input", "meow")
+	
 	
 	ProjectSettings.save() #Save the settings
