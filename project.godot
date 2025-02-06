@@ -1,0 +1,64 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Godot Components"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="res://Templates/EditorScripts/default_bus_layout.tres"
+
+[autoload]
+
+Shaker="*res://addons/shaker/src/Shaker.gd"
+
+[display]
+
+window/size/window_width_override=576
+window/size/window_height_override=324
+window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/shaker/plugin.cfg", "res://addons/tile_bit_tools/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://Assets/": "green",
+"res://Components/": "orange",
+"res://Components/Character Components/": "red",
+"res://Templates/": "yellow",
+"res://Templates/GUI/UISettingsMenu/": "orange",
+"res://Themes/": "pink",
+"res://addons/": "red"
+}
+
+[global_group]
+
+Player=""
+
+[layer_names]
+
+2d_physics/layer_1="Player"
+2d_physics/layer_2="Hazards"
+2d_physics/layer_3="Environment"
+2d_physics/layer_4="Enemies"
+2d_physics/layer_5="Coins"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter="Nearest"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

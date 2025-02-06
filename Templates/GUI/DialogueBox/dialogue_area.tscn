@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bidk3r7ujp87f"]
+
+[ext_resource type="Script" path="res://Templates/GUI/DialogueBox/dialogue_area.gd" id="1_p3wts"]
+[ext_resource type="Theme" uid="uid://bsqv1x1xxdxcd" path="res://Themes/DialogueBox.tres" id="1_whswi"]
+
+[node name="Dialogue Area" type="PanelContainer" node_paths=PackedStringArray("textLabel")]
+offset_top = 324.0
+offset_right = 1152.0
+offset_bottom = 648.0
+theme = ExtResource("1_whswi")
+script = ExtResource("1_p3wts")
+textLabel = NodePath("RichTextLabel")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+bbcode_enabled = true
+text = "ENTER TEXT HERE!"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+layout_mode = 2
+border_color = Color(0.522775, 0.572609, 0, 1)
