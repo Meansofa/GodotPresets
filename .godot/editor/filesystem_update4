@@ -2,3 +2,4 @@ res://main.tscn
 res://Themes/DialogueBox.tres
 res://Themes/Settings.tres
 res://Templates/TileMap/tile_set.tres
+res://Templates/TileMap/tile_map_layer.tscn
