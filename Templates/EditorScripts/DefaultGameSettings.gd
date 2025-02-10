@@ -8,7 +8,7 @@ var editor_variables := EditorVariables.new()
 #Note: 640x360 resolution scales well to 720, 1080, and 1440.
 func _run() -> void:
 	
-	editor_variables.viewport_size = Vector2(1152, 648) #Size of the viewport
+	editor_variables.viewport_size = Vector2(960, 540) #Size of the viewport
 	editor_variables.window_size = Vector2(640, 360) #Size of the window
 	
 	#Layer Names

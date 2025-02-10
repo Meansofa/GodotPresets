@@ -1,13 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://diimhw6lk5yth"]
 
+[ext_resource type="StyleBox" uid="uid://ceqgrmyodgbcj" path="res://StyleBoxSpawner.tres" id="1_5ipqg"]
 [ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://cell.tscn" id="1_y6xxv"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0x6yd"]
-bg_color = Color(0.147672, 0.147672, 0.147672, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 
 [sub_resource type="GDScript" id="GDScript_p5304"]
 script/source = "extends Button
@@ -16,7 +10,15 @@ script/source = "extends Button
 @export var center : CenterContainer
 @export var area_2d : Area2D
 
+@export var stylebox : StyleBoxFlat
+
 var cells = [] 
+
+func _ready() -> void:
+	add_theme_stylebox_override(\"normal\", stylebox)
+
+#func _process(delta: float) -> void:
+	#stylebox.border_color.h = 1.0 / PlayerData.players.size() * PlayerData.current_player
 
 func _on_pressed() -> void:
 	check_cells()
@@ -29,7 +31,7 @@ func spawn_cell():
 	cell_instance.connect(\"tree_exited\", set_monitoring_true) #attach an auto connect to the cell, to set monitoring to true once the cell is deleted
 	for i in cells.size(): #change cell's shake based on the amount of cells
 		cells[i].change_shake(cells.size() * 0.15)
-		cells[i].change_intensity(cells.size() * 0.17)
+		cells[i].change_intensity(cells.size() * 0.15)
 
 func check_cells(): #check how many cells you have
 	if cells.size() < 3: #If cell is less than 3(meaning it's still not strong enough to initiate chain reaction)
@@ -63,13 +65,21 @@ radius = 32.0
 
 [node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "area_2d")]
 custom_minimum_size = Vector2(96, 96)
-offset_right = 96.0
-offset_bottom = 96.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_0x6yd")
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+pivot_offset = Vector2(48, 48)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_styles/normal = ExtResource("1_5ipqg")
 script = SubResource("GDScript_p5304")
 cell = ExtResource("1_y6xxv")
 center = NodePath("CenterContainer")
 area_2d = NodePath("CenterContainer/Area2D")
+stylebox = ExtResource("1_5ipqg")
+metadata/_edit_use_anchors_ = true
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1

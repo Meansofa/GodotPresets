@@ -12,6 +12,11 @@
 script/source = "extends RigidBody2D
 
 @export var shaker : ShakerComponent2D
+@export var sprite : Sprite2D
+
+func _ready() -> void:
+	position.x = randi_range(-5, 5)
+	position.y = randi_range(-5, 5)
 
 func change_shake(shake_value : float):
 	shaker.shake_speed = shake_value
@@ -27,13 +32,12 @@ func pop(direction : Vector2):
 [sub_resource type="CircleShape2D" id="CircleShape2D_fwjrn"]
 radius = 3.13585
 
-[sub_resource type="Gradient" id="Gradient_53t7f"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.4, 0.5, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.645833, 0.15, 1, 0.68, 0.68, 0.68, 0, 0, 0, 0, 1)
+[sub_resource type="Gradient" id="Gradient_r5lxx"]
+offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 1, 5)
+colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_5o0f1"]
-gradient = SubResource("Gradient_53t7f")
+gradient = SubResource("Gradient_r5lxx")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.25)
@@ -75,13 +79,14 @@ end_percent = 1.0
 _temp_graph = false
 bake_internal = 64
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mwgfs"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fkgn3"]
 noise_type = 5
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8uey4"]
-noise = SubResource("FastNoiseLite_mwgfs")
+noise = SubResource("FastNoiseLite_fkgn3")
 
 [sub_resource type="Resource" id="Resource_vyk8a"]
+resource_local_to_scene = true
 script = ExtResource("4_18eew")
 noise_texture = SubResource("NoiseTexture2D_8uey4")
 amplitude = Vector2(32, 32)
@@ -139,15 +144,16 @@ ScaleShake = Array[ExtResource("2_0d4ij")]([SubResource("Resource_qrxjo")])
 bake_internal = 64
 __follow_timeline = false
 
-[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker") groups=["Cell"]]
-position = Vector2(0.113658, 0.113653)
-rotation = -0.00451277
-scale = Vector2(0.999987, 0.999987)
+[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker", "sprite") groups=["Cell"]]
+position = Vector2(-1.35899e-05, 0)
+rotation = -0.00451571
+scale = Vector2(0.999986, 0.999985)
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
 script = SubResource("GDScript_wy0jh")
 shaker = NodePath("ShakerComponent2D")
+sprite = NodePath("Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_fwjrn")
@@ -161,5 +167,5 @@ script = ExtResource("1_f5aa0")
 AutoPlay = true
 intensity = 0.3
 shake_speed = 0.1
-fade_in = 0.90125
+fade_in = 0.000383098
 shakerPreset = SubResource("Resource_1grtw")

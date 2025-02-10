@@ -18,11 +18,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 Shaker="*res://addons/shaker/src/Shaker.gd"
+PlayerData="*res://player_data.gd"
 
 [display]
 
-window/size/viewport_width=1152.0
-window/size/viewport_height=648.0
+window/size/viewport_width=960.0
+window/size/viewport_height=540.0
 window/size/window_width_override=640.0
 window/size/window_height_override=360.0
 window/stretch/mode="canvas_items"
