@@ -20,6 +20,7 @@ func change_intensity(intensity_value : float):
 	shaker.intensity = intensity_value
 
 func pop(direction : Vector2):
+	set_collision_layer_value(2, true)
 	linear_velocity = direction * 500
 "
 
@@ -138,17 +139,18 @@ ScaleShake = Array[ExtResource("2_0d4ij")]([SubResource("Resource_qrxjo")])
 bake_internal = 64
 __follow_timeline = false
 
-[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker")]
+[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker") groups=["Cell"]]
 position = Vector2(0.113658, 0.113653)
 rotation = -0.00451277
 scale = Vector2(0.999987, 0.999987)
+collision_layer = 0
+collision_mask = 0
 gravity_scale = 0.0
 script = SubResource("GDScript_wy0jh")
 shaker = NodePath("ShakerComponent2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_fwjrn")
-disabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_5o0f1")

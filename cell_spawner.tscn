@@ -1,0 +1,93 @@
+[gd_scene load_steps=5 format=3 uid="uid://diimhw6lk5yth"]
+
+[ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://cell.tscn" id="1_y6xxv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0x6yd"]
+bg_color = Color(0.147672, 0.147672, 0.147672, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="GDScript" id="GDScript_p5304"]
+script/source = "extends Button
+
+@export var cell : PackedScene
+@export var center : CenterContainer
+@export var area_2d : Area2D
+
+var cells = [] 
+
+func _on_pressed() -> void:
+	check_cells()
+
+func spawn_cell():
+	var cell_instance = cell.instantiate() #create an instance of the cell
+	center.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the center(to spawn to center)
+	cells.append(cell_instance) #append to the cells array
+	
+	cell_instance.connect(\"tree_exited\", set_monitoring_true) #attach an auto connect to the cell, to set monitoring to true once the cell is deleted
+	for i in cells.size(): #change cell's shake based on the amount of cells
+		cells[i].change_shake(cells.size() * 0.15)
+		cells[i].change_intensity(cells.size() * 0.17)
+
+func check_cells(): #check how many cells you have
+	if cells.size() < 3: #If cell is less than 3(meaning it's still not strong enough to initiate chain reaction)
+		spawn_cell() 
+	else: #else pop a chain reaction
+		pop()
+
+func pop():
+	set_monitoring_false() #turn off monitoring to not detect your own cells
+	spawn_cell() #add the 4th cell
+	cells[0].pop(Vector2(1, 0)) #cell goes right
+	cells[1].pop(Vector2(-1, 0)) #cell goes left
+	cells[2].pop(Vector2(0, -1)) #cell goes up
+	cells[3].pop(Vector2(0, 1)) #cell goes down
+	cells.clear() #clear the array of cells
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group(\"Cell\"): #Check if a cell enters
+		body.queue_free() #if it's a cell remove that cell
+		check_cells()
+
+func set_monitoring_false(): #set monitoring to false to stop detecting for any cells
+	area_2d.set_deferred(\"monitoring\", false)
+
+func set_monitoring_true(): #set monitoring to true, for the auto connect and to detect cells
+	area_2d.set_deferred(\"monitoring\", true)
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
+radius = 32.0
+
+[node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "area_2d")]
+custom_minimum_size = Vector2(96, 96)
+offset_right = 96.0
+offset_bottom = 96.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_0x6yd")
+script = SubResource("GDScript_p5304")
+cell = ExtResource("1_y6xxv")
+center = NodePath("CenterContainer")
+area_2d = NodePath("CenterContainer/Area2D")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+use_top_left = true
+
+[node name="Area2D" type="Area2D" parent="CenterContainer"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CenterContainer/Area2D"]
+shape = SubResource("CircleShape2D_1wp5y")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
+[connection signal="body_entered" from="CenterContainer/Area2D" to="." method="_on_area_2d_body_entered"]
