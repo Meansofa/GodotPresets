@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=15 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://cell_spawner.tscn" id="1_t2xmo"]
 [ext_resource type="Material" uid="uid://b475rxb2ihw5l" path="res://hueShader.tres" id="2_3ayql"]
@@ -9,6 +9,20 @@ scenes/1/scene = ExtResource("1_t2xmo")
 [sub_resource type="TileSet" id="TileSet_hf2hk"]
 tile_size = Vector2i(96, 96)
 sources/0 = SubResource("TileSetScenesCollectionSource_qb3a6")
+
+[sub_resource type="GDScript" id="GDScript_27xvk"]
+script/source = "extends TileMapLayer
+
+func _ready() -> void:
+	var top_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_TOP_SIDE)
+	print(\"top: \", get_cell_source_id(top_neighbor))
+	var bottom_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_BOTTOM_SIDE)
+	print(\"bottom: \", get_cell_source_id(bottom_neighbor))
+	var right_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_RIGHT_SIDE)
+	print(\"right: \", get_cell_source_id(right_neighbor))
+	var left_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_LEFT_SIDE)
+	print(\"left: \", get_cell_source_id(left_neighbor))
+"
 
 [sub_resource type="GDScript" id="GDScript_ukba4"]
 script/source = "@tool
@@ -71,6 +85,7 @@ func _ready() -> void:
 func _on_h_slider_value_changed(value: float) -> void:
 	while (value > PlayerData.players.size()): #if value is more than player count, add PlayerData.players to match the value
 		var player1_instance = player1.duplicate() #get a copy of player 1
+		player1_instance.name = \"Player \" + str(PlayerData.players.size() + 1)
 		if PlayerData.players.size() < 6: #only 6 PlayerData.players can fit in a column
 			row_1.add_child(player1_instance)
 		else: #once there are more than 6 PlayerData.players, add them to the second row
@@ -81,7 +96,7 @@ func _on_h_slider_value_changed(value: float) -> void:
 	while (value < PlayerData.players.size()): #if value is less than player count, remove PlayerData.players to match the value
 		PlayerData.players.pop_back().queue_free()
 	
-	for i in PlayerData.players.size():
+	for i in PlayerData.players.size(): #change the color depends on how many players
 		player1.set_material(player1.get_material().duplicate(true)) #need to duplicate the material to avoid sharing shaders
 		PlayerData.players[i].get_material().set_shader_parameter(\"Shift_Hue\", 1.0 / PlayerData.players.size() * i) #change hue shader
 "
@@ -156,11 +171,20 @@ resource_name = "player_icon"
 script/source = "extends TextureRect
 "
 
+[sub_resource type="GDScript" id="GDScript_by5qy"]
+resource_name = "player_name"
+script/source = "extends RichTextLabel
+
+func _ready() -> void:
+	text = get_parent().name
+"
+
 [node name="main" type="Node2D"]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQADAAQAAAAAAAAAAQACAAQAAAAAAAAAAQACAAMAAAAAAAAAAQACAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQABAAIAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQADAAMAAAAAAAAAAQAEAAMAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
+script = SubResource("GDScript_27xvk")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -216,8 +240,8 @@ offset_right = 347.0
 offset_bottom = 40.0
 grow_horizontal = 2
 script = SubResource("GDScript_gh0i5")
-player1 = NodePath("VBoxContainer/Row1/player1")
-player2 = NodePath("VBoxContainer/Row1/player2")
+player1 = NodePath("VBoxContainer/Row1/Player 1")
+player2 = NodePath("VBoxContainer/Row1/Player 2")
 row_1 = NodePath("VBoxContainer/Row1")
 row_2 = NodePath("VBoxContainer/Row2")
 
@@ -232,13 +256,13 @@ size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="player1" type="TextureRect" parent="Control/Player_Display/VBoxContainer/Row1"]
+[node name="Player 1" type="TextureRect" parent="Control/Player_Display/VBoxContainer/Row1"]
 material = SubResource("ShaderMaterial_te5l3")
 layout_mode = 2
 texture = SubResource("GradientTexture2D_hohwn")
 script = SubResource("GDScript_1i8c1")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/Player_Display/VBoxContainer/Row1/player1"]
+[node name="player_name" type="RichTextLabel" parent="Control/Player_Display/VBoxContainer/Row1/Player 1"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -251,14 +275,15 @@ theme_override_font_sizes/normal_font_size = 12
 text = "Player 1"
 fit_content = true
 autowrap_mode = 0
+script = SubResource("GDScript_by5qy")
 
-[node name="player2" type="TextureRect" parent="Control/Player_Display/VBoxContainer/Row1"]
+[node name="Player 2" type="TextureRect" parent="Control/Player_Display/VBoxContainer/Row1"]
 material = ExtResource("2_3ayql")
 layout_mode = 2
 texture = SubResource("GradientTexture2D_hohwn")
 script = SubResource("GDScript_1i8c1")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/Player_Display/VBoxContainer/Row1/player2"]
+[node name="player_name" type="RichTextLabel" parent="Control/Player_Display/VBoxContainer/Row1/Player 2"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -271,6 +296,7 @@ theme_override_font_sizes/normal_font_size = 12
 text = "Player 1"
 fit_content = true
 autowrap_mode = 0
+script = SubResource("GDScript_by5qy")
 
 [node name="Row2" type="HBoxContainer" parent="Control/Player_Display/VBoxContainer"]
 layout_mode = 2

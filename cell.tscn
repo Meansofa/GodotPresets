@@ -24,6 +24,9 @@ func change_shake(shake_value : float):
 func change_intensity(intensity_value : float):
 	shaker.intensity = intensity_value
 
+func change_color(player_index : int):
+	sprite.set_material(PlayerData.players[player_index].get_material())
+
 func pop(direction : Vector2):
 	set_collision_layer_value(2, true)
 	linear_velocity = direction * 500
