@@ -25,9 +25,7 @@ func _input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	add_theme_stylebox_override(\"normal\", stylebox)
-
-#func _process(delta: float) -> void:
-	#stylebox.border_color.h = 1.0 / PlayerData.players.size() * PlayerData.current_player
+	PlayerData.connect(\"player_change\", change_spawner_color) #connect to the Player_data signal on player_change change the spawner color
 
 func _on_pressed() -> void:
 	if spawner_owner == -1: #if no owner of this spawner, 
@@ -72,9 +70,12 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		check_cells() #check how many cells you have and either add or pop
 		
 
-func change_color(spawner_owner : int):
+func change_color(spawner_owner : int): #change the cell color of children cells
 	for i in cells.size():
 		cells[i].change_color(spawner_owner)
+
+func change_spawner_color(): #change the color of the spawner
+	stylebox.border_color.h = 1.0 / PlayerData.players.size() * PlayerData.current_player #change the border color by hue
 
 func set_monitoring_false(): #set monitoring to false to stop detecting for any cells
 	area_2d.set_deferred(\"monitoring\", false)

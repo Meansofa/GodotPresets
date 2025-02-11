@@ -7,4 +7,7 @@ var current_player : int : #index of the current player, changes upon pressing a
 		current_player = value #change the current player to the new value
 		if current_player > players.size() - 1: #if the value surpasses the players size, go back to 0
 			current_player = 0
+		emit_signal("player_change")
 var previous_player : int #used to check who was the last player that pressed the spawner
+
+signal player_change

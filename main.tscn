@@ -196,34 +196,33 @@ script = SubResource("GDScript_ukba4")
 width = 960
 height = 540
 
-[node name="PanelContainer" type="PanelContainer" parent="Control"]
+[node name="Settings" type="PanelContainer" parent="Control"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -160.0
-offset_top = -21.5
+offset_top = -43.0
 offset_right = 160.0
-offset_bottom = 21.5
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Control/PanelContainer"]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Control/Settings"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/AspectRatioContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Settings/AspectRatioContainer"]
 layout_mode = 2
 
-[node name="Player Count" type="RichTextLabel" parent="Control/PanelContainer/AspectRatioContainer/VBoxContainer"]
+[node name="Player Count" type="RichTextLabel" parent="Control/Settings/AspectRatioContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Players	:	2"
 fit_content = true
 script = SubResource("GDScript_6yv3i")
 
-[node name="HSlider" type="HSlider" parent="Control/PanelContainer/AspectRatioContainer/VBoxContainer"]
+[node name="HSlider" type="HSlider" parent="Control/Settings/AspectRatioContainer/VBoxContainer"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 min_value = 2.0
@@ -305,5 +304,5 @@ size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
-[connection signal="value_changed" from="Control/PanelContainer/AspectRatioContainer/VBoxContainer/HSlider" to="Control/PanelContainer/AspectRatioContainer/VBoxContainer/Player Count" method="_on_h_slider_value_changed"]
-[connection signal="value_changed" from="Control/PanelContainer/AspectRatioContainer/VBoxContainer/HSlider" to="Control/Player_Display" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="Control/Settings/AspectRatioContainer/VBoxContainer/HSlider" to="Control/Settings/AspectRatioContainer/VBoxContainer/Player Count" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="Control/Settings/AspectRatioContainer/VBoxContainer/HSlider" to="Control/Player_Display" method="_on_h_slider_value_changed"]
