@@ -148,9 +148,8 @@ bake_internal = 64
 __follow_timeline = false
 
 [node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker", "sprite") groups=["Cell"]]
-position = Vector2(-1.35899e-05, 0)
-rotation = -0.00451571
-scale = Vector2(0.999986, 0.999985)
+position = Vector2(0.143169, 0.143184)
+scale = Vector2(0.999987, 0.999986)
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0

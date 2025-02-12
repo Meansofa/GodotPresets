@@ -10,13 +10,12 @@ script/source = "extends Button
 @export var center : CenterContainer
 @export var area_2d : Area2D
 
-@export var stylebox : StyleBoxFlat
-
 var cells = [] 
 var spawner_owner := -1 : #who currently is the owner of this spawner, -1 if there is no owner
 	set(value):
 		spawner_owner = value
 		change_color(spawner_owner)
+
 var spawner_type : String #based on the spawner types[\"Inner\", \"Sides\", \"Edge\"], it will have few cells needed until it pops
 var spawner_directions : Array[Vector2] :#where cells can go when it pops, to avoid cells going out of grid
 	set(value):
@@ -28,19 +27,13 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 		else:
 			spawner_type = \"Inner\"
 
-func _ready() -> void:
-	add_theme_stylebox_override(\"normal\", stylebox)
-	PlayerData.connect(\"player_change\", change_spawner_color) #connect to the Player_data signal on player_change change the spawner color
-
 func _on_pressed() -> void:
 	if spawner_owner == -1: #if no owner of this spawner, 
 		spawner_owner = PlayerData.current_player #assign the current player as the owner
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
-		check_cells()
+		check_cells() #add a cell to account for the press
 		PlayerData.current_player = PlayerData.current_player + 1 #switch to the next player in queue
-	
-	print(\"cells size: \", cells.size())
 
 func spawn_cell():
 	var cell_instance = cell.instantiate() #create an instance of the cell
@@ -49,41 +42,45 @@ func spawn_cell():
 	
 	cell_instance.change_color(spawner_owner)
 	cell_instance.connect(\"tree_exited\", set_monitoring_true) #attach an auto connect to the cell, to set monitoring to true once the cell is deleted
+	
 	for i in cells.size(): #change cell's shake based on the amount of cells
 		cells[i].change_shake(cells.size() * 0.15)
 		cells[i].change_intensity(cells.size() * 0.15)
+	
+	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
 
 func check_cells(): #check how many cells you have and either add or pop
 	if spawner_directions.is_empty(): #if this spawner doesnt have directions yet(directions that the cells can go when it pops)
 		spawner_directions = get_parent().get_available_directions(position) #get available directions
 
-	if cells.size() < spawner_directions.size() - 1: #If cell is less than 3(meaning it's still not strong enough to initiate chain reaction)
-		spawn_cell() 
-	else: #else pop a chain reaction
+	if cells.size() < spawner_directions.size() - 1: #check if the directions have not been met
+		spawn_cell()  
+	else: #else pop a chain reaction where each cell has a direction to go to
 		pop()
 
 func pop(): #launch the cells in adjacent directions
 	set_monitoring_false() #turn off monitoring to not detect your own cells
-	spawn_cell() #add the 4th cell
-	for i in spawner_directions.size():
-		cells[i].pop(spawner_directions[i])
+	spawn_cell() #add the last cell before it pops
+	for i in spawner_directions.size(): #iterate through each cell
+		cells[i].pop(spawner_directions[i]) #iterated cell goes through the iterated directions
+		PlayerData.calculate_cell_count(spawner_owner, -1) #remove cell count on the player -1 for each cells since they're now popped
 	cells.clear() #clear the array of cells
-	spawner_owner = -1
+	spawner_owner = -1 #since there are no more cells in this spawner means there are no owners
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
+func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
 	if body.is_in_group(\"Cell\"): #Check if a cell enters
 		body.queue_free() #if it's a cell remove that cell
-		spawner_owner = PlayerData.previous_player
-		change_color(spawner_owner)
-		check_cells() #check how many cells you have and either add or pop
 		
+		PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
+		spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
+		PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
+		
+		change_color(spawner_owner) #change the cell color based on the new owner's cell color
+		check_cells() #add a cell to account for the cell that just entered but deleted after
 
-func change_color(spawner_owner : int): #change the cell color of children cells
+func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():
 		cells[i].change_color(spawner_owner)
-
-func change_spawner_color(): #change the color of the spawner
-	stylebox.border_color.h = 1.0 / PlayerData.players.size() * PlayerData.current_player #change the border color by hue
 
 func set_monitoring_false(): #set monitoring to false to stop detecting for any cells
 	area_2d.set_deferred(\"monitoring\", false)
@@ -110,7 +107,6 @@ script = SubResource("GDScript_p5304")
 cell = ExtResource("1_y6xxv")
 center = NodePath("CenterContainer")
 area_2d = NodePath("CenterContainer/Area2D")
-stylebox = ExtResource("1_5ipqg")
 metadata/_edit_use_anchors_ = true
 
 [node name="CenterContainer" type="CenterContainer" parent="."]

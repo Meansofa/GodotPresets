@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=20 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://cell_spawner.tscn" id="1_t2xmo"]
 [ext_resource type="Material" uid="uid://b475rxb2ihw5l" path="res://hueShader.tres" id="2_3ayql"]
@@ -15,7 +15,6 @@ script/source = "extends TileMapLayer
 
 func get_available_directions(position : Vector2) -> Array:
 	var tile_map_position = local_to_map(position) #convert the position given to tile map's position type
-	print(self, \">spawner position in tile map: \", tile_map_position)
 	
 	#get the position of neighbors
 	var left_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_LEFT_SIDE)
@@ -36,7 +35,6 @@ func get_available_directions(position : Vector2) -> Array:
 		if neighbors[i] != -1: #if it is not -1(neighbor doesn't exist)
 			spawner_directions.append(directions[i])
 	
-	print(spawner_directions)
 	return spawner_directions#return the type of spawner based on how many no_neighbors_count
 "
 
@@ -173,8 +171,8 @@ shader = SubResource("Shader_3jk7u")
 shader_parameter/Shift_Hue = 0.0
 
 [sub_resource type="Gradient" id="Gradient_53t7f"]
-offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.506494, 0.798701, 1, 5)
+colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0, 0.589333, 0.68, 0.694118, 0.76, 0.74708, 0.7448, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_hohwn"]
 gradient = SubResource("Gradient_53t7f")
@@ -193,6 +191,97 @@ script/source = "extends RichTextLabel
 
 func _ready() -> void:
 	text = get_parent().name
+"
+
+[sub_resource type="Shader" id="Shader_v2yx8"]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform float Shift_Hue;
+
+/*
+# Duplicate the shader so that changing its param doesn't change it on any other sprites that also use the shader.
+# Generally done once in _ready()
+$TheSprite.set_material($TheSprite.get_material().duplicate(true))
+
+# Offset sprite hue by a random value within specified limits.
+var rand_hue = float(randi() % 3)/2.0/3.2
+$TheSprite.material.set_shader_param(\"Shift_Hue\", rand_hue)
+*/
+void fragment() {
+// Input:3
+	vec3 input_color;
+	vec4 texture_color = texture(TEXTURE, UV);
+	input_color = texture_color.rgb;
+
+// VectorFunc:2
+	vec3 color_hsv;
+	{
+		vec3 c = input_color;
+		vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+		vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+		vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+		float d = q.x - min(q.w, q.y);
+		float e = 1.0e-10;
+		color_hsv=vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+	}
+
+	color_hsv.x = mod((color_hsv.x + Shift_Hue), 1.0f);
+
+// VectorFunc:5
+	vec3 color_rgb;
+	{
+		vec3 c = color_hsv;
+		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+		color_rgb=c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	}
+
+// Output:0
+	texture_color = vec4(color_rgb.rgb,texture_color.a);
+	COLOR.rgba = texture_color;
+
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_anmme"]
+shader = SubResource("Shader_v2yx8")
+shader_parameter/Shift_Hue = 0.0
+
+[sub_resource type="Gradient" id="Gradient_m8sdk"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.909804, 0.329412, 0.215686, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_o5kfn"]
+gradient = SubResource("Gradient_m8sdk")
+
+[sub_resource type="GDScript" id="GDScript_v1lwo"]
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		print(\"width: \", value)
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		print(\"height: \", value)
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+
+func _ready() -> void:
+	PlayerData.connect(\"player_change\", change_spawner_color) #connect to the Player_data signal on player_change change the spawner color
+
+func change_spawner_color(): #change the color of the spawner
+	set_material(PlayerData.players[PlayerData.current_player].get_material())
+	#self_modulate.h = 1.0 / PlayerData.players.size() * PlayerData.current_player #change the border color by hue
 "
 
 [node name="main" type="Node2D"]
@@ -321,5 +410,58 @@ size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Color" type="TextureRect" parent="Background"]
+material = SubResource("ShaderMaterial_anmme")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_o5kfn")
+script = SubResource("GDScript_v1lwo")
+width = 960
+height = 540
+
+[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142712" to="SpawnersLayer/@Button@142712" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142713" to="SpawnersLayer/@Button@142713" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142714" to="SpawnersLayer/@Button@142714" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142715" to="SpawnersLayer/@Button@142715" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142716" to="SpawnersLayer/@Button@142716" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142717" to="SpawnersLayer/@Button@142717" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142718" to="SpawnersLayer/@Button@142718" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142719" to="SpawnersLayer/@Button@142719" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142720" to="SpawnersLayer/@Button@142720" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142721" to="SpawnersLayer/@Button@142721" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142722" to="SpawnersLayer/@Button@142722" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142723" to="SpawnersLayer/@Button@142723" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142724" to="SpawnersLayer/@Button@142724" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142725" to="SpawnersLayer/@Button@142725" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142726" to="SpawnersLayer/@Button@142726" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142727" to="SpawnersLayer/@Button@142727" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142728" to="SpawnersLayer/@Button@142728" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142729" to="SpawnersLayer/@Button@142729" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142730" to="SpawnersLayer/@Button@142730" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142731" to="SpawnersLayer/@Button@142731" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142732" to="SpawnersLayer/@Button@142732" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142733" to="SpawnersLayer/@Button@142733" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142734" to="SpawnersLayer/@Button@142734" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142735" to="SpawnersLayer/@Button@142735" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142736" to="SpawnersLayer/@Button@142736" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142737" to="SpawnersLayer/@Button@142737" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142738" to="SpawnersLayer/@Button@142738" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142739" to="SpawnersLayer/@Button@142739" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142740" to="SpawnersLayer/@Button@142740" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142741" to="SpawnersLayer/@Button@142741" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@142742" to="SpawnersLayer/@Button@142742" method="_on_pressed"]
 [connection signal="value_changed" from="Control/Settings/AspectRatioContainer/VBoxContainer/HSlider" to="Control/Settings/AspectRatioContainer/VBoxContainer/Player Count" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="Control/Settings/AspectRatioContainer/VBoxContainer/HSlider" to="Control/Player_Display" method="_on_h_slider_value_changed"]
