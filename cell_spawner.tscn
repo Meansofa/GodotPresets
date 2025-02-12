@@ -17,11 +17,16 @@ var spawner_owner := -1 : #who currently is the owner of this spawner, -1 if the
 	set(value):
 		spawner_owner = value
 		change_color(spawner_owner)
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if Input.is_action_just_pressed(\"ui_accept\"):
-			change_color(spawner_owner)
+var spawner_type : String #based on the spawner types[\"Inner\", \"Sides\", \"Edge\"], it will have few cells needed until it pops
+var spawner_directions : Array[Vector2] :#where cells can go when it pops, to avoid cells going out of grid
+	set(value):
+		spawner_directions = value
+		if spawner_directions.size() == 2:
+			spawner_type = \"Edge\"
+		elif spawner_directions.size() == 3:
+			spawner_type = \"Side\"
+		else:
+			spawner_type = \"Inner\"
 
 func _ready() -> void:
 	add_theme_stylebox_override(\"normal\", stylebox)
@@ -33,7 +38,9 @@ func _on_pressed() -> void:
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells()
-		PlayerData.current_player = PlayerData.current_player + 1
+		PlayerData.current_player = PlayerData.current_player + 1 #switch to the next player in queue
+	
+	print(\"cells size: \", cells.size())
 
 func spawn_cell():
 	var cell_instance = cell.instantiate() #create an instance of the cell
@@ -47,7 +54,10 @@ func spawn_cell():
 		cells[i].change_intensity(cells.size() * 0.15)
 
 func check_cells(): #check how many cells you have and either add or pop
-	if cells.size() < 3: #If cell is less than 3(meaning it's still not strong enough to initiate chain reaction)
+	if spawner_directions.is_empty(): #if this spawner doesnt have directions yet(directions that the cells can go when it pops)
+		spawner_directions = get_parent().get_available_directions(position) #get available directions
+
+	if cells.size() < spawner_directions.size() - 1: #If cell is less than 3(meaning it's still not strong enough to initiate chain reaction)
 		spawn_cell() 
 	else: #else pop a chain reaction
 		pop()
@@ -55,10 +65,8 @@ func check_cells(): #check how many cells you have and either add or pop
 func pop(): #launch the cells in adjacent directions
 	set_monitoring_false() #turn off monitoring to not detect your own cells
 	spawn_cell() #add the 4th cell
-	cells[0].pop(Vector2(1, 0)) #cell goes right
-	cells[1].pop(Vector2(-1, 0)) #cell goes left
-	cells[2].pop(Vector2(0, -1)) #cell goes up
-	cells[3].pop(Vector2(0, 1)) #cell goes down
+	for i in spawner_directions.size():
+		cells[i].pop(spawner_directions[i])
 	cells.clear() #clear the array of cells
 	spawner_owner = -1
 

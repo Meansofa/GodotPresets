@@ -13,15 +13,31 @@ sources/0 = SubResource("TileSetScenesCollectionSource_qb3a6")
 [sub_resource type="GDScript" id="GDScript_27xvk"]
 script/source = "extends TileMapLayer
 
-func _ready() -> void:
-	var top_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_TOP_SIDE)
-	print(\"top: \", get_cell_source_id(top_neighbor))
-	var bottom_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_BOTTOM_SIDE)
-	print(\"bottom: \", get_cell_source_id(bottom_neighbor))
-	var right_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_RIGHT_SIDE)
-	print(\"right: \", get_cell_source_id(right_neighbor))
-	var left_neighbor = get_neighbor_cell(Vector2(1, 1), TileSet.CELL_NEIGHBOR_LEFT_SIDE)
-	print(\"left: \", get_cell_source_id(left_neighbor))
+func get_available_directions(position : Vector2) -> Array:
+	var tile_map_position = local_to_map(position) #convert the position given to tile map's position type
+	print(self, \">spawner position in tile map: \", tile_map_position)
+	
+	#get the position of neighbors
+	var left_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_LEFT_SIDE)
+	var right_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_RIGHT_SIDE)
+	var top_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_TOP_SIDE)
+	var bottom_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_BOTTOM_SIDE)
+	
+	#check if there are tiles at the neighbor's position(-1 if none, 0 if yes)
+	var left_id = get_cell_source_id(left_neighbor)
+	var right_id = get_cell_source_id(right_neighbor)
+	var top_id = get_cell_source_id(top_neighbor)
+	var bottom_id = get_cell_source_id(bottom_neighbor)
+	
+	var neighbors = [left_id, right_id, top_id, bottom_id] #put the id of neighbors in the dictionary
+	var directions = [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1)] #adjacent  directions, corresponds to: top, bottom, right, left, must match the neighbors dictionary
+	var spawner_directions : Array[Vector2] #put here where the spawner will launch its cells when it pops
+	for i in neighbors.size():
+		if neighbors[i] != -1: #if it is not -1(neighbor doesn't exist)
+			spawner_directions.append(directions[i])
+	
+	print(spawner_directions)
+	return spawner_directions#return the type of spawner based on how many no_neighbors_count
 "
 
 [sub_resource type="GDScript" id="GDScript_ukba4"]
@@ -181,7 +197,8 @@ func _ready() -> void:
 
 [node name="main" type="Node2D"]
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="SpawnersLayer" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQADAAQAAAAAAAAAAQACAAQAAAAAAAAAAQACAAMAAAAAAAAAAQACAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQABAAIAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQADAAMAAAAAAAAAAQAEAAMAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
 script = SubResource("GDScript_27xvk")
