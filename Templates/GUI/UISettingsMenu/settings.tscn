@@ -1,8 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://beb11nuwbqlkp"]
+[gd_scene load_steps=6 format=3 uid="uid://beb11nuwbqlkp"]
 
+[ext_resource type="Theme" uid="uid://b0gmwwwx35qm2" path="res://Themes/Settings.tres" id="1_ayfuf"]
 [ext_resource type="ButtonGroup" uid="uid://dl8q27ifafu7h" path="res://Templates/GUI/UISettingsMenu/button_group_north.tres" id="2_uo5dk"]
+[ext_resource type="Texture2D" uid="uid://cc7pngssvpa63" path="res://Assets/Panel.png" id="3_u2js0"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uthsc"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nial2"]
+texture = ExtResource("3_u2js0")
+texture_margin_left = 15.4
+texture_margin_top = 14.3
+texture_margin_right = 16.5
+texture_margin_bottom = 13.2
+region_rect = Rect2(21.7393, 21.9519, 534.597, 280.574)
 
 [node name="Settings" type="PanelContainer"]
 anchors_preset = 8
@@ -10,12 +20,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = -270.0
-offset_right = 411.0
-offset_bottom = 106.0
+offset_left = -443.0
+offset_top = -260.0
+offset_right = 448.0
+offset_bottom = 116.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_ayfuf")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_uthsc")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
@@ -65,11 +76,10 @@ layout_mode = 2
 [node name="Setting_Center" type="PanelContainer" parent="AspectRatioContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_nial2")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="AspectRatioContainer/VBoxContainer/Setting_Center"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 alignment_horizontal = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer"]
@@ -85,7 +95,6 @@ layout_mode = 2
 
 [node name="Labels" type="VBoxContainer" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings"]
 layout_mode = 2
-theme_override_constants/separation = 10
 
 [node name="Master" type="Label" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings/Labels"]
 layout_mode = 2
@@ -102,18 +111,17 @@ text = "Music"
 
 [node name="Values" type="VBoxContainer" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings"]
 layout_mode = 2
-theme_override_constants/separation = 20
 
 [node name="Master" type="HSlider" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings/Values"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(150, 32)
 layout_mode = 2
 
 [node name="SFX" type="HSlider" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings/Values"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="Music" type="HSlider" parent="AspectRatioContainer/VBoxContainer/Setting_Center/AspectRatioContainer/VBoxContainer/AudioSettings/Values"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="AspectRatioContainer/VBoxContainer"]
