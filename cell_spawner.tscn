@@ -26,16 +26,23 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 		else:
 			spawner_type = \"Inner\"
 
+func _ready() -> void:
+	PlayerData.connect(\"player_change\", change_pop)
+
+func change_pop():
+	pass
+
 func _on_pressed() -> void:
-	if not PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is still in game
-		return #if not then skip
+	if not PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is in the game
+		#return #if not then skip
+		pass
 
 	if spawner_owner == -1: #if no owner of this spawner, 
 		spawner_owner = PlayerData.current_player #assign the current player as the owner
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells() #add a cell to account for the press
-		PlayerData.current_player += 1 #switch to the next player in queue
+		PlayerData.next_player() #switch to the next player in queue
 
 func spawn_cell():
 	var cell_instance = cell.instantiate() #create an instance of the cell
