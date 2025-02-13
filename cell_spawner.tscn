@@ -14,7 +14,6 @@ var cells = []
 var spawner_owner := -1 : #who currently is the owner of this spawner, -1 if there is no owner
 	set(value):
 		spawner_owner = value
-		change_color(spawner_owner)
 
 var spawner_type : String #based on the spawner types[\"Inner\", \"Sides\", \"Edge\"], it will have few cells needed until it pops
 var spawner_directions : Array[Vector2] :#where cells can go when it pops, to avoid cells going out of grid
@@ -28,19 +27,22 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 			spawner_type = \"Inner\"
 
 func _on_pressed() -> void:
+	if not PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is still in game
+		return #if not then skip
+
 	if spawner_owner == -1: #if no owner of this spawner, 
 		spawner_owner = PlayerData.current_player #assign the current player as the owner
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells() #add a cell to account for the press
-		PlayerData.current_player = PlayerData.current_player + 1 #switch to the next player in queue
+		PlayerData.current_player += 1 #switch to the next player in queue
 
 func spawn_cell():
 	var cell_instance = cell.instantiate() #create an instance of the cell
 	center.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the center(to spawn to center)
 	cells.append(cell_instance) #append to the cells array
 	
-	cell_instance.change_color(spawner_owner)
+	cell_instance.change_color(spawner_owner) #set the color of the cell to match the owner's color
 	cell_instance.connect(\"tree_exited\", set_monitoring_true) #attach an auto connect to the cell, to set monitoring to true once the cell is deleted
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
@@ -73,9 +75,9 @@ func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this
 		
 		PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
 		spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
+		change_color(spawner_owner) #set the color of the cells to match to the new owner's color
 		PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
-		
-		change_color(spawner_owner) #change the cell color based on the new owner's cell color
+
 		check_cells() #add a cell to account for the cell that just entered but deleted after
 
 func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
