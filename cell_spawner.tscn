@@ -26,19 +26,10 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 		else:
 			spawner_type = \"Inner\"
 
-func _ready() -> void:
-	PlayerData.connect(\"player_change\", change_pop)
-
-func change_pop():
-	pass
-
 func _on_pressed() -> void:
-	if not PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is in the game
-		#return #if not then skip
-		pass
-
 	if spawner_owner == -1: #if no owner of this spawner, 
-		spawner_owner = PlayerData.current_player #assign the current player as the owner
+		if PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is in the game
+			spawner_owner = PlayerData.current_player #assign the current player as the owner
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells() #add a cell to account for the press
@@ -86,6 +77,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this
 		PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
 
 		check_cells() #add a cell to account for the cell that just entered but deleted after
+		PlayerData.reset_simulation_timer()
 
 func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():

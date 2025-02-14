@@ -10,12 +10,32 @@ var players_registered : bool
 
 var players_cell_count : Dictionary #how many cells each registered players have
 
+var simulation_playing : bool #True everytime the simulation(chain reaction) is still ongoing
+var simulation_time : float : #When reaches zero meaning the simulation is done, for every chain reaction the timer resets
+	set(value):
+		simulation_time = value
+		simulation_playing = true
+
 signal player_change #emit signal everytime the current player has changed
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		print("players: ", players)
 		emit_signal("player_change")
+
+func _process(delta: float) -> void:
+	if simulation_playing: #If simulation is occuring
+		print("Simulation start")
+		if simulation_time > 0.0:#run simulation until simulation time reaches zero
+			simulation_time -= delta #reduces simulation time
+		else:#when reaches zero 
+			print("Simulation finished")
+			simulation_playing = false #simulation is done
+			player_still_inGame(current_player)
+			emit_signal("player_change")
+
+func reset_simulation_timer():
+	simulation_time = 0.05
 
 func next_player():
 	previous_player = current_player #assign the current player value to the previous player.
@@ -37,6 +57,8 @@ func calculate_cell_count(player : int, value : int): #called everytime a cell i
 	print("Cell Counts> ", players_cell_count)
 
 func player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
+	if players[player] == null:
+		return false
 	if not registered_players.has(player): #check if this player is not yet registered(player have already put their first cell)
 		_register_player(player) #if not registered, register the player by adding it's index in the array 
 		return true
