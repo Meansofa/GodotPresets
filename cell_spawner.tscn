@@ -70,14 +70,17 @@ func pop(): #launch the cells in adjacent directions
 func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
 	if body.is_in_group(\"Cell\"): #Check if a cell enters
 		body.queue_free() #if it's a cell remove that cell
-		
-		PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
-		spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
-		change_color(spawner_owner) #set the color of the cells to match to the new owner's color
-		PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
+		calculate_cell_count()
 
-		check_cells() #add a cell to account for the cell that just entered but deleted after
-		PlayerData.reset_simulation_timer()
+func calculate_cell_count():
+	PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
+	print(\"PlayerData.previous_player: \", PlayerData.previous_player)
+	spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
+	change_color(spawner_owner) #set the color of the cells to match to the new owner's color
+	PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
+
+	check_cells() #add a cell to account for the cell that just entered but deleted after
+	PlayerData.reset_simulation_timer()
 
 func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():

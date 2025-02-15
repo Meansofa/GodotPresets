@@ -3,7 +3,10 @@ extends Node
 #Check the Player_Display Control node to see how these are used
 var players = [] #holds the amount of players and there corresponding color
 var current_player : int #index of the current player, changes upon pressing a grid from cell_spawner script
-var previous_player : int #used to check who was the last player that pressed the spawner
+var previous_player : int :#used to check who was the last player that pressed the spawner
+	set(value):
+		previous_player = value
+		print("previous_player: ", previous_player)
 
 var registered_players : Array[int] #players who have registered, meaning they've already put their first cell
 var players_registered : bool
@@ -38,7 +41,9 @@ func reset_simulation_timer():
 	simulation_time = 0.05
 
 func next_player():
-	previous_player = current_player #assign the current player value to the previous player.
+	if players[current_player] != null: #before assigning the new previous player, check if the last player wasn't a null(null means had lost)
+		previous_player = current_player #assign the current player value to the previous player.
+	
 	current_player += 1 #change the current player to the new value
 	if current_player > players.size() - 1: #if the value surpasses the players size, go back to 0
 		current_player = 0
@@ -65,7 +70,9 @@ func player_still_inGame(player) -> bool: #run first before a player can put a c
 
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print("Player ", player + 1, " Lost!")
+		print("players: ", players)
 		players[player] = null
+		print("players: ", players)
 		next_player()
 		return false
 
