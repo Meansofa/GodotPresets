@@ -35,7 +35,7 @@ func pop(direction : Vector2):
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fwjrn"]
-radius = 3.13585
+radius = 0.01
 
 [sub_resource type="Gradient" id="Gradient_r5lxx"]
 offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 1, 5)

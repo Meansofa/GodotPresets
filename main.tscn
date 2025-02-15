@@ -1,7 +1,9 @@
-[gd_scene load_steps=28 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=34 format=4 uid="uid://xhtgkc2suxbe"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://cell_spawner.tscn" id="1_t2xmo"]
 [ext_resource type="Material" uid="uid://b475rxb2ihw5l" path="res://hueShader.tres" id="2_3ayql"]
+[ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="3_eacgh"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="3_ifosm"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="4_1mvcq"]
 
@@ -121,8 +123,6 @@ func change_players(index : int):
 		PlayerData.players[i].set_material(player1.get_material().duplicate(true)) #need to duplicate the material to avoid sharing shaders
 		PlayerData.players[i].get_material().set_shader_parameter(\"Shift_Hue\", 1.0 / PlayerData.players.size() * i) #change hue shader
 		#await  get_tree().create_timer(0.1).timeout
-	
-	print(\"Plaasdtyers: \", PlayerData.players)
 "
 
 [sub_resource type="Shader" id="Shader_3jk7u"]
@@ -203,8 +203,8 @@ func _ready() -> void:
 	text = get_parent().name
 "
 
-[sub_resource type="GDScript" id="GDScript_ciegu"]
-resource_name = "TitleScreen"
+[sub_resource type="GDScript" id="GDScript_fgwkh"]
+resource_name = "Main_Control"
 script/source = "@tool
 extends Control
 
@@ -227,23 +227,72 @@ extends Control
 			size = Vector2(width, height)
 "
 
-[sub_resource type="Shader" id="Shader_gj8ei"]
-code = "shader_type canvas_item;
+[sub_resource type="GDScript" id="GDScript_u0i5i"]
+resource_name = "LOD"
+script/source = "extends TextureRect
 
-uniform float lod: hint_range(0.0, 5.0) = 5.0;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
-uniform float mix_percentage: hint_range(0.0, 1.0) = 0.3;
 
-void fragment(){
-	vec4 color = texture(SCREEN_TEXTURE, SCREEN_UV, lod);
-	color = mix(color, vec4(0,0,0,1), mix_percentage);
-	COLOR = color;
-}"
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rfdrn"]
-shader = SubResource("Shader_gj8ei")
-shader_parameter/lod = 5.0
-shader_parameter/mix_percentage = 0.3
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_title_screen_visibility_changed() -> void:
+	self.visible = %TitleScreen.visible
+
+func _on_winner_panel_visibility_changed() -> void:
+	self.visible = %WinnerPanel.visible
+"
+
+[sub_resource type="GDScript" id="GDScript_0obg5"]
+resource_name = "TitleScreen"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+"
+
+[sub_resource type="GDScript" id="GDScript_15ch8"]
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		print(\"width: \", value)
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		print(\"height: \", value)
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+"
 
 [sub_resource type="GDScript" id="GDScript_qpbas"]
 resource_name = "StartButton"
@@ -274,6 +323,63 @@ extends OptionButton
 func _ready() -> void:
 	select(add_players)
 	emit_signal(\"item_selected\", add_players)
+"
+
+[sub_resource type="GDScript" id="GDScript_jgltk"]
+resource_name = "WinnerPanel"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+"
+
+[sub_resource type="GDScript" id="GDScript_u5s5v"]
+resource_name = "WinnerLabel"
+script/source = "extends RichTextLabel
+
+var winner
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	get_parent().visible = false
+	PlayerData.connect(\"game_finished\", _show_winner_panel)
+
+func _show_winner_panel(player):
+	print(\"playerasdsa: \", player)
+	text = \"[center][b][i]\" + player.name + \" Won!\"
+	get_parent().visible = true
+"
+
+[sub_resource type="GDScript" id="GDScript_s8lf3"]
+resource_name = "RestartButton"
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_pressed() -> void:
+	get_tree().reload_current_scene()
 "
 
 [sub_resource type="Shader" id="Shader_v2yx8"]
@@ -407,6 +513,7 @@ func change_spawner_color(): #change the color of the spawner
 "
 
 [node name="main" type="Node2D"]
+script = ExtResource("1_j4i02")
 
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
@@ -496,19 +603,19 @@ size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="TitleScreen" type="Control" parent="."]
-unique_name_in_owner = true
+[node name="Main_Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
 offset_bottom = 540.0
-script = SubResource("GDScript_ciegu")
+mouse_filter = 2
+script = SubResource("GDScript_fgwkh")
 width = 960
 height = 540
 
-[node name="LOD" type="TextureRect" parent="TitleScreen"]
-visible = false
-material = SubResource("ShaderMaterial_rfdrn")
+[node name="LOD" type="TextureRect" parent="Main_Control"]
+unique_name_in_owner = true
+material = ExtResource("3_eacgh")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -516,8 +623,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_ifosm")
+script = SubResource("GDScript_u0i5i")
 
-[node name="PanelContainer" type="PanelContainer" parent="TitleScreen"]
+[node name="TitleScreen" type="Control" parent="Main_Control"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 540.0
+mouse_filter = 2
+script = SubResource("GDScript_0obg5")
+width = 960
+height = 540
+is_visible = true
+
+[node name="PanelContainer" type="PanelContainer" parent="Main_Control/TitleScreen"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -531,39 +651,43 @@ offset_bottom = 270.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_1mvcq")
+script = SubResource("GDScript_15ch8")
+width = 320
+height = 540
 
-[node name="CenterContainer" type="CenterContainer" parent="TitleScreen/PanelContainer"]
+[node name="CenterContainer" type="AspectRatioContainer" parent="Main_Control/TitleScreen/PanelContainer"]
 layout_mode = 2
+ratio = 0.5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TitleScreen/PanelContainer/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="RichTextLabel" parent="TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Title" type="RichTextLabel" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[center]Chain Reaction : Expanded
+text = "[center][b][i]Chain Reaction : Expanded
 
 "
 fit_content = true
 
-[node name="Start" type="Button" parent="TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Start" type="Button" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Start
 "
 script = SubResource("GDScript_qpbas")
 
-[node name="Player_Count" type="HBoxContainer" parent="TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Player_Count" type="HBoxContainer" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Players : "
 fit_content = true
 autowrap_mode = 0
 
-[node name="Amount" type="OptionButton" parent="TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="Amount" type="OptionButton" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
@@ -593,6 +717,46 @@ popup/item_10/text = "12"
 popup/item_10/id = 11
 script = SubResource("GDScript_jhgu0")
 
+[node name="WinnerPanel" type="PanelContainer" parent="Main_Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -26.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_jgltk")
+is_visible = false
+
+[node name="WinnerLabel" type="RichTextLabel" parent="Main_Control/WinnerPanel"]
+layout_mode = 2
+theme_override_font_sizes/bold_italics_font_size = 32
+bbcode_enabled = true
+text = "[center][b][i]Winner!"
+fit_content = true
+autowrap_mode = 0
+script = SubResource("GDScript_u5s5v")
+
+[node name="Restart" type="Panel" parent="Main_Control/WinnerPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="RestartButton" type="Button" parent="Main_Control/WinnerPanel/Restart"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -34.0
+offset_right = 34.0
+offset_bottom = 27.0
+grow_horizontal = 2
+text = "Restart?"
+script = SubResource("GDScript_s8lf3")
+
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
@@ -613,6 +777,7 @@ texture = SubResource("GradientTexture2D_l8sjq")
 script = SubResource("GDScript_v1lwo")
 width = 960
 height = 540
+metadata/_edit_lock_ = true
 
 [node name="BackgroundBorder" type="Panel" parent="Background"]
 self_modulate = Color(1, 0.7575, 0.03, 1)
@@ -622,6 +787,42 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_cmf08")
 script = SubResource("GDScript_jl880")
 width = 960
 height = 540
+metadata/_edit_lock_ = true
 
-[connection signal="pressed" from="TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
-[connection signal="item_selected" from="TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18071" to="SpawnersLayer/@Button@18071" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18072" to="SpawnersLayer/@Button@18072" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18073" to="SpawnersLayer/@Button@18073" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18074" to="SpawnersLayer/@Button@18074" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18075" to="SpawnersLayer/@Button@18075" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18076" to="SpawnersLayer/@Button@18076" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18077" to="SpawnersLayer/@Button@18077" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18078" to="SpawnersLayer/@Button@18078" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18079" to="SpawnersLayer/@Button@18079" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18080" to="SpawnersLayer/@Button@18080" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18081" to="SpawnersLayer/@Button@18081" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18082" to="SpawnersLayer/@Button@18082" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18083" to="SpawnersLayer/@Button@18083" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18084" to="SpawnersLayer/@Button@18084" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18085" to="SpawnersLayer/@Button@18085" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18086" to="SpawnersLayer/@Button@18086" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18087" to="SpawnersLayer/@Button@18087" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18088" to="SpawnersLayer/@Button@18088" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18089" to="SpawnersLayer/@Button@18089" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18090" to="SpawnersLayer/@Button@18090" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18091" to="SpawnersLayer/@Button@18091" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18092" to="SpawnersLayer/@Button@18092" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18093" to="SpawnersLayer/@Button@18093" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18094" to="SpawnersLayer/@Button@18094" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18095" to="SpawnersLayer/@Button@18095" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18096" to="SpawnersLayer/@Button@18096" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18097" to="SpawnersLayer/@Button@18097" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18098" to="SpawnersLayer/@Button@18098" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18099" to="SpawnersLayer/@Button@18099" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18100" to="SpawnersLayer/@Button@18100" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18101" to="SpawnersLayer/@Button@18101" method="_on_pressed"]
+[connection signal="visibility_changed" from="Main_Control/TitleScreen" to="Main_Control/LOD" method="_on_title_screen_visibility_changed"]
+[connection signal="pressed" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
+[connection signal="item_selected" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="visibility_changed" from="Main_Control/WinnerPanel" to="Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
+[connection signal="pressed" from="Main_Control/WinnerPanel/Restart/RestartButton" to="Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]

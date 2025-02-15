@@ -9,9 +9,8 @@ var previous_player : int :#used to check who was the last player that pressed t
 		print("previous_player: ", previous_player)
 
 var registered_players : Array[int] #players who have registered, meaning they've already put their first cell
-var players_registered : bool
-
 var players_cell_count : Dictionary #how many cells each registered players have
+var amount_of_players_still_in_game : int #amount of players that are still in game
 
 var simulation_playing : bool #True everytime the simulation(chain reaction) is still ongoing
 var simulation_time : float : #When reaches zero meaning the simulation is done, for every chain reaction the timer resets
@@ -20,11 +19,7 @@ var simulation_time : float : #When reaches zero meaning the simulation is done,
 		simulation_playing = true
 
 signal player_change #emit signal everytime the current player has changed
-
-func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed("ui_accept"):
-		print("players: ", players)
-		emit_signal("player_change")
+signal game_finished #when there is a winner
 
 func _process(delta: float) -> void:
 	if simulation_playing: #If simulation is occuring
@@ -33,9 +28,12 @@ func _process(delta: float) -> void:
 		else:#when reaches zero 
 			print("Simulation finished")
 			simulation_playing = false #simulation is done
-			for i in players.size():
-				player_still_inGame(i)
-			emit_signal("player_change")
+			
+			for i in players.size(): #Check if there are any more players eliminated after the simulation
+				is_player_still_inGame(i)
+			emit_signal("player_change") #emit signal incase there are players eliminated
+			if amount_of_players_still_in_game == 1: #Check if the amount of players left is 1, meaning that remaining player won
+				check_winner()
 
 func reset_simulation_timer():
 	simulation_time = 0.2
@@ -62,7 +60,7 @@ func calculate_cell_count(player : int, value : int): #called everytime a cell i
 	players_cell_count[player] += value #add or remove a cell to the player's cell count
 	#print("Cell Counts> ", players_cell_count)
 
-func player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
+func is_player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
 	if players[player] == null:
 		return false
 	if not registered_players.has(player): #check if this player is not yet registered(player have already put their first cell)
@@ -72,6 +70,8 @@ func player_still_inGame(player) -> bool: #run first before a player can put a c
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print("Player ", player + 1, " Lost!")
 		players[player] = null
+		amount_of_players_still_in_game -= 1
+		print("amount_of_players_still_in_game: ", amount_of_players_still_in_game)
 		next_player()
 		return false
 
@@ -83,5 +83,11 @@ func _register_player(player : int):
 	print("Player ", player + 1, " registered!")
 	
 	if registered_players.size() == players.size():
-		players_registered = true
 		print("all players are registered!")
+		amount_of_players_still_in_game = players.size()
+
+func check_winner():
+	for player in players:
+		if player != null:
+			print("Player won!: ", player.name)
+			emit_signal("game_finished", player)

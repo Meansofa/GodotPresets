@@ -28,7 +28,7 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 
 func _on_pressed() -> void:
 	if spawner_owner == -1: #if no owner of this spawner, 
-		if PlayerData.player_still_inGame(PlayerData.current_player): #check if the current player is in the game
+		if PlayerData.is_player_still_inGame(PlayerData.current_player): #check if the current player is in the game
 			spawner_owner = PlayerData.current_player #assign the current player as the owner
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
