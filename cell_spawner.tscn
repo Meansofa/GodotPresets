@@ -40,12 +40,12 @@ func spawn_cell():
 	center.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the center(to spawn to center)
 	cells.append(cell_instance) #append to the cells array
 	
+	cell_instance.set(\"parent_ref\", self) #brand the cell as your own child
 	cell_instance.change_color(spawner_owner) #set the color of the cell to match the owner's color
-	cell_instance.connect(\"tree_exited\", set_monitoring_true) #attach an auto connect to the cell, to set monitoring to true once the cell is deleted
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
-		cells[i].change_shake(cells.size() * 0.15)
-		cells[i].change_intensity(cells.size() * 0.15)
+		cells[i].change_shake(cells.size() * 0.10)
+		cells[i].change_intensity(cells.size() * 0.10)
 	
 	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
 
@@ -59,7 +59,6 @@ func check_cells(): #check how many cells you have and either add or pop
 		pop()
 
 func pop(): #launch the cells in adjacent directions
-	set_monitoring_false() #turn off monitoring to not detect your own cells
 	spawn_cell() #add the last cell before it pops
 	for i in spawner_directions.size(): #iterate through each cell
 		cells[i].pop(spawner_directions[i]) #iterated cell goes through the iterated directions
@@ -69,12 +68,13 @@ func pop(): #launch the cells in adjacent directions
 
 func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
 	if body.is_in_group(\"Cell\"): #Check if a cell enters
-		body.queue_free() #if it's a cell remove that cell
-		calculate_cell_count()
+		if body.get(\"parent_ref\") == self: #if the cell entering is your own child
+			return  # Ignore if this is your own child
+		body.queue_free() #if it's not remove that cell
+		calculate_cell_count() #Calculate the cell count for the player's cells
 
-func calculate_cell_count():
+func calculate_cell_count(): #Calculate the cell count for the player's cells
 	PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
-	print(\"PlayerData.previous_player: \", PlayerData.previous_player)
 	spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
 	change_color(spawner_owner) #set the color of the cells to match to the new owner's color
 	PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
@@ -85,18 +85,13 @@ func calculate_cell_count():
 func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():
 		cells[i].change_color(spawner_owner)
-
-func set_monitoring_false(): #set monitoring to false to stop detecting for any cells
-	area_2d.set_deferred(\"monitoring\", false)
-
-func set_monitoring_true(): #set monitoring to true, for the auto connect and to detect cells
-	area_2d.set_deferred(\"monitoring\", true)
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
 radius = 32.0
 
 [node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "area_2d")]
+z_index = -1
 custom_minimum_size = Vector2(96, 96)
 offset_left = -48.0
 offset_top = -48.0
@@ -130,6 +125,16 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CenterContainer/Area2D"]
 shape = SubResource("CircleShape2D_1wp5y")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
 [connection signal="body_entered" from="CenterContainer/Area2D" to="." method="_on_area_2d_body_entered"]

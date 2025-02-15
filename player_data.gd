@@ -28,17 +28,18 @@ func _input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	if simulation_playing: #If simulation is occuring
-		print("Simulation start")
 		if simulation_time > 0.0:#run simulation until simulation time reaches zero
 			simulation_time -= delta #reduces simulation time
 		else:#when reaches zero 
 			print("Simulation finished")
 			simulation_playing = false #simulation is done
-			player_still_inGame(current_player)
+			for i in players.size():
+				player_still_inGame(i)
 			emit_signal("player_change")
 
 func reset_simulation_timer():
-	simulation_time = 0.05
+	simulation_time = 0.2
+	print("Simulation start")
 
 func next_player():
 	if players[current_player] != null: #before assigning the new previous player, check if the last player wasn't a null(null means had lost)
@@ -59,7 +60,7 @@ func calculate_cell_count(player : int, value : int): #called everytime a cell i
 		return
 
 	players_cell_count[player] += value #add or remove a cell to the player's cell count
-	print("Cell Counts> ", players_cell_count)
+	#print("Cell Counts> ", players_cell_count)
 
 func player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
 	if players[player] == null:
@@ -70,9 +71,7 @@ func player_still_inGame(player) -> bool: #run first before a player can put a c
 
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print("Player ", player + 1, " Lost!")
-		print("players: ", players)
 		players[player] = null
-		print("players: ", players)
 		next_player()
 		return false
 
