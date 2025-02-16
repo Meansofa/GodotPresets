@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://diimhw6lk5yth"]
 
-[ext_resource type="StyleBox" uid="uid://ceqgrmyodgbcj" path="res://StyleBoxSpawner.tres" id="1_5ipqg"]
-[ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://cell.tscn" id="1_y6xxv"]
+[ext_resource type="StyleBox" uid="uid://ceqgrmyodgbcj" path="res://Themes/StyleBoxSpawner.tres" id="1_5ipqg"]
+[ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://Scenes/cell.tscn" id="1_y6xxv"]
 
 [sub_resource type="GDScript" id="GDScript_p5304"]
 script/source = "extends Button
@@ -25,6 +25,9 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 			spawner_type = \"Side\"
 		else:
 			spawner_type = \"Inner\"
+
+func _ready() -> void:
+	GameState.connect(\"restart\", _restart)
 
 func _on_pressed() -> void:
 	if spawner_owner == -1: #if no owner of this spawner, 
@@ -85,6 +88,12 @@ func calculate_cell_count(): #Calculate the cell count for the player's cells
 func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():
 		cells[i].change_color(spawner_owner)
+
+func _restart():
+	for i in cells.size():
+		cells[i].queue_free()
+	cells.clear()
+	spawner_owner = -1
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
