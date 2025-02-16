@@ -73,6 +73,7 @@ func is_player_still_inGame(player) -> bool: #run first before a player can put 
 
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print(self.name, ">Player ", player + 1, " Lost!")
+		players[player].queue_free()
 		players[player] = null
 		amount_of_players_still_in_game -= 1
 		print(self.name, ">amount_of_players_still_in_game: ", amount_of_players_still_in_game)
@@ -91,12 +92,17 @@ func _register_player(player : int):
 		amount_of_players_still_in_game = players.size()
 
 func check_winner():
-	for player in players:
+	for player in players.size():
 		if player != null:
-			print(self.name, ">Player won!: ", player.name)
-			emit_signal("game_finished", player)
+			print(self.name, ">Player won!: Player ", player + 1)
+			emit_signal("game_finished", "Player " + str(player + 1))
 
 func _restart():
+	if players != []:
+		for player in players:
+			if player != null:
+				player.queue_free()
+
 	players = [] #holds the amount of players and there corresponding color
 	current_player = 0 #index of the current player, changes upon pressing a grid from cell_spawner script
 	previous_player = 0 #used to check who was the last player that pressed the spawner

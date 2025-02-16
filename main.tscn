@@ -1,11 +1,12 @@
-[gd_scene load_steps=34 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=29 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
-[ext_resource type="Material" uid="uid://b475rxb2ihw5l" path="res://Themes/hueShader.tres" id="2_3ayql"]
 [ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="3_eacgh"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="3_ifosm"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="4_1mvcq"]
+[ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="4_ohhxw"]
+[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="5_31gxw"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 scenes/1/scene = ExtResource("1_t2xmo")
@@ -68,124 +69,68 @@ resource_name = "player_display"
 script/source = "@tool
 extends AspectRatioContainer
 
-@export var player1 : TextureRect
-@export var player2 : TextureRect
+@export var player1_scene : PackedScene
 
 @export var row_1 : HBoxContainer
 @export var row_2 : HBoxContainer
 
+var player1_instance : TextureRect
+static var player_amount : int
+
 func _ready() -> void:
-	_insert_default_players()
+	player1_instance = player1_scene.instantiate()
+	change_players(player_amount)
 	GameState.connect(\"restart\", _restart)
 
-func _insert_default_players():
-	PlayerData.players.append(player1)
-	PlayerData.players.append(player2)
-
 func _on_option_button_item_selected(index: int) -> void:
-	change_players(index)
+	player_amount = index
+	change_players(player_amount)
 
-func change_players(index : int):
-	index += 2 #+2 to account for the default players
-	print(self.name, \"> Players Amount: \", index)
-	while  (index > PlayerData.players.size()): #if index value is more than player count, add PlayerData.players to match the index value
-		var player1_instance = player1.duplicate() #get a copy of player 1
-		player1_instance.name = \"Player \" + str(PlayerData.players.size() + 1)
+func change_players(player_amount : int):
+	player_amount += 2 #+2 to account for the default players required(2)
+	print(self.name, \"> Players Amount: \", player_amount)
+	while  (player_amount > PlayerData.players.size()): #if player_amount value is more than player count, add PlayerData.players to match the player_amount value
+		var player = player1_instance.duplicate() #get a copy of player 1
+		player.name = \"Player \" + str(PlayerData.players.size() + 1)
 		if PlayerData.players.size() < 6: #only 6 PlayerData.players can fit in a column
-			row_1.add_child(player1_instance)
+			row_1.add_child(player)
 		else: #once there are more than 6 PlayerData.players, add them to the second row
-			row_2.add_child(player1_instance)
+			row_2.add_child(player)
 
-		PlayerData.players.append(player1_instance) #add the duplicated player to the PlayerData.players array
+		PlayerData.players.append(player) #add the duplicated player to the PlayerData.players array
 
-	while  (index < PlayerData.players.size()): #if index value is less than player count, remove PlayerData.players to match the index value
+	while  (player_amount < PlayerData.players.size()): #if player_amount value is less than player count, remove PlayerData.players to match the player_amount value
 		PlayerData.players.pop_back().queue_free()
+	
+	change_players_colors()
 
+func change_players_colors():
 	for i in PlayerData.players.size(): #change the color depends on how many players
-		PlayerData.players[i].set_material(player1.get_material().duplicate(true)) #need to duplicate the material to avoid sharing shaders
+		PlayerData.players[i].set_material(player1_instance.get_material().duplicate(true)) #need to duplicate the material to avoid sharing shaders
 		PlayerData.players[i].get_material().set_shader_parameter(\"Shift_Hue\", 1.0 / PlayerData.players.size() * i) #change hue shader
-		#await  get_tree().create_timer(0.1).timeout
 
 func _restart():
-	_insert_default_players()
+	change_players(player_amount)
 "
 
-[sub_resource type="Shader" id="Shader_3jk7u"]
-code = "shader_type canvas_item;
-render_mode unshaded;
+[sub_resource type="GDScript" id="GDScript_s8lf3"]
+resource_name = "RestartButton"
+script/source = "extends Button
 
-uniform float Shift_Hue;
 
-/*
-# Duplicate the shader so that changing its param doesn't change it on any other sprites that also use the shader.
-# Generally done once in _ready()
-$TheSprite.set_material($TheSprite.get_material().duplicate(true))
-
-# Offset sprite hue by a random value within specified limits.
-var rand_hue = float(randi() % 3)/2.0/3.2
-$TheSprite.material.set_shader_param(\"Shift_Hue\", rand_hue)
-*/
-void fragment() {
-// Input:3
-	vec3 input_color;
-	vec4 texture_color = texture(TEXTURE, UV);
-	input_color = texture_color.rgb;
-
-// VectorFunc:2
-	vec3 color_hsv;
-	{
-		vec3 c = input_color;
-		vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-		vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-		vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-		float d = q.x - min(q.w, q.y);
-		float e = 1.0e-10;
-		color_hsv=vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-	}
-
-	color_hsv.x = mod((color_hsv.x + Shift_Hue), 1.0f);
-
-// VectorFunc:5
-	vec3 color_rgb;
-	{
-		vec3 c = color_hsv;
-		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-		color_rgb=c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-	}
-
-// Output:0
-	texture_color = vec4(color_rgb.rgb,texture_color.a);
-	COLOR.rgba = texture_color;
-
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_te5l3"]
-resource_local_to_scene = true
-shader = SubResource("Shader_3jk7u")
-shader_parameter/Shift_Hue = 0.0
-
-[sub_resource type="Gradient" id="Gradient_53t7f"]
-offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 0.577922, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0, 0.589333, 0.68, 0.694118, 0.76, 0.74708, 0.7448, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_hohwn"]
-gradient = SubResource("Gradient_53t7f")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.1, 0.25)
-
-[sub_resource type="GDScript" id="GDScript_1i8c1"]
-resource_name = "player_icon"
-script/source = "extends TextureRect
-"
-
-[sub_resource type="GDScript" id="GDScript_by5qy"]
-resource_name = "player_name"
-script/source = "extends RichTextLabel
-
+# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	text = \"[center]\" + get_parent().name
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_pressed() -> void:
+	%WinnerPanel.visible = false
+	GameState.emit_signal(\"restart\")
 "
 
 [sub_resource type="GDScript" id="GDScript_fgwkh"]
@@ -345,29 +290,9 @@ func _ready() -> void:
 	get_parent().visible = false
 	PlayerData.connect(\"game_finished\", _show_winner_panel)
 
-func _show_winner_panel(player):
-	text = \"[center][b][i]\" + player.name + \" Won!\"
+func _show_winner_panel(player : String):
+	text = \"[center][b][i]\" + player + \" Won!\"
 	get_parent().visible = true
-"
-
-[sub_resource type="GDScript" id="GDScript_s8lf3"]
-resource_name = "RestartButton"
-script/source = "extends Button
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func _on_pressed() -> void:
-	%WinnerPanel.visible = false
-	GameState.emit_signal(\"restart\")
 "
 
 [sub_resource type="Shader" id="Shader_v2yx8"]
@@ -524,15 +449,14 @@ script = SubResource("GDScript_ukba4")
 width = 960
 height = 540
 
-[node name="Player_Display" type="AspectRatioContainer" parent="UI" node_paths=PackedStringArray("player1", "player2", "row_1", "row_2")]
+[node name="Player_Display" type="AspectRatioContainer" parent="UI" node_paths=PackedStringArray("row_1", "row_2")]
 layout_mode = 2
 offset_left = 320.0
 offset_right = 640.0
 offset_bottom = 48.0
 grow_horizontal = 2
 script = SubResource("GDScript_gh0i5")
-player1 = NodePath("VBoxContainer/Row1/Player 1")
-player2 = NodePath("VBoxContainer/Row1/Player 2")
+player1_scene = ExtResource("4_ohhxw")
 row_1 = NodePath("VBoxContainer/Row1")
 row_2 = NodePath("VBoxContainer/Row2")
 
@@ -546,50 +470,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
-
-[node name="Player 1" type="TextureRect" parent="UI/Player_Display/VBoxContainer/Row1"]
-material = SubResource("ShaderMaterial_te5l3")
-layout_mode = 2
-texture = SubResource("GradientTexture2D_hohwn")
-script = SubResource("GDScript_1i8c1")
-
-[node name="player_name" type="RichTextLabel" parent="UI/Player_Display/VBoxContainer/Row1/Player 1"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -23.5
-offset_right = 23.5
-offset_bottom = 40.0
-grow_horizontal = 2
-theme_override_font_sizes/normal_font_size = 16
-bbcode_enabled = true
-text = "[center]Player 1"
-fit_content = true
-autowrap_mode = 0
-script = SubResource("GDScript_by5qy")
-
-[node name="Player 2" type="TextureRect" parent="UI/Player_Display/VBoxContainer/Row1"]
-material = ExtResource("2_3ayql")
-layout_mode = 2
-texture = SubResource("GradientTexture2D_hohwn")
-script = SubResource("GDScript_1i8c1")
-
-[node name="player_name" type="RichTextLabel" parent="UI/Player_Display/VBoxContainer/Row1/Player 2"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -23.5
-offset_right = 23.5
-offset_bottom = 40.0
-grow_horizontal = 2
-theme_override_font_sizes/normal_font_size = 16
-bbcode_enabled = true
-text = "[center]Player 1"
-fit_content = true
-autowrap_mode = 0
-script = SubResource("GDScript_by5qy")
 
 [node name="Row2" type="HBoxContainer" parent="UI/Player_Display/VBoxContainer"]
 layout_mode = 2
@@ -613,6 +493,21 @@ bbcode_enabled = true
 text = "Version 0.0.0"
 fit_content = true
 autowrap_mode = 0
+
+[node name="RestartButton" type="Button" parent="UI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -37.0
+offset_top = 9.0
+offset_right = 479.0
+offset_bottom = 525.0
+grow_horizontal = 0
+scale = Vector2(0.05, 0.05)
+icon = ExtResource("5_31gxw")
+expand_icon = true
+script = SubResource("GDScript_s8lf3")
 
 [node name="Main_Control" type="Control" parent="."]
 layout_mode = 3
@@ -802,37 +697,38 @@ height = 540
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59624" to="SpawnersLayer/@Button@59624" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59625" to="SpawnersLayer/@Button@59625" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59626" to="SpawnersLayer/@Button@59626" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59627" to="SpawnersLayer/@Button@59627" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59628" to="SpawnersLayer/@Button@59628" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59629" to="SpawnersLayer/@Button@59629" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59630" to="SpawnersLayer/@Button@59630" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59631" to="SpawnersLayer/@Button@59631" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59632" to="SpawnersLayer/@Button@59632" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59633" to="SpawnersLayer/@Button@59633" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59634" to="SpawnersLayer/@Button@59634" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59635" to="SpawnersLayer/@Button@59635" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59636" to="SpawnersLayer/@Button@59636" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59637" to="SpawnersLayer/@Button@59637" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59638" to="SpawnersLayer/@Button@59638" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59639" to="SpawnersLayer/@Button@59639" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59640" to="SpawnersLayer/@Button@59640" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59641" to="SpawnersLayer/@Button@59641" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59642" to="SpawnersLayer/@Button@59642" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59643" to="SpawnersLayer/@Button@59643" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59644" to="SpawnersLayer/@Button@59644" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59645" to="SpawnersLayer/@Button@59645" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59646" to="SpawnersLayer/@Button@59646" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59647" to="SpawnersLayer/@Button@59647" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59648" to="SpawnersLayer/@Button@59648" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59649" to="SpawnersLayer/@Button@59649" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59650" to="SpawnersLayer/@Button@59650" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59651" to="SpawnersLayer/@Button@59651" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59652" to="SpawnersLayer/@Button@59652" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59653" to="SpawnersLayer/@Button@59653" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@59654" to="SpawnersLayer/@Button@59654" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32240" to="SpawnersLayer/@Button@32240" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32241" to="SpawnersLayer/@Button@32241" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32242" to="SpawnersLayer/@Button@32242" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32243" to="SpawnersLayer/@Button@32243" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32244" to="SpawnersLayer/@Button@32244" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32245" to="SpawnersLayer/@Button@32245" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32246" to="SpawnersLayer/@Button@32246" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32247" to="SpawnersLayer/@Button@32247" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32248" to="SpawnersLayer/@Button@32248" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32249" to="SpawnersLayer/@Button@32249" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32250" to="SpawnersLayer/@Button@32250" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32251" to="SpawnersLayer/@Button@32251" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32252" to="SpawnersLayer/@Button@32252" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32253" to="SpawnersLayer/@Button@32253" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32254" to="SpawnersLayer/@Button@32254" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32255" to="SpawnersLayer/@Button@32255" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32256" to="SpawnersLayer/@Button@32256" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32257" to="SpawnersLayer/@Button@32257" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32258" to="SpawnersLayer/@Button@32258" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32259" to="SpawnersLayer/@Button@32259" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32260" to="SpawnersLayer/@Button@32260" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32261" to="SpawnersLayer/@Button@32261" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32262" to="SpawnersLayer/@Button@32262" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32263" to="SpawnersLayer/@Button@32263" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32264" to="SpawnersLayer/@Button@32264" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32265" to="SpawnersLayer/@Button@32265" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32266" to="SpawnersLayer/@Button@32266" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32267" to="SpawnersLayer/@Button@32267" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32268" to="SpawnersLayer/@Button@32268" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32269" to="SpawnersLayer/@Button@32269" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@32270" to="SpawnersLayer/@Button@32270" method="_on_pressed"]
+[connection signal="pressed" from="UI/RestartButton" to="UI/RestartButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="Main_Control/TitleScreen" to="Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
 [connection signal="item_selected" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI/Player_Display" method="_on_option_button_item_selected"]
