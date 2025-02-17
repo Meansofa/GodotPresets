@@ -45,10 +45,11 @@ func spawn_cell():
 	
 	cell_instance.set(\"parent_ref\", self) #brand the cell as your own child
 	cell_instance.change_color(spawner_owner) #set the color of the cell to match the owner's color
+	cell_instance.scale = self.scale
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
-		cells[i].change_shake(cells.size() * 0.10)
-		cells[i].change_intensity(cells.size() * 0.10)
+		cells[i].change_shake(cells.size() * 0.15)
+		cells[i].change_intensity(cells.size() * 0.15)
 	
 	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
 

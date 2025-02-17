@@ -17,8 +17,8 @@ script/source = "extends RigidBody2D
 var parent_ref: Node = null #the reference to it's parent(for parents to check if this is their child or not)
 
 func _ready() -> void:
-	position.x = randi_range(-5, 5)
-	position.y = randi_range(-5, 5)
+	position.x += randi_range(-5, 5)
+	position.y += randi_range(-5, 5)
 
 func change_shake(shake_value : float):
 	shaker.shake_speed = shake_value

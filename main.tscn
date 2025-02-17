@@ -1,7 +1,8 @@
-[gd_scene load_steps=29 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=30 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
+[ext_resource type="Script" path="res://zoom_camera.gd" id="2_llr78"]
 [ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="3_eacgh"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="3_ifosm"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="4_1mvcq"]
@@ -432,13 +433,20 @@ func _restart():
 [node name="main" type="Node2D"]
 script = ExtResource("1_j4i02")
 
+[node name="ZoomCamera" type="Camera2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(480, 270)
+script = ExtResource("2_llr78")
+
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQADAAQAAAAAAAAAAQACAAQAAAAAAAAAAQACAAMAAAAAAAAAAQACAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQABAAIAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQADAAMAAAAAAAAAAQAEAAMAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
 script = SubResource("GDScript_27xvk")
 
-[node name="UI" type="Control" parent="."]
+[node name="UI Canvas" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="UI Canvas"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
@@ -449,7 +457,7 @@ script = SubResource("GDScript_ukba4")
 width = 960
 height = 540
 
-[node name="Player_Display" type="AspectRatioContainer" parent="UI" node_paths=PackedStringArray("row_1", "row_2")]
+[node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/UI" node_paths=PackedStringArray("row_1", "row_2")]
 layout_mode = 2
 offset_left = 320.0
 offset_right = 640.0
@@ -460,25 +468,25 @@ player1_scene = ExtResource("4_ohhxw")
 row_1 = NodePath("VBoxContainer/Row1")
 row_2 = NodePath("VBoxContainer/Row2")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Player_Display"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/UI/Player_Display"]
 layout_mode = 2
 theme_override_constants/separation = -16
 
-[node name="Row1" type="HBoxContainer" parent="UI/Player_Display/VBoxContainer"]
+[node name="Row1" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="Row2" type="HBoxContainer" parent="UI/Player_Display/VBoxContainer"]
+[node name="Row2" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="Version" type="RichTextLabel" parent="UI"]
+[node name="Version" type="RichTextLabel" parent="UI Canvas/UI"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -494,7 +502,7 @@ text = "Version 0.0.0"
 fit_content = true
 autowrap_mode = 0
 
-[node name="RestartButton" type="Button" parent="UI"]
+[node name="RestartButton" type="Button" parent="UI Canvas/UI"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -509,7 +517,14 @@ icon = ExtResource("5_31gxw")
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
-[node name="Main_Control" type="Control" parent="."]
+[node name="HSlider" type="HSlider" parent="UI Canvas/UI"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 16.0
+max_value = 80.0
+
+[node name="Main_Control" type="Control" parent="UI Canvas"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
@@ -520,7 +535,7 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[node name="LOD" type="TextureRect" parent="Main_Control"]
+[node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 visible = false
 material = ExtResource("3_eacgh")
@@ -533,7 +548,7 @@ grow_vertical = 2
 texture = ExtResource("3_ifosm")
 script = SubResource("GDScript_u0i5i")
 
-[node name="TitleScreen" type="Control" parent="Main_Control"]
+[node name="TitleScreen" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 0
@@ -545,7 +560,7 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[node name="PanelContainer" type="PanelContainer" parent="Main_Control/TitleScreen"]
+[node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/TitleScreen"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -563,15 +578,15 @@ script = SubResource("GDScript_15ch8")
 width = 320
 height = 540
 
-[node name="CenterContainer" type="AspectRatioContainer" parent="Main_Control/TitleScreen/PanelContainer"]
+[node name="CenterContainer" type="AspectRatioContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer"]
 layout_mode = 2
 ratio = 0.5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="RichTextLabel" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Title" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[center][b][i]Chain Reaction : Expanded
@@ -579,23 +594,23 @@ text = "[center][b][i]Chain Reaction : Expanded
 "
 fit_content = true
 
-[node name="Start" type="Button" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Start" type="Button" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Start
 "
 script = SubResource("GDScript_qpbas")
 
-[node name="Player_Count" type="HBoxContainer" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Player_Count" type="HBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Players : "
 fit_content = true
 autowrap_mode = 0
 
-[node name="Amount" type="OptionButton" parent="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="Amount" type="OptionButton" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
@@ -625,7 +640,7 @@ popup/item_10/text = "12"
 popup/item_10/id = 11
 script = SubResource("GDScript_jhgu0")
 
-[node name="WinnerPanel" type="PanelContainer" parent="Main_Control"]
+[node name="WinnerPanel" type="PanelContainer" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -639,7 +654,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_jgltk")
 
-[node name="WinnerLabel" type="RichTextLabel" parent="Main_Control/WinnerPanel"]
+[node name="WinnerLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/WinnerPanel"]
 layout_mode = 2
 theme_override_font_sizes/bold_italics_font_size = 32
 bbcode_enabled = true
@@ -648,11 +663,11 @@ fit_content = true
 autowrap_mode = 0
 script = SubResource("GDScript_u5s5v")
 
-[node name="Restart" type="Panel" parent="Main_Control/WinnerPanel"]
+[node name="Restart" type="Panel" parent="UI Canvas/Main_Control/WinnerPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="RestartButton" type="Button" parent="Main_Control/WinnerPanel/Restart"]
+[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/Restart"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -697,40 +712,41 @@ height = 540
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32240" to="SpawnersLayer/@Button@32240" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32241" to="SpawnersLayer/@Button@32241" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32242" to="SpawnersLayer/@Button@32242" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32243" to="SpawnersLayer/@Button@32243" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32244" to="SpawnersLayer/@Button@32244" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32245" to="SpawnersLayer/@Button@32245" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32246" to="SpawnersLayer/@Button@32246" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32247" to="SpawnersLayer/@Button@32247" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32248" to="SpawnersLayer/@Button@32248" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32249" to="SpawnersLayer/@Button@32249" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32250" to="SpawnersLayer/@Button@32250" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32251" to="SpawnersLayer/@Button@32251" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32252" to="SpawnersLayer/@Button@32252" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32253" to="SpawnersLayer/@Button@32253" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32254" to="SpawnersLayer/@Button@32254" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32255" to="SpawnersLayer/@Button@32255" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32256" to="SpawnersLayer/@Button@32256" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32257" to="SpawnersLayer/@Button@32257" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32258" to="SpawnersLayer/@Button@32258" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32259" to="SpawnersLayer/@Button@32259" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32260" to="SpawnersLayer/@Button@32260" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32261" to="SpawnersLayer/@Button@32261" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32262" to="SpawnersLayer/@Button@32262" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32263" to="SpawnersLayer/@Button@32263" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32264" to="SpawnersLayer/@Button@32264" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32265" to="SpawnersLayer/@Button@32265" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32266" to="SpawnersLayer/@Button@32266" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32267" to="SpawnersLayer/@Button@32267" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32268" to="SpawnersLayer/@Button@32268" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32269" to="SpawnersLayer/@Button@32269" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@32270" to="SpawnersLayer/@Button@32270" method="_on_pressed"]
-[connection signal="pressed" from="UI/RestartButton" to="UI/RestartButton" method="_on_pressed"]
-[connection signal="visibility_changed" from="Main_Control/TitleScreen" to="Main_Control/LOD" method="_on_title_screen_visibility_changed"]
-[connection signal="pressed" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
-[connection signal="item_selected" from="Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI/Player_Display" method="_on_option_button_item_selected"]
-[connection signal="visibility_changed" from="Main_Control/WinnerPanel" to="Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
-[connection signal="pressed" from="Main_Control/WinnerPanel/Restart/RestartButton" to="Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52558" to="SpawnersLayer/@Button@52558" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52559" to="SpawnersLayer/@Button@52559" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52560" to="SpawnersLayer/@Button@52560" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52561" to="SpawnersLayer/@Button@52561" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52562" to="SpawnersLayer/@Button@52562" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52563" to="SpawnersLayer/@Button@52563" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52564" to="SpawnersLayer/@Button@52564" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52565" to="SpawnersLayer/@Button@52565" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52566" to="SpawnersLayer/@Button@52566" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52567" to="SpawnersLayer/@Button@52567" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52568" to="SpawnersLayer/@Button@52568" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52569" to="SpawnersLayer/@Button@52569" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52570" to="SpawnersLayer/@Button@52570" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52571" to="SpawnersLayer/@Button@52571" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52572" to="SpawnersLayer/@Button@52572" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52573" to="SpawnersLayer/@Button@52573" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52574" to="SpawnersLayer/@Button@52574" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52575" to="SpawnersLayer/@Button@52575" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52576" to="SpawnersLayer/@Button@52576" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52577" to="SpawnersLayer/@Button@52577" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52578" to="SpawnersLayer/@Button@52578" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52579" to="SpawnersLayer/@Button@52579" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52580" to="SpawnersLayer/@Button@52580" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52581" to="SpawnersLayer/@Button@52581" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52582" to="SpawnersLayer/@Button@52582" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52583" to="SpawnersLayer/@Button@52583" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52584" to="SpawnersLayer/@Button@52584" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52585" to="SpawnersLayer/@Button@52585" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52586" to="SpawnersLayer/@Button@52586" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52587" to="SpawnersLayer/@Button@52587" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@52588" to="SpawnersLayer/@Button@52588" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
+[connection signal="value_changed" from="UI Canvas/UI/HSlider" to="ZoomCamera" method="_on_h_slider_value_changed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/TitleScreen" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
+[connection signal="item_selected" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]
