@@ -14,4 +14,4 @@ func _process(delta: float) -> void:
 func _on_h_slider_value_changed(value: float) -> void:
 	zoom.x = 1.0 - value * 0.01
 	zoom.y = 1.0 - value * 0.01
-	print(zoom)
+	print(self.name, ">camera zoom: ", zoom)
