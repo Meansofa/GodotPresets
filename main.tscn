@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=30 format=3 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="5_31gxw"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
+resource_name = "Spawner"
 scenes/1/scene = ExtResource("1_t2xmo")
 
 [sub_resource type="TileSet" id="TileSet_hf2hk"]
@@ -19,9 +20,45 @@ sources/0 = SubResource("TileSetScenesCollectionSource_qb3a6")
 [sub_resource type="GDScript" id="GDScript_27xvk"]
 script/source = "extends TileMapLayer
 
-func get_available_directions(position : Vector2) -> Array:
+var columns := 5
+var rows := 5
+
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed(\"ui_right\"):
+		add_columns(1)
+	if Input.is_action_just_pressed(\"ui_down\"):
+		add_rows(1)
+
+func _ready() -> void:
+	generate_grid()
+	pass
+
+func generate_grid():
+	for column in columns:
+		for row in rows:
+			var pos := Vector2i(column, row)
+			set_cell(pos, 0, Vector2i(0, 0), 1)
+
+func add_columns(additional_columns : int):
+	for column in additional_columns:
+		for row in rows:
+			var pos := Vector2i(columns, row)
+			set_cell(pos, 0, Vector2i(0, 0), 1)
+		columns += 1
+	print(\"columns: \", columns)
+
+func add_rows(additional_rows : int):
+	for row in additional_rows:
+		for column in columns:
+			var pos := Vector2i(column, rows)
+			set_cell(pos, 0, Vector2i(0, 0), 1)
+		rows += 1
+	print(\"rows: \", rows)
+
+func get_available_directions(position : Vector2) -> Array: #called from the spawner for them to check their neighbors
+
 	var tile_map_position = local_to_map(position) #convert the position given to tile map's position type
-	
+
 	#get the position of neighbors
 	var left_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_LEFT_SIDE)
 	var right_neighbor = get_neighbor_cell(tile_map_position, TileSet.CELL_NEIGHBOR_RIGHT_SIDE)
@@ -35,6 +72,7 @@ func get_available_directions(position : Vector2) -> Array:
 	var bottom_id = get_cell_source_id(bottom_neighbor)
 	
 	var neighbors = [left_id, right_id, top_id, bottom_id] #put the id of neighbors in the dictionary
+
 	var directions = [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1)] #adjacent  directions, corresponds to: top, bottom, right, left, must match the neighbors dictionary
 	var spawner_directions : Array[Vector2] #put here where the spawner will launch its cells when it pops
 	for i in neighbors.size():
@@ -440,7 +478,6 @@ script = ExtResource("2_llr78")
 
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
-tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQADAAQAAAAAAAAAAQACAAQAAAAAAAAAAQACAAMAAAAAAAAAAQACAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQABAAIAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAGAAIAAAAAAAAAAQAHAAIAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQADAAMAAAAAAAAAAQAEAAMAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
 script = SubResource("GDScript_27xvk")
 
@@ -523,8 +560,10 @@ layout_mode = 0
 offset_right = 8.0
 offset_bottom = 16.0
 max_value = 80.0
+step = 20.0
 
 [node name="Main_Control" type="Control" parent="UI Canvas"]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
@@ -711,38 +750,6 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52558" to="SpawnersLayer/@Button@52558" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52559" to="SpawnersLayer/@Button@52559" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52560" to="SpawnersLayer/@Button@52560" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52561" to="SpawnersLayer/@Button@52561" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52562" to="SpawnersLayer/@Button@52562" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52563" to="SpawnersLayer/@Button@52563" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52564" to="SpawnersLayer/@Button@52564" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52565" to="SpawnersLayer/@Button@52565" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52566" to="SpawnersLayer/@Button@52566" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52567" to="SpawnersLayer/@Button@52567" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52568" to="SpawnersLayer/@Button@52568" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52569" to="SpawnersLayer/@Button@52569" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52570" to="SpawnersLayer/@Button@52570" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52571" to="SpawnersLayer/@Button@52571" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52572" to="SpawnersLayer/@Button@52572" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52573" to="SpawnersLayer/@Button@52573" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52574" to="SpawnersLayer/@Button@52574" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52575" to="SpawnersLayer/@Button@52575" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52576" to="SpawnersLayer/@Button@52576" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52577" to="SpawnersLayer/@Button@52577" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52578" to="SpawnersLayer/@Button@52578" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52579" to="SpawnersLayer/@Button@52579" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52580" to="SpawnersLayer/@Button@52580" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52581" to="SpawnersLayer/@Button@52581" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52582" to="SpawnersLayer/@Button@52582" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52583" to="SpawnersLayer/@Button@52583" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52584" to="SpawnersLayer/@Button@52584" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52585" to="SpawnersLayer/@Button@52585" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52586" to="SpawnersLayer/@Button@52586" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52587" to="SpawnersLayer/@Button@52587" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@52588" to="SpawnersLayer/@Button@52588" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="value_changed" from="UI Canvas/UI/HSlider" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/TitleScreen" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
