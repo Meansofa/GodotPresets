@@ -2,13 +2,18 @@ extends TileMapLayer
 
 var default_column_size := 8
 var default_row_size := 4
-var columns := 8 #10
-var rows := 4 #5
-var added_columns := 0
-var added_rows := 0
+var columns := 8 :
+	set(value):
+		columns = value
+		emit_signal("map_size_changed", columns, rows)
+var rows := 4 :
+	set(value):
+		rows = value
+		emit_signal("map_size_changed", columns, rows)
 
-var default_size := Vector2(8, 4)
 var last_value : int
+
+signal map_size_changed
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_right"):
@@ -34,6 +39,7 @@ func _add_columns(additional_columns : int):
 		for row in rows:
 			var pos := Vector2i(columns, row + 1)
 			set_cell(pos, 0, Vector2i(0, 0), 1)
+		await get_tree().create_timer(0.2).timeout
 	print(self.name, ">columns: ", columns)
 
 func _add_rows(additional_rows : int):
@@ -42,6 +48,7 @@ func _add_rows(additional_rows : int):
 		for column in columns:
 			var pos := Vector2i(column + 1, rows)
 			set_cell(pos, 0, Vector2i(0, 0), 1)
+		await get_tree().create_timer(0.2).timeout
 	print(self.name, ">rows: ", rows)
 
 func _remove_rows(removed_rows : int):
@@ -91,33 +98,33 @@ func get_available_directions(position : Vector2) -> Array: #called from the spa
 	return spawner_directions#return the type of spawner based on how many no_neighbors_count
 
 
-func _on_h_slider_value_changed(value: float) -> void:
-	print("value: ", value)
-	var additional_columns = ceili(value / 100 * default_column_size) - added_columns
-	added_columns += additional_columns
-	print("additional_columns: ", additional_columns)
-	var additional_rows = ceili(value / 100 * default_row_size) - added_rows
-	added_rows += additional_rows
-	print("additional_rows: ", additional_rows)
-	if additional_columns > 0:
-		_add_columns(additional_columns)
-	if additional_rows > 0:
-		_add_rows(additional_rows)
-	pass
-
-
 func _on_map_size_value_changed(value: float) -> void:
+	print("value: ", value)
 	if value > last_value:
 		position += Vector2(value, value)
 		var additional_columns = ceili(value / 100.0 * default_column_size)
-		_add_columns(additional_columns)
 		var additional_rows = ceili(value / 100.0 * default_row_size)
+		if value >= 60:
+			if value >= 80:
+				additional_columns = ceili(300 / 100.0 * default_column_size)
+				additional_rows = ceili(300 / 100.0 * default_row_size)
+			else:
+				additional_columns = ceili(75 / 100.0 * default_column_size)
+				additional_rows = ceili(75 / 100.0 * default_row_size)
+		_add_columns(additional_columns)
 		_add_rows(additional_rows)
 	if value < last_value:
 		position -= Vector2(last_value, last_value)
 		var additional_columns = ceili(last_value / 100.0 * default_column_size)
-		_remove_columns(additional_columns)
 		var additional_rows = ceili(last_value / 100.0 * default_row_size)
+		if value >= 60:
+			if last_value >= 80:
+				additional_columns = ceili(300 / 100.0 * default_column_size)
+				additional_rows = ceili(300 / 100.0 * default_row_size)
+			else:
+				additional_columns = ceili(75 / 100.0 * default_column_size)
+				additional_rows = ceili(75 / 100.0 * default_row_size)
+		_remove_columns(additional_columns)
 		_remove_rows(additional_rows)
 	if value != last_value:
 		last_value = value

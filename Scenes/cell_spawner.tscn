@@ -48,6 +48,7 @@ func spawn_cell():
 	cell_instance.scale = self.scale
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
+		cells[i].change_phase(cells.size())
 		cells[i].change_shake(cells.size() * 0.15)
 		cells[i].change_intensity(cells.size() * 0.15)
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=32 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
@@ -107,21 +107,6 @@ func _on_pressed() -> void:
 	GameState.emit_signal(\"restart\")
 "
 
-[sub_resource type="GDScript" id="GDScript_6iiwh"]
-resource_name = "MapSizeSlider"
-script/source = "extends HSlider
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	print(self.name, \">Map slider value: \", value)
-	emit_signal(\"value_changed\", value)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-"
-
 [sub_resource type="GDScript" id="GDScript_fgwkh"]
 resource_name = "Main_Control"
 script/source = "@tool
@@ -164,6 +149,9 @@ func _on_title_screen_visibility_changed() -> void:
 
 func _on_winner_panel_visibility_changed() -> void:
 	self.visible = %WinnerPanel.visible
+
+func _on_change_map_visibility_changed() -> void:
+	self.visible = %ChangeMap.visible
 "
 
 [sub_resource type="GDScript" id="GDScript_0obg5"]
@@ -244,6 +232,34 @@ extends OptionButton
 func _ready() -> void:
 	select(add_players)
 	emit_signal(\"item_selected\", add_players)
+"
+
+[sub_resource type="GDScript" id="GDScript_f85ls"]
+resource_name = "MapLabel"
+script/source = "extends RichTextLabel
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	%SpawnersLayer.connect(\"map_size_changed\", _change_text)
+
+func _change_text(columns : int, rows : int):
+	text = \"Map Size: \" + str(columns) + \"x\" + str(rows)
+"
+
+[sub_resource type="GDScript" id="GDScript_6iiwh"]
+resource_name = "MapSizeSlider"
+script/source = "extends HSlider
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	print(self.name, \">Map slider value: \", value)
+	emit_signal(\"value_changed\", value)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
 "
 
 [sub_resource type="GDScript" id="GDScript_jgltk"]
@@ -446,11 +462,13 @@ width = 960
 height = 540
 
 [node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/UI" node_paths=PackedStringArray("row_1", "row_2")]
-layout_mode = 2
-offset_left = 320.0
-offset_right = 640.0
-offset_bottom = 48.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = SubResource("GDScript_gh0i5")
 player1_scene = ExtResource("4_ohhxw")
 row_1 = NodePath("VBoxContainer/Row1")
@@ -458,19 +476,20 @@ row_2 = NodePath("VBoxContainer/Row2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/UI/Player_Display"]
 layout_mode = 2
-theme_override_constants/separation = -16
+mouse_filter = 2
+theme_override_constants/separation = 120
 
 [node name="Row1" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 0
 theme_override_constants/separation = 0
 alignment = 2
 
 [node name="Row2" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 10
 theme_override_constants/separation = 0
 alignment = 2
 
@@ -505,21 +524,7 @@ icon = ExtResource("5_31gxw")
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
-[node name="MapSize" type="HSlider" parent="UI Canvas/UI"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 0
-offset_left = 15.0
-offset_top = 12.0
-offset_right = 115.0
-offset_bottom = 28.0
-max_value = 80.0
-step = 20.0
-value = 20.0
-tick_count = 5
-script = SubResource("GDScript_6iiwh")
-
 [node name="Main_Control" type="Control" parent="UI Canvas"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
@@ -609,7 +614,7 @@ autowrap_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-selected = 0
+selected = 10
 item_count = 11
 popup/item_0/text = "2"
 popup/item_0/id = 1
@@ -634,6 +639,31 @@ popup/item_9/id = 10
 popup/item_10/text = "12"
 popup/item_10/id = 11
 script = SubResource("GDScript_jhgu0")
+add_players = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MapLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Map Size"
+fit_content = true
+autowrap_mode = 0
+script = SubResource("GDScript_f85ls")
+
+[node name="MapSize" type="HSlider" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+max_value = 80.0
+step = 20.0
+value = 20.0
+tick_count = 5
+script = SubResource("GDScript_6iiwh")
 
 [node name="WinnerPanel" type="PanelContainer" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -706,43 +736,11 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100130" to="SpawnersLayer/@Button@100130" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100131" to="SpawnersLayer/@Button@100131" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100132" to="SpawnersLayer/@Button@100132" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100133" to="SpawnersLayer/@Button@100133" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100134" to="SpawnersLayer/@Button@100134" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100135" to="SpawnersLayer/@Button@100135" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100136" to="SpawnersLayer/@Button@100136" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100137" to="SpawnersLayer/@Button@100137" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100138" to="SpawnersLayer/@Button@100138" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100139" to="SpawnersLayer/@Button@100139" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100140" to="SpawnersLayer/@Button@100140" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100141" to="SpawnersLayer/@Button@100141" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100142" to="SpawnersLayer/@Button@100142" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100143" to="SpawnersLayer/@Button@100143" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100144" to="SpawnersLayer/@Button@100144" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100145" to="SpawnersLayer/@Button@100145" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100146" to="SpawnersLayer/@Button@100146" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100147" to="SpawnersLayer/@Button@100147" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100148" to="SpawnersLayer/@Button@100148" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100149" to="SpawnersLayer/@Button@100149" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100150" to="SpawnersLayer/@Button@100150" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100151" to="SpawnersLayer/@Button@100151" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100152" to="SpawnersLayer/@Button@100152" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100153" to="SpawnersLayer/@Button@100153" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100154" to="SpawnersLayer/@Button@100154" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100155" to="SpawnersLayer/@Button@100155" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100156" to="SpawnersLayer/@Button@100156" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100157" to="SpawnersLayer/@Button@100157" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100158" to="SpawnersLayer/@Button@100158" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100159" to="SpawnersLayer/@Button@100159" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@100160" to="SpawnersLayer/@Button@100160" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
-[connection signal="value_changed" from="UI Canvas/UI/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
-[connection signal="value_changed" from="UI Canvas/UI/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/TitleScreen" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
 [connection signal="item_selected" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]
