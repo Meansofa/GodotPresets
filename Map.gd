@@ -39,7 +39,7 @@ func _add_columns(additional_columns : int):
 		for row in rows:
 			var pos := Vector2i(columns, row + 1)
 			set_cell(pos, 0, Vector2i(0, 0), 1)
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.05).timeout
 	print(self.name, ">columns: ", columns)
 
 func _add_rows(additional_rows : int):
@@ -48,7 +48,7 @@ func _add_rows(additional_rows : int):
 		for column in columns:
 			var pos := Vector2i(column + 1, rows)
 			set_cell(pos, 0, Vector2i(0, 0), 1)
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.05).timeout
 	print(self.name, ">rows: ", rows)
 
 func _remove_rows(removed_rows : int):
@@ -70,6 +70,41 @@ func _remove_columns(removed_columns : int):
 			erase_cell(pos)
 		columns -= 1
 	print(self.name, ">columns: ", columns)
+
+
+func _on_map_size_value_changed(value: float) -> void:
+	print("value: ", value)
+	if value > last_value:
+		position += Vector2(value, value)
+		var additional_columns = ceili(value / 100.0 * default_column_size)
+		var additional_rows = ceili(value / 100.0 * default_row_size)
+		if value >= 60:
+			if value >= 80:
+				additional_columns = ceili(300 / 100.0 * default_column_size)
+				additional_rows = ceili(300 / 100.0 * default_row_size)
+			else:
+				additional_columns = ceili(75 / 100.0 * default_column_size)
+				additional_rows = ceili(75 / 100.0 * default_row_size)
+		_add_columns(additional_columns)
+		_add_rows(additional_rows)
+	if value < last_value:
+		position -= Vector2(last_value, last_value)
+		var additional_columns = ceili(last_value / 100.0 * default_column_size)
+		var additional_rows = ceili(last_value / 100.0 * default_row_size)
+		if last_value >= 60:
+			if last_value >= 80:
+				additional_columns = ceili(300 / 100.0 * default_column_size)
+				additional_rows = ceili(300 / 100.0 * default_row_size)
+			else:
+				additional_columns = ceili(75 / 100.0 * default_column_size)
+				additional_rows = ceili(75 / 100.0 * default_row_size)
+		_remove_columns(additional_columns)
+		_remove_rows(additional_rows)
+	if value != last_value:
+		last_value = value
+	
+	print(self.name, "Map Size: ", position)
+
 
 func get_available_directions(position : Vector2) -> Array: #called from the spawner for them to check their neighbors
 
@@ -96,37 +131,3 @@ func get_available_directions(position : Vector2) -> Array: #called from the spa
 			spawner_directions.append(directions[i])
 	
 	return spawner_directions#return the type of spawner based on how many no_neighbors_count
-
-
-func _on_map_size_value_changed(value: float) -> void:
-	print("value: ", value)
-	if value > last_value:
-		position += Vector2(value, value)
-		var additional_columns = ceili(value / 100.0 * default_column_size)
-		var additional_rows = ceili(value / 100.0 * default_row_size)
-		if value >= 60:
-			if value >= 80:
-				additional_columns = ceili(300 / 100.0 * default_column_size)
-				additional_rows = ceili(300 / 100.0 * default_row_size)
-			else:
-				additional_columns = ceili(75 / 100.0 * default_column_size)
-				additional_rows = ceili(75 / 100.0 * default_row_size)
-		_add_columns(additional_columns)
-		_add_rows(additional_rows)
-	if value < last_value:
-		position -= Vector2(last_value, last_value)
-		var additional_columns = ceili(last_value / 100.0 * default_column_size)
-		var additional_rows = ceili(last_value / 100.0 * default_row_size)
-		if value >= 60:
-			if last_value >= 80:
-				additional_columns = ceili(300 / 100.0 * default_column_size)
-				additional_rows = ceili(300 / 100.0 * default_row_size)
-			else:
-				additional_columns = ceili(75 / 100.0 * default_column_size)
-				additional_rows = ceili(75 / 100.0 * default_row_size)
-		_remove_columns(additional_columns)
-		_remove_rows(additional_rows)
-	if value != last_value:
-		last_value = value
-	
-	print(self.name, "Map Size: ", position)

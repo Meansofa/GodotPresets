@@ -44,7 +44,7 @@ func spawn_cell():
 	cells.append(cell_instance) #append to the cells array
 	
 	cell_instance.set(\"parent_ref\", self) #brand the cell as your own child
-	cell_instance.change_color(spawner_owner) #set the color of the cell to match the owner's color
+	cell_instance.change_player(spawner_owner) #set the color of the cell to match the owner's color
 	cell_instance.scale = self.scale
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
@@ -81,15 +81,15 @@ func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this
 func calculate_cell_count(): #Calculate the cell count for the player's cells
 	PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
 	spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
-	change_color(spawner_owner) #set the color of the cells to match to the new owner's color
+	_change_player(spawner_owner) #set the color of the cells to match to the new owner's color
 	PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
 
 	check_cells() #add a cell to account for the cell that just entered but deleted after
 	PlayerData.reset_simulation_timer()
 
-func change_color(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
+func _change_player(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():
-		cells[i].change_color(spawner_owner)
+		cells[i].change_player(spawner_owner)
 
 func _restart():
 	for i in cells.size():

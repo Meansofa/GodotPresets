@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Shaker="*res://addons/shaker/src/Shaker.gd"
 PlayerData="*res://player_data.gd"
 GameState="*res://Game_State.gd"
+Inventory="*res://Inventory.gd"
 
 [display]
 

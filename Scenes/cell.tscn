@@ -14,6 +14,7 @@ script/source = "extends RigidBody2D
 
 @export var shaker : ShakerComponent2D
 @export var sprite : Sprite2D
+@export var face : Sprite2D
 
 var parent_ref: Node = null #the reference to it's parent(for parents to check if this is their child or not)
 
@@ -27,7 +28,10 @@ func change_shake(shake_value : float):
 func change_intensity(intensity_value : float):
 	shaker.intensity = intensity_value
 
-func change_color(player_index : int):
+func change_player(player_index : int):
+	_change_color(player_index)
+
+func _change_color(player_index : int):
 	sprite.set_material(PlayerData.players[player_index].get_material())
 
 func pop(direction : Vector2):
@@ -35,15 +39,15 @@ func pop(direction : Vector2):
 	linear_velocity = direction * 500
 
 func change_phase(phase : int):
-	%Phase.frame = phase - 1
+	face.frame = phase -1
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fwjrn"]
 radius = 0.01
 
 [sub_resource type="Gradient" id="Gradient_r5lxx"]
-offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.276316, 0.453947, 0.5, 1, 5)
+colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.788235, 0.203922, 1, 1, 0.13, 0.13, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_5o0f1"]
 gradient = SubResource("Gradient_r5lxx")
@@ -153,7 +157,7 @@ ScaleShake = Array[ExtResource("2_rlxwc")]([SubResource("Resource_qrxjo")])
 bake_internal = 64
 __follow_timeline = false
 
-[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker", "sprite") groups=["Cell"]]
+[node name="Cell" type="RigidBody2D" node_paths=PackedStringArray("shaker", "sprite", "face") groups=["Cell"]]
 position = Vector2(0.176849, 0.176863)
 scale = Vector2(0.999988, 0.999986)
 collision_layer = 0
@@ -162,6 +166,7 @@ gravity_scale = 0.0
 script = SubResource("GDScript_wy0jh")
 shaker = NodePath("ShakerComponent2D")
 sprite = NodePath("Sprite2D")
+face = NodePath("face")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_fwjrn")
@@ -178,8 +183,7 @@ shake_speed = 0.1
 fade_in = 0.000383098
 shakerPreset = SubResource("Resource_1grtw")
 
-[node name="Phase" type="Sprite2D" parent="."]
-unique_name_in_owner = true
+[node name="face" type="Sprite2D" parent="."]
 position = Vector2(-0.143171, -2.14321)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("8_ywf2p")

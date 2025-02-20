@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cs86oyinomu1d"]
+[gd_scene load_steps=7 format=3 uid="uid://cs86oyinomu1d"]
 
 [sub_resource type="Shader" id="Shader_pv65v"]
 code = "shader_type canvas_item;
@@ -55,15 +55,41 @@ resource_local_to_scene = true
 shader = SubResource("Shader_pv65v")
 shader_parameter/Shift_Hue = 0.0
 
-[sub_resource type="Gradient" id="Gradient_53t7f"]
-offsets = PackedFloat32Array(0, 0.279221, 0.448052, 0.5, 0.577922, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.670599, 0.159378, 1, 1, 0.282353, 0.14902, 1, 0, 0.589333, 0.68, 0.694118, 0.76, 0.74708, 0.7448, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+[sub_resource type="Gradient" id="Gradient_r5lxx"]
+offsets = PackedFloat32Array(0, 0.276316, 0.453947, 0.5, 1, 5)
+colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.788235, 0.203922, 1, 1, 0.13, 0.13, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_hohwn"]
-gradient = SubResource("Gradient_53t7f")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mr6vo"]
+gradient = SubResource("Gradient_r5lxx")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.25)
+
+[sub_resource type="GDScript" id="GDScript_pgm1i"]
+resource_name = "Player_texture"
+script/source = "@tool
+extends TextureRect
+
+@export var face : Sprite2D
+@export var face_texture : CompressedTexture2D :
+	set(value):
+		face_texture = value
+		face.texture = face_texture
+	get:
+		return face_texture
+
+func change_skin(skin_texture : CompressedTexture2D):
+	face_texture = skin_texture
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [sub_resource type="GDScript" id="GDScript_by5qy"]
 resource_name = "player_name"
@@ -73,9 +99,11 @@ func _ready() -> void:
 	text = \"[center]\" + \"Player \" + str(PlayerData.players.size() + 1)
 "
 
-[node name="Player 1" type="TextureRect"]
+[node name="Player 1" type="TextureRect" node_paths=PackedStringArray("face")]
 material = SubResource("ShaderMaterial_8kt3m")
-texture = SubResource("GradientTexture2D_hohwn")
+texture = SubResource("GradientTexture2D_mr6vo")
+script = SubResource("GDScript_pgm1i")
+face = NodePath("face")
 
 [node name="player_name" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -92,3 +120,8 @@ text = "[center]Player 1"
 fit_content = true
 autowrap_mode = 0
 script = SubResource("GDScript_by5qy")
+
+[node name="face" type="Sprite2D" parent="."]
+position = Vector2(32, 30)
+scale = Vector2(0.3, 0.3)
+hframes = 3

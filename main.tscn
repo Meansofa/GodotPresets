@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=37 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="4_ohhxw"]
 [ext_resource type="Script" path="res://Map.gd" id="4_wvqbc"]
 [ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="5_31gxw"]
+[ext_resource type="Theme" uid="uid://dct7nwt5rhjys" path="res://Themes/shop.tres" id="10_7ul57"]
+[ext_resource type="PackedScene" uid="uid://br4saftotodpv" path="res://Scenes/skin_info.tscn" id="11_fi8wm"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 resource_name = "Spawner"
@@ -145,7 +147,7 @@ func _process(delta: float) -> void:
 
 
 func _on_title_screen_visibility_changed() -> void:
-	self.visible = %TitleScreen.visible
+	self.visible = %MainMenu.visible
 
 func _on_winner_panel_visibility_changed() -> void:
 	self.visible = %WinnerPanel.visible
@@ -256,6 +258,72 @@ script/source = "extends HSlider
 func _ready() -> void:
 	print(self.name, \">Map slider value: \", value)
 	emit_signal(\"value_changed\", value)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_o4wuf"]
+resource_name = "ShopButton"
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_xnpsr"]
+resource_name = "Shop_panel"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+
+func _on_shop_pressed() -> void:
+	self.visible = !self.visible
+"
+
+[sub_resource type="GDScript" id="GDScript_c516a"]
+resource_name = "Inventory"
+script/source = "extends VBoxContainer
+
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	Inventory.connect(\"added_new_skin\", _add_inventory)
+
+func _add_inventory(new_skin : CompressedTexture2D):
+	var hbox = HBoxContainer.new()
+	add_child(hbox)
+	
+	var textureRect = TextureRect.new()
+	hbox.add_child(textureRect)
+	
+	textureRect.texture = new_skin
+	
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -548,7 +616,7 @@ grow_vertical = 2
 texture = ExtResource("3_ifosm")
 script = SubResource("GDScript_u0i5i")
 
-[node name="TitleScreen" type="Control" parent="UI Canvas/Main_Control"]
+[node name="MainMenu" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 0
@@ -560,7 +628,7 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/TitleScreen"]
+[node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -578,15 +646,15 @@ script = SubResource("GDScript_15ch8")
 width = 320
 height = 540
 
-[node name="CenterContainer" type="AspectRatioContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer"]
+[node name="CenterContainer" type="AspectRatioContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer"]
 layout_mode = 2
 ratio = 0.5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Title" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[center][b][i]Chain Reaction : Expanded
@@ -594,23 +662,23 @@ text = "[center][b][i]Chain Reaction : Expanded
 "
 fit_content = true
 
-[node name="Start" type="Button" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Start" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Start
 "
 script = SubResource("GDScript_qpbas")
 
-[node name="Player_Count" type="HBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Player_Count" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Players : "
 fit_content = true
 autowrap_mode = 0
 
-[node name="Amount" type="OptionButton" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="Amount" type="OptionButton" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
@@ -641,20 +709,20 @@ popup/item_10/id = 11
 script = SubResource("GDScript_jhgu0")
 add_players = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Map Change" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MapLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer"]
+[node name="MapLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 bbcode_enabled = true
-text = "Map Size"
+text = "Map Size :"
 fit_content = true
 autowrap_mode = 0
 script = SubResource("GDScript_f85ls")
 
-[node name="MapSize" type="HSlider" parent="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer"]
+[node name="MapSize" type="HSlider" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -664,6 +732,115 @@ step = 20.0
 value = 20.0
 tick_count = 5
 script = SubResource("GDScript_6iiwh")
+
+[node name="Shop" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Shop"
+script = SubResource("GDScript_o4wuf")
+
+[node name="Customize" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Customize"
+
+[node name="ShopPanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -208.0
+offset_bottom = 538.0
+grow_horizontal = 0
+theme = ExtResource("10_7ul57")
+script = SubResource("GDScript_xnpsr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = " [b][i]Shop"
+fit_content = true
+autowrap_mode = 0
+
+[node name="HBoxContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Skins" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+bbcode_enabled = true
+text = "[b]Skins
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SkinInfo" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
+layout_mode = 2
+
+[node name="CustomizePanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("10_7ul57")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = " [b][i]Customize
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="HBoxContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 480)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Items" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+bbcode_enabled = true
+text = "[b]Items
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Inventory" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+script = SubResource("GDScript_c516a")
 
 [node name="WinnerPanel" type="PanelContainer" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -736,11 +913,44 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
+[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19628" to="SpawnersLayer/@Button@19628" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19629" to="SpawnersLayer/@Button@19629" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19630" to="SpawnersLayer/@Button@19630" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19631" to="SpawnersLayer/@Button@19631" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19632" to="SpawnersLayer/@Button@19632" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19633" to="SpawnersLayer/@Button@19633" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19634" to="SpawnersLayer/@Button@19634" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19635" to="SpawnersLayer/@Button@19635" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19636" to="SpawnersLayer/@Button@19636" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19637" to="SpawnersLayer/@Button@19637" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19638" to="SpawnersLayer/@Button@19638" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19639" to="SpawnersLayer/@Button@19639" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19640" to="SpawnersLayer/@Button@19640" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19641" to="SpawnersLayer/@Button@19641" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19642" to="SpawnersLayer/@Button@19642" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19643" to="SpawnersLayer/@Button@19643" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19644" to="SpawnersLayer/@Button@19644" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19645" to="SpawnersLayer/@Button@19645" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19646" to="SpawnersLayer/@Button@19646" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19647" to="SpawnersLayer/@Button@19647" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19648" to="SpawnersLayer/@Button@19648" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19649" to="SpawnersLayer/@Button@19649" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19650" to="SpawnersLayer/@Button@19650" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19651" to="SpawnersLayer/@Button@19651" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19652" to="SpawnersLayer/@Button@19652" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19653" to="SpawnersLayer/@Button@19653" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19654" to="SpawnersLayer/@Button@19654" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19655" to="SpawnersLayer/@Button@19655" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19656" to="SpawnersLayer/@Button@19656" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19657" to="SpawnersLayer/@Button@19657" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@19658" to="SpawnersLayer/@Button@19658" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
-[connection signal="visibility_changed" from="UI Canvas/Main_Control/TitleScreen" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
-[connection signal="pressed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
-[connection signal="item_selected" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
-[connection signal="value_changed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
-[connection signal="value_changed" from="UI Canvas/Main_Control/TitleScreen/PanelContainer/CenterContainer/VBoxContainer/VBoxContainer/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
+[connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Shop" to="UI Canvas/Main_Control/MainMenu/ShopPanel" method="_on_shop_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]

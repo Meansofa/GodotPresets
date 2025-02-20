@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://br4saftotodpv"]
+
+[ext_resource type="Texture2D" uid="uid://2mfj87nihya7" path="res://Assets/AngerFace.png" id="1_6wr5s"]
+[ext_resource type="Script" path="res://buy.gd" id="2_8orjp"]
+
+[node name="SkinInfo" type="VBoxContainer"]
+theme_override_constants/separation = -6
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Triggered Skin
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+focus_mode = 0
+icon = ExtResource("1_6wr5s")
+script = ExtResource("2_8orjp")
+
+[connection signal="pressed" from="Button" to="Button" method="_on_pressed"]
