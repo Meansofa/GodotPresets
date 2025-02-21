@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=55 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="4_ohhxw"]
 [ext_resource type="Script" path="res://Map.gd" id="4_wvqbc"]
 [ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="5_31gxw"]
+[ext_resource type="Texture2D" uid="uid://c1wvjc3plp5ev" path="res://Assets/Coin_Gold.png" id="8_e2g2i"]
 [ext_resource type="Theme" uid="uid://dct7nwt5rhjys" path="res://Themes/shop.tres" id="10_7ul57"]
 [ext_resource type="PackedScene" uid="uid://br4saftotodpv" path="res://Scenes/skin_info.tscn" id="11_fi8wm"]
 [ext_resource type="PackedScene" uid="uid://cr4gytts7sw74" path="res://option_button.tscn" id="12_mrdr6"]
@@ -90,6 +91,8 @@ func _restart():
 	change_players(player_amount)
 "
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1o46k"]
+
 [sub_resource type="GDScript" id="GDScript_s8lf3"]
 resource_name = "RestartButton"
 script/source = "extends Button
@@ -110,26 +113,130 @@ func _on_pressed() -> void:
 	GameState.emit_signal(\"restart\")
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yx8jc"]
+bg_color = Color(0, 0, 0, 0.627451)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 6.0
+expand_margin_top = 2.0
+expand_margin_right = 6.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mwxq5"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kbg4g"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fyvv0"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ew37k"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rlxkm"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_in5ho"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jlr7"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlmwm"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrfcq"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d48wi"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbgb2"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_on41f"]
+atlas = ExtResource("8_e2g2i")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4w7cd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mwxq5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kbg4g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fyvv0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ew37k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rlxkm")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_in5ho")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_6jlr7")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_mlmwm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrfcq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d48wi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cbgb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_on41f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_e2se5"]
+resource_name = "CoinAmount"
+script/source = "extends RichTextLabel
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	Inventory.connect(\"coin_changed\", update_coins)
+
+func update_coins(coins : int):
+	self.text = str(coins) + \".00\"
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
 [sub_resource type="GDScript" id="GDScript_fgwkh"]
 resource_name = "Main_Control"
 script/source = "@tool
 extends Control
-
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
 "
 
 [sub_resource type="GDScript" id="GDScript_u0i5i"]
@@ -162,22 +269,6 @@ resource_name = "TitleScreen"
 script/source = "@tool
 extends Control
 
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
-
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed(\"Escape\"):
 		_toggle_menu()
@@ -190,27 +281,6 @@ func _restart():
 
 func _toggle_menu():
 	%MainMenu.visible = !%MainMenu.visible
-"
-
-[sub_resource type="GDScript" id="GDScript_15ch8"]
-script/source = "@tool
-extends Control
-
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
 "
 
 [sub_resource type="GDScript" id="GDScript_qpbas"]
@@ -270,21 +340,6 @@ func _process(delta: float) -> void:
 	pass
 "
 
-[sub_resource type="GDScript" id="GDScript_o4wuf"]
-resource_name = "ShopButton"
-script/source = "extends Button
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-"
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmsyw"]
 content_margin_left = 6.0
 content_margin_top = 6.0
@@ -315,6 +370,37 @@ extends Control
 
 func _on_shop_pressed() -> void:
 	self.visible = !self.visible
+"
+
+[sub_resource type="GDScript" id="GDScript_s7okt"]
+resource_name = "CustomizePanel"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+
+
+
+func _on_customize_pressed() -> void:
+	self.visible = !self.visible
+
+
+func _on_start_pressed() -> void:
+	self.visible = false
 "
 
 [sub_resource type="GDScript" id="GDScript_c516a"]
@@ -364,14 +450,15 @@ func _add_player():
 	hbox.add_child(skin_option_copy)
 	
 	skin_option_copy.connect(\"skin_selected\", select_skin)
+	skin_option_copy.player_index = get_children().size() -1
 
 func _remove_last_player():
 	get_children()[get_children().size() - 1].queue_free() #remove the memories of the node
 	remove_child(get_children()[get_children().size() - 1]) #remove the node as child
 
-func select_skin(skin : CompressedTexture2D):
+func select_skin(skin : CompressedTexture2D, player_index : int): #called from the skin_option
 	print(\"self.name: \", self.name)
-	PlayerData.players[0].change_skin(skin)
+	PlayerData.players[player_index].face_texture = skin
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -630,15 +717,44 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -37.0
-offset_top = 9.0
-offset_right = 479.0
-offset_bottom = 525.0
+offset_left = -48.0
+offset_top = 12.0
+offset_right = 468.0
+offset_bottom = 528.0
 grow_horizontal = 0
-scale = Vector2(0.05, 0.05)
+scale = Vector2(0.07, 0.07)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1o46k")
 icon = ExtResource("5_31gxw")
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
+
+[node name="PlayerCoins" type="PanelContainer" parent="UI Canvas/UI"]
+layout_mode = 0
+offset_left = 788.0
+offset_top = 11.0
+offset_right = 854.0
+offset_bottom = 48.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yx8jc")
+
+[node name="PlayerCoins" type="HBoxContainer" parent="UI Canvas/UI/PlayerCoins"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="CenterContainer" type="CenterContainer" parent="UI Canvas/UI/PlayerCoins/PlayerCoins"]
+layout_mode = 2
+
+[node name="CoinSprite" type="AnimatedSprite2D" parent="UI Canvas/UI/PlayerCoins/PlayerCoins/CenterContainer"]
+sprite_frames = SubResource("SpriteFrames_4w7cd")
+autoplay = "default"
+centered = false
+
+[node name="CoinAmount" type="RichTextLabel" parent="UI Canvas/UI/PlayerCoins/PlayerCoins"]
+layout_mode = 2
+bbcode_enabled = true
+text = "00.00"
+fit_content = true
+autowrap_mode = 0
+script = SubResource("GDScript_e2se5")
 
 [node name="Main_Control" type="Control" parent="UI Canvas"]
 layout_mode = 3
@@ -647,8 +763,6 @@ offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
 script = SubResource("GDScript_fgwkh")
-width = 960
-height = 540
 metadata/_edit_lock_ = true
 
 [node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
@@ -672,8 +786,6 @@ offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
 script = SubResource("GDScript_0obg5")
-width = 960
-height = 540
 metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
@@ -684,15 +796,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -160.0
-offset_top = -270.0
+offset_top = -208.5
 offset_right = 160.0
-offset_bottom = 270.0
+offset_bottom = 208.5
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_1mvcq")
-script = SubResource("GDScript_15ch8")
-width = 320
-height = 540
 
 [node name="CenterContainer" type="AspectRatioContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer"]
 layout_mode = 2
@@ -783,11 +892,12 @@ script = SubResource("GDScript_6iiwh")
 
 [node name="Shop" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "Shop"
-script = SubResource("GDScript_o4wuf")
 
 [node name="Customize" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "Customize"
 
 [node name="ShopPanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
@@ -853,6 +963,7 @@ anchor_bottom = 1.0
 grow_vertical = 2
 theme = ExtResource("10_7ul57")
 theme_override_styles/panel = SubResource("StyleBoxFlat_mmsyw")
+script = SubResource("GDScript_s7okt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel"]
 clip_contents = true
@@ -976,43 +1087,45 @@ height = 540
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21780" to="SpawnersLayer/@Button@21780" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21781" to="SpawnersLayer/@Button@21781" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21782" to="SpawnersLayer/@Button@21782" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21783" to="SpawnersLayer/@Button@21783" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21784" to="SpawnersLayer/@Button@21784" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21785" to="SpawnersLayer/@Button@21785" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21786" to="SpawnersLayer/@Button@21786" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21787" to="SpawnersLayer/@Button@21787" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21788" to="SpawnersLayer/@Button@21788" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21789" to="SpawnersLayer/@Button@21789" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21790" to="SpawnersLayer/@Button@21790" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21791" to="SpawnersLayer/@Button@21791" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21792" to="SpawnersLayer/@Button@21792" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21793" to="SpawnersLayer/@Button@21793" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21794" to="SpawnersLayer/@Button@21794" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21795" to="SpawnersLayer/@Button@21795" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21796" to="SpawnersLayer/@Button@21796" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21797" to="SpawnersLayer/@Button@21797" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21798" to="SpawnersLayer/@Button@21798" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21799" to="SpawnersLayer/@Button@21799" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21800" to="SpawnersLayer/@Button@21800" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21801" to="SpawnersLayer/@Button@21801" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21802" to="SpawnersLayer/@Button@21802" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21803" to="SpawnersLayer/@Button@21803" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21804" to="SpawnersLayer/@Button@21804" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21805" to="SpawnersLayer/@Button@21805" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21806" to="SpawnersLayer/@Button@21806" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21807" to="SpawnersLayer/@Button@21807" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21808" to="SpawnersLayer/@Button@21808" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21809" to="SpawnersLayer/@Button@21809" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21810" to="SpawnersLayer/@Button@21810" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71034" to="SpawnersLayer/@Button@71034" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71035" to="SpawnersLayer/@Button@71035" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71036" to="SpawnersLayer/@Button@71036" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71037" to="SpawnersLayer/@Button@71037" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71038" to="SpawnersLayer/@Button@71038" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71039" to="SpawnersLayer/@Button@71039" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71040" to="SpawnersLayer/@Button@71040" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71041" to="SpawnersLayer/@Button@71041" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71042" to="SpawnersLayer/@Button@71042" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71043" to="SpawnersLayer/@Button@71043" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71044" to="SpawnersLayer/@Button@71044" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71045" to="SpawnersLayer/@Button@71045" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71046" to="SpawnersLayer/@Button@71046" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71047" to="SpawnersLayer/@Button@71047" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71048" to="SpawnersLayer/@Button@71048" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71049" to="SpawnersLayer/@Button@71049" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71050" to="SpawnersLayer/@Button@71050" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71051" to="SpawnersLayer/@Button@71051" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71052" to="SpawnersLayer/@Button@71052" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71053" to="SpawnersLayer/@Button@71053" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71054" to="SpawnersLayer/@Button@71054" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71055" to="SpawnersLayer/@Button@71055" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71056" to="SpawnersLayer/@Button@71056" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71057" to="SpawnersLayer/@Button@71057" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71058" to="SpawnersLayer/@Button@71058" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71059" to="SpawnersLayer/@Button@71059" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71060" to="SpawnersLayer/@Button@71060" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71061" to="SpawnersLayer/@Button@71061" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71062" to="SpawnersLayer/@Button@71062" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71063" to="SpawnersLayer/@Button@71063" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@71064" to="SpawnersLayer/@Button@71064" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/CustomizePanel" method="_on_start_pressed"]
 [connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Shop" to="UI Canvas/Main_Control/MainMenu/ShopPanel" method="_on_shop_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Customize" to="UI Canvas/Main_Control/MainMenu/CustomizePanel" method="_on_customize_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]

@@ -23,11 +23,9 @@ content_margin_bottom = 3.0
 resource_name = "Skin_Options"
 script/source = "extends OptionButton
 
-signal skin_selected
+var player_index : int
 
-func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed(\"ui_accept\"):
-		add_item(\"MEOW\")
+signal skin_selected
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -40,10 +38,10 @@ func _process(delta: float) -> void:
 
 
 func _on_item_selected(index: int) -> void:
-	if index == 0:
+	if index == 0 or player_index == 0:
 		return
 		pass
-	emit_signal(\"skin_selected\", get_item_icon(index))
+	emit_signal(\"skin_selected\", get_item_icon(index), player_index)
 	#if get_parent() != null:
 		#get_parent().select_skin(get_item_icon(index), index)
 		#
