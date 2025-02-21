@@ -1,20 +1,158 @@
-[gd_scene load_steps=3 format=3 uid="uid://br4saftotodpv"]
+[gd_scene load_steps=19 format=3 uid="uid://br4saftotodpv"]
 
 [ext_resource type="Texture2D" uid="uid://2mfj87nihya7" path="res://Assets/AngerFace.png" id="1_6wr5s"]
+[ext_resource type="Script" path="res://skin_info.gd" id="1_tojgx"]
+[ext_resource type="Texture2D" uid="uid://c1wvjc3plp5ev" path="res://Assets/Coin_Gold.png" id="1_un3uw"]
 [ext_resource type="Script" path="res://buy.gd" id="2_8orjp"]
 
-[node name="SkinInfo" type="VBoxContainer"]
-theme_override_constants/separation = -6
+[sub_resource type="Theme" id="Theme_fslyi"]
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0pbsf"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h5cjq"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ewol8"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vadf5"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ov1jr"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1puj1"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_afh0l"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ocbud"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yi00u"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eqyf6"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5pafk"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o4p7d"]
+atlas = ExtResource("1_un3uw")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_306ln"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0pbsf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h5cjq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ewol8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vadf5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ov1jr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1puj1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_afh0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ocbud")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yi00u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eqyf6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5pafk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o4p7d")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[node name="SkinInfo" type="VBoxContainer" node_paths=PackedStringArray("buy_button", "cost_label", "skin_label")]
+size_flags_horizontal = 2
+size_flags_vertical = 2
+theme = SubResource("Theme_fslyi")
+theme_override_constants/separation = -6
+script = ExtResource("1_tojgx")
+buy_button = NodePath("Buy")
+cost_label = NodePath("HBoxContainer/HBoxContainer/Cost")
+skin_label = NodePath("HBoxContainer/Skin Name")
+skin = ExtResource("1_6wr5s")
+skin_name = "Noob Faces"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+z_index = 1
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="Skin Name" type="RichTextLabel" parent="HBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[center]Triggered Skin
-"
+text = "Noob Faces"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Button" type="Button" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+use_top_left = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="HBoxContainer/HBoxContainer/CenterContainer"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_306ln")
+autoplay = "default"
+centered = false
+
+[node name="Cost" type="RichTextLabel" parent="HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+bbcode_enabled = true
+text = "0.00"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Buy" type="Button" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 icon = ExtResource("1_6wr5s")

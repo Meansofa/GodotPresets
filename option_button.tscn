@@ -23,31 +23,30 @@ content_margin_bottom = 3.0
 resource_name = "Skin_Options"
 script/source = "extends OptionButton
 
-var player_index : int
+var player_index : int :
+	set(value):
+		player_index = value
 
 signal skin_selected
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	Inventory.connect(\"added_new_skin\", _add_skin)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
+func _add_skin(skin: CompressedTexture2D):
+	add_icon_item(skin, \"\")
 
 func _on_item_selected(index: int) -> void:
-	if index == 0 or player_index == 0:
+	if index == 0 or player_index < 0:
 		return
 		pass
+	print(self.name, \">skin selected\")
 	emit_signal(\"skin_selected\", get_item_icon(index), player_index)
-	#if get_parent() != null:
-		#get_parent().select_skin(get_item_icon(index), index)
-		#
-	#print(\"get_parent(): \", get_parent())
-	#self.select(index)
-	#print(\"_on_item_selected: \", index)
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1wkr"]

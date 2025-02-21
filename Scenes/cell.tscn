@@ -39,8 +39,9 @@ func pop(direction : Vector2):
 	linear_velocity = direction * 500
 
 func change_phase(phase : int):
-	if face.frame + 1 != null:
-		face.frame = phase -1
+	if phase > 3:
+		return;
+	face.frame = phase -1
 
 func change_skin_sprite(player_index : int):
 	face.texture = PlayerData.players[player_index].face_texture

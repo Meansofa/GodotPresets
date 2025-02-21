@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=4 uid="uid://xhtgkc2suxbe"]
+[gd_scene load_steps=59 format=4 uid="uid://xhtgkc2suxbe"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_j4i02"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="1_t2xmo"]
@@ -13,6 +13,10 @@
 [ext_resource type="Theme" uid="uid://dct7nwt5rhjys" path="res://Themes/shop.tres" id="10_7ul57"]
 [ext_resource type="PackedScene" uid="uid://br4saftotodpv" path="res://Scenes/skin_info.tscn" id="11_fi8wm"]
 [ext_resource type="PackedScene" uid="uid://cr4gytts7sw74" path="res://option_button.tscn" id="12_mrdr6"]
+[ext_resource type="Texture2D" uid="uid://bu4tmmhr8i25c" path="res://Assets/Faces/Bewildered.png" id="13_cydbe"]
+[ext_resource type="Texture2D" uid="uid://bpmnanc0prrmv" path="res://Assets/Faces/Kissy Missy.png" id="14_7n2kr"]
+[ext_resource type="Texture2D" uid="uid://cftheh34wt1p" path="res://Assets/Faces/Pink Mustache.png" id="15_hdmbx"]
+[ext_resource type="Texture2D" uid="uid://bwrp7oh78rin4" path="res://Assets/Faces/Blazing Fire.png" id="16_x77ta"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 resource_name = "Spawner"
@@ -449,6 +453,9 @@ func _add_player():
 	var skin_option_copy = skin_option.instantiate()
 	hbox.add_child(skin_option_copy)
 	
+	for skin in Inventory.purchased:
+		skin_option_copy.add_icon_item(skin, \"\")
+	
 	skin_option_copy.connect(\"skin_selected\", select_skin)
 	skin_option_copy.player_index = get_children().size() -1
 
@@ -457,7 +464,7 @@ func _remove_last_player():
 	remove_child(get_children()[get_children().size() - 1]) #remove the node as child
 
 func select_skin(skin : CompressedTexture2D, player_index : int): #called from the skin_option
-	print(\"self.name: \", self.name)
+	print(self.name, \">skin selected\")
 	PlayerData.players[player_index].face_texture = skin
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -927,18 +934,18 @@ text = " [b][i]Shop"
 fit_content = true
 autowrap_mode = 0
 
-[node name="HBoxContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 500)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="Skins" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Skins" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 bbcode_enabled = true
@@ -947,14 +954,35 @@ text = "[b]Skins
 fit_content = true
 autowrap_mode = 0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 clip_contents = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="SkinInfo" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/HBoxContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
+[node name="SkinInfo2" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
 layout_mode = 2
+cost = 14
+skin = ExtResource("13_cydbe")
+skin_name = "Bewilderment"
+
+[node name="SkinInfo3" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
+layout_mode = 2
+cost = 14
+skin = ExtResource("14_7n2kr")
+skin_name = "Kissy Missy"
+
+[node name="SkinInfo4" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
+layout_mode = 2
+cost = 69
+skin = ExtResource("15_hdmbx")
+skin_name = "Pink Mustache"
+
+[node name="SkinInfo5" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("11_fi8wm")]
+layout_mode = 2
+cost = 420
+skin = ExtResource("16_x77ta")
+skin_name = "Blazing Fire"
 
 [node name="CustomizePanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
 layout_mode = 1
@@ -979,21 +1007,20 @@ text = " [b][i]Customize
 fit_content = true
 autowrap_mode = 0
 
-[node name="HBoxContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 480)
 layout_mode = 2
 size_flags_vertical = 0
-mouse_filter = 2
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="Items" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="Items" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 bbcode_enabled = true
@@ -1001,7 +1028,7 @@ text = "[b]Players"
 fit_content = true
 autowrap_mode = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 bbcode_enabled = true
@@ -1009,7 +1036,7 @@ text = "[b]Skins"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Customize" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Customize" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 12
 script = SubResource("GDScript_c516a")
@@ -1086,38 +1113,6 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71034" to="SpawnersLayer/@Button@71034" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71035" to="SpawnersLayer/@Button@71035" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71036" to="SpawnersLayer/@Button@71036" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71037" to="SpawnersLayer/@Button@71037" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71038" to="SpawnersLayer/@Button@71038" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71039" to="SpawnersLayer/@Button@71039" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71040" to="SpawnersLayer/@Button@71040" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71041" to="SpawnersLayer/@Button@71041" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71042" to="SpawnersLayer/@Button@71042" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71043" to="SpawnersLayer/@Button@71043" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71044" to="SpawnersLayer/@Button@71044" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71045" to="SpawnersLayer/@Button@71045" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71046" to="SpawnersLayer/@Button@71046" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71047" to="SpawnersLayer/@Button@71047" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71048" to="SpawnersLayer/@Button@71048" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71049" to="SpawnersLayer/@Button@71049" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71050" to="SpawnersLayer/@Button@71050" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71051" to="SpawnersLayer/@Button@71051" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71052" to="SpawnersLayer/@Button@71052" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71053" to="SpawnersLayer/@Button@71053" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71054" to="SpawnersLayer/@Button@71054" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71055" to="SpawnersLayer/@Button@71055" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71056" to="SpawnersLayer/@Button@71056" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71057" to="SpawnersLayer/@Button@71057" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71058" to="SpawnersLayer/@Button@71058" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71059" to="SpawnersLayer/@Button@71059" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71060" to="SpawnersLayer/@Button@71060" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71061" to="SpawnersLayer/@Button@71061" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71062" to="SpawnersLayer/@Button@71062" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71063" to="SpawnersLayer/@Button@71063" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@71064" to="SpawnersLayer/@Button@71064" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]

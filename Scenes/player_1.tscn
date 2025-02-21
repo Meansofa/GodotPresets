@@ -73,6 +73,8 @@ extends TextureRect
 @export var face : Sprite2D
 @export var face_texture : CompressedTexture2D :
 	set(value):
+		if value == null:
+			return
 		print(\"Face set: \", value)
 		face_texture = value
 		change_skin(face_texture)
