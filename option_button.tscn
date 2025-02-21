@@ -27,11 +27,14 @@ var player_index : int :
 	set(value):
 		player_index = value
 
+var last_selected_index : int
+
 signal skin_selected
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Inventory.connect(\"added_new_skin\", _add_skin)
+	GameState.connect(\"restart\", _restart)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -47,6 +50,10 @@ func _on_item_selected(index: int) -> void:
 		pass
 	print(self.name, \">skin selected\")
 	emit_signal(\"skin_selected\", get_item_icon(index), player_index)
+	last_selected_index = index
+
+func _restart():
+	_on_item_selected(last_selected_index)
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1wkr"]

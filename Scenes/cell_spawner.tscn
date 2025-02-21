@@ -26,6 +26,9 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 		else:
 			spawner_type = \"Inner\"
 
+var spawn_sound = load(\"res://Assets/mixkit-message-pop-alert-2354.mp3\")
+var pop_sound = load(\"res://Assets/mixkit-hard-pop-click-2364.wav\")
+
 func _ready() -> void:
 	GameState.connect(\"restart\", _restart)
 
@@ -53,6 +56,7 @@ func spawn_cell():
 		cells[i].change_intensity(cells.size() * 0.15)
 	
 	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
+	play_sound(spawn_sound)
 
 func check_cells(): #check how many cells you have and either add or pop
 	if spawner_directions.is_empty(): #if this spawner doesnt have directions yet(directions that the cells can go when it pops)
@@ -70,6 +74,7 @@ func pop(): #launch the cells in adjacent directions
 		PlayerData.calculate_cell_count(spawner_owner, -1) #remove cell count on the player -1 for each cells since they're now popped
 	cells.clear() #clear the array of cells
 	spawner_owner = -1 #since there are no more cells in this spawner means there are no owners
+	play_sound(pop_sound)
 
 func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
 	if body.is_in_group(\"Cell\"): #Check if a cell enters
@@ -96,6 +101,22 @@ func _restart():
 		cells[i].queue_free()
 	cells.clear()
 	spawner_owner = -1
+
+func play_sound(stream : AudioStream):
+	 # Step 1: Create a new AudioStreamPlayer
+	var audio_player = AudioStreamPlayer.new()
+	
+	# Step 3: Set the audio stream to the AudioStreamPlayer
+	audio_player.stream = stream
+	
+	# Step 4: Add the audio player to the scene tree
+	add_child(audio_player)
+	
+	# Step 5: Play the audio
+	audio_player.play()
+	
+	# Optional: Queue free the audio player after it's done playing if it's a one-time sound
+	audio_player.connect(\"finished\", audio_player.queue_free)
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
