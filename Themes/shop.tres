@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dct7nwt5rhjys"]
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://dct7nwt5rhjys"]
 
 [ext_resource type="FontFile" uid="uid://bqmr8sd7u3rea" path="res://Themes/ATOMIC__.TTF" id="1_8jwb7"]
 
@@ -9,8 +9,11 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eo1er"]
+
 [resource]
 Button/styles/normal = SubResource("StyleBoxFlat_k0uvs")
 RichTextLabel/font_sizes/bold_font_size = 24
 RichTextLabel/font_sizes/bold_italics_font_size = 24
 RichTextLabel/fonts/bold_font = ExtResource("1_8jwb7")
+TextEdit/styles/focus = SubResource("StyleBoxEmpty_eo1er")

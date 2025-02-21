@@ -15,13 +15,13 @@ var last_value : int
 
 signal map_size_changed
 
-func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed("ui_right"):
-		_add_columns(1)
-	if Input.is_action_just_pressed("ui_down"):
-		_add_rows(1)
-	if Input.is_action_just_pressed("ui_accept"):
-		_remove_columns(1)
+#func _input(event: InputEvent) -> void:
+	#if Input.is_action_just_pressed("ui_right"):
+		#_add_columns(1)
+	#if Input.is_action_just_pressed("ui_down"):
+		#_add_rows(1)
+	#if Input.is_action_just_pressed("ui_accept"):
+		#_remove_columns(1)
 
 func _ready() -> void:
 	_generate_grid()

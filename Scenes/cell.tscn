@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://btubenec55x0o"]
+[gd_scene load_steps=24 format=3 uid="uid://btubenec55x0o"]
 
 [ext_resource type="Script" path="res://addons/shaker/src/Vector2/shaker_component2D.gd" id="1_8xsft"]
 [ext_resource type="Script" path="res://addons/shaker/data/Vector2/BaseShakerType2D.gd" id="2_rlxwc"]
@@ -7,7 +7,6 @@
 [ext_resource type="Script" path="res://addons/shaker/data/Single/BaseShakerType1D.gd" id="5_7buam"]
 [ext_resource type="Script" path="res://addons/shaker/data/Single/ShakerTypeSineWave1D.gd" id="6_i0e6r"]
 [ext_resource type="Script" path="res://addons/shaker/data/Vector2/ShakerPreset2D.gd" id="7_5268g"]
-[ext_resource type="Texture2D" uid="uid://2mfj87nihya7" path="res://Assets/AngerFace.png" id="8_ywf2p"]
 
 [sub_resource type="GDScript" id="GDScript_wy0jh"]
 script/source = "extends RigidBody2D
@@ -30,6 +29,7 @@ func change_intensity(intensity_value : float):
 
 func change_player(player_index : int):
 	_change_color(player_index)
+	change_skin_sprite(player_index)
 
 func _change_color(player_index : int):
 	sprite.set_material(PlayerData.players[player_index].get_material())
@@ -40,6 +40,9 @@ func pop(direction : Vector2):
 
 func change_phase(phase : int):
 	face.frame = phase -1
+
+func change_skin_sprite(player_index : int):
+	face.texture = PlayerData.players[player_index].face_texture
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fwjrn"]
@@ -186,5 +189,4 @@ shakerPreset = SubResource("Resource_1grtw")
 [node name="face" type="Sprite2D" parent="."]
 position = Vector2(-0.143171, -2.14321)
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("8_ywf2p")
 hframes = 3

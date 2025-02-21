@@ -20,6 +20,7 @@ var simulation_time : float : #When reaches zero meaning the simulation is done,
 
 signal player_change #emit signal everytime the current player has changed
 signal game_finished #when there is a winner
+signal player_count_changed #emitted when the amount of players when choosing how many players to play changes
 
 func _ready() -> void:
 	print(self.name, "> Instantiated")
@@ -42,6 +43,14 @@ func _process(delta: float) -> void:
 func reset_simulation_timer():
 	simulation_time = 0.2
 	#print(self.name, ">Simulation start")
+
+func add_player(player):
+	players.append(player)
+	emit_signal("player_count_changed")
+
+func reduce_player():
+	PlayerData.players.pop_back().queue_free()
+	emit_signal("player_count_changed")
 
 func next_player():
 	if players[current_player] != null: #before assigning the new previous player, check if the last player wasn't a null(null means had lost)

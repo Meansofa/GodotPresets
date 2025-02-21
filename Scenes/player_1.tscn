@@ -73,13 +73,17 @@ extends TextureRect
 @export var face : Sprite2D
 @export var face_texture : CompressedTexture2D :
 	set(value):
+		print(\"POUsdasd: \", value)
 		face_texture = value
-		face.texture = face_texture
-	get:
-		return face_texture
+		change_skin(face_texture)
 
 func change_skin(skin_texture : CompressedTexture2D):
-	face_texture = skin_texture
+	if skin_texture == null:
+		face.texture = null
+		return
+	if face.texture == null:
+		face.texture = skin_texture
+		return
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
