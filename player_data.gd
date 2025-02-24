@@ -105,7 +105,6 @@ func check_winner():
 		if player != null and players_cell_count[player] != 0:
 			print(self.name, ">Player won!: Player ", player + 1, " with ", players_cell_count[player], " cells!")
 			emit_signal("game_finished", "Player " + str(player + 1))
-			Inventory.coins += players_cell_count[player]
 
 func _restart():
 	if players != []:

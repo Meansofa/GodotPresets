@@ -1,20 +1,28 @@
-[gd_scene load_steps=39 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=66 format=4 uid="uid://xhtgkc2suxbe"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_pihtv"]
-[ext_resource type="Script" path="res://zoom_camera.gd" id="2_i3drp"]
-[ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="3_4xfu3"]
-[ext_resource type="Script" path="res://Map.gd" id="4_0b7oy"]
-[ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="5_vutah"]
-[ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_5gkat"]
-[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="7_v0cpn"]
-[ext_resource type="Texture2D" uid="uid://5j8echwc54ik" path="res://Assets/sound.png" id="9_lnweu"]
-[ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="10_tt22l"]
-[ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="11_gi1ht"]
-[ext_resource type="AudioStream" uid="uid://chhu2uycig58p" path="res://Assets/chill-abstract_intention-12099.mp3" id="19_fntxg"]
+[ext_resource type="Script" path="res://main.gd" id="1_cv2o0"]
+[ext_resource type="Script" path="res://zoom_camera.gd" id="2_fhjjh"]
+[ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="3_bbx0e"]
+[ext_resource type="Script" path="res://Map.gd" id="4_rjmyh"]
+[ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="5_fr735"]
+[ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_r5tyf"]
+[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="7_uqsui"]
+[ext_resource type="Texture2D" uid="uid://c1wvjc3plp5ev" path="res://Assets/Coin_Gold.png" id="8_6hu53"]
+[ext_resource type="Texture2D" uid="uid://5j8echwc54ik" path="res://Assets/sound.png" id="9_0m7od"]
+[ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="10_cihv7"]
+[ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="11_gingj"]
+[ext_resource type="Theme" uid="uid://dct7nwt5rhjys" path="res://Themes/shop.tres" id="12_vr5rq"]
+[ext_resource type="PackedScene" uid="uid://br4saftotodpv" path="res://Scenes/skin_info.tscn" id="13_udn8p"]
+[ext_resource type="Texture2D" uid="uid://bu4tmmhr8i25c" path="res://Assets/Faces/Bewildered.png" id="14_cu6cs"]
+[ext_resource type="Texture2D" uid="uid://bpmnanc0prrmv" path="res://Assets/Faces/Kissy Missy.png" id="15_diy6w"]
+[ext_resource type="Texture2D" uid="uid://cftheh34wt1p" path="res://Assets/Faces/Pink Mustache.png" id="16_k6ddw"]
+[ext_resource type="Texture2D" uid="uid://bwrp7oh78rin4" path="res://Assets/Faces/Blazing Fire.png" id="17_n4can"]
+[ext_resource type="PackedScene" uid="uid://cr4gytts7sw74" path="res://V0_0_1 Scenes/option_button.tscn" id="18_e34s1"]
+[ext_resource type="AudioStream" uid="uid://chhu2uycig58p" path="res://Assets/chill-abstract_intention-12099.mp3" id="19_xqquq"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 resource_name = "Spawner"
-scenes/1/scene = ExtResource("3_4xfu3")
+scenes/1/scene = ExtResource("3_bbx0e")
 
 [sub_resource type="TileSet" id="TileSet_hf2hk"]
 tile_size = Vector2i(96, 96)
@@ -111,6 +119,126 @@ func _on_pressed() -> void:
 	GameState.emit_signal(\"restart\")
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yx8jc"]
+bg_color = Color(0, 0, 0, 0.627451)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 6.0
+expand_margin_top = 2.0
+expand_margin_right = 6.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mwxq5"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kbg4g"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fyvv0"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ew37k"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rlxkm"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_in5ho"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jlr7"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlmwm"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrfcq"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d48wi"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbgb2"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_on41f"]
+atlas = ExtResource("8_6hu53")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4w7cd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mwxq5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kbg4g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fyvv0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ew37k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rlxkm")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_in5ho")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_6jlr7")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_mlmwm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrfcq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d48wi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cbgb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_on41f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_e2se5"]
+resource_name = "CoinAmount"
+script/source = "extends RichTextLabel
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	Inventory.connect(\"coin_changed\", update_coins)
+
+func update_coins(coins : int):
+	self.text = \"$\" + str(coins)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tj6g6"]
 
 [sub_resource type="GDScript" id="GDScript_bdb2u"]
@@ -138,11 +266,11 @@ func _on_pressed() -> void:
 "
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6575x"]
-atlas = ExtResource("9_lnweu")
+atlas = ExtResource("9_0m7od")
 region = Rect2(0, 0, 200, 200)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s474w"]
-atlas = ExtResource("9_lnweu")
+atlas = ExtResource("9_0m7od")
 region = Rect2(200, 0, 200, 200)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_5d341"]
@@ -266,6 +394,138 @@ func _process(delta: float) -> void:
 	pass
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmsyw"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0.482353)
+
+[sub_resource type="GDScript" id="GDScript_xnpsr"]
+resource_name = "Shop_panel"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+
+func _ready() -> void:
+	visible = false
+
+func _on_shop_pressed() -> void:
+	self.visible = !self.visible
+"
+
+[sub_resource type="GDScript" id="GDScript_s7okt"]
+resource_name = "CustomizePanel"
+script/source = "@tool
+extends Control
+
+@export_range(0, 1920, 320) var width: int :
+	set(value):
+		width = value
+		size.x = width
+@export_range(0, 1080, 180) var height: int :
+	set(value):
+		height = value
+		size.y = height
+@export var portrait_mode : bool :
+	set(value):
+		portrait_mode = value
+		if portrait_mode:
+			size = Vector2(height, width)
+		else:
+			size = Vector2(width, height)
+
+func _ready() -> void:
+	visible = false
+
+func _on_customize_pressed() -> void:
+	self.visible = !self.visible
+
+
+func _on_start_pressed() -> void:
+	self.visible = false
+"
+
+[sub_resource type="GDScript" id="GDScript_c516a"]
+resource_name = "Inventory"
+script/source = "extends VBoxContainer
+
+
+@onready var skin_options = OptionButton.new()
+
+@export var skin_option : PackedScene
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	#Inventory.connect(\"added_new_skin\", _add_skin)
+	PlayerData.connect(\"player_count_changed\", _add_player)
+	for i in PlayerData.players.size():
+		_add_player()
+
+func _add_skin(new_skin : CompressedTexture2D):
+	var hbox = HBoxContainer.new()
+	add_child(hbox)
+	
+	var textureRect = TextureRect.new()
+	hbox.add_child(textureRect)
+	
+	textureRect.texture = new_skin
+
+func _add_player():
+	if PlayerData.players.size() < get_children().size():
+		while(PlayerData.players.size() < get_children().size()):
+			_remove_last_player()
+		return
+	var hbox = HBoxContainer.new()
+	add_child(hbox)
+	
+	hbox.name = \"Player \" + str(get_children().size())
+	
+	var player_label = RichTextLabel.new()
+	hbox.add_child(player_label)
+	
+	player_label.text = \"Player \" + str(get_children().size())
+	player_label.fit_content = true
+	player_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	player_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
+	var skin_option_copy = skin_option.instantiate()
+	hbox.add_child(skin_option_copy)
+	
+	for skin in Inventory.purchased:
+		skin_option_copy.add_icon_item(skin, \"\")
+	
+	skin_option_copy.connect(\"skin_selected\", select_skin)
+	skin_option_copy.player_index = get_children().size() -1
+
+func _remove_last_player():
+	get_children()[get_children().size() - 1].queue_free() #remove the memories of the node
+	remove_child(get_children()[get_children().size() - 1]) #remove the node as child
+
+func select_skin(skin : CompressedTexture2D, player_index : int): #called from the skin_option
+	print(self.name, \">skin selected\")
+	PlayerData.players[player_index].face_texture = skin
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
 [sub_resource type="GDScript" id="GDScript_jgltk"]
 resource_name = "WinnerPanel"
 script/source = "@tool
@@ -359,8 +619,7 @@ shader = SubResource("Shader_v2yx8")
 shader_parameter/Shift_Hue = 0.0
 
 [sub_resource type="Gradient" id="Gradient_0ivtn"]
-offsets = PackedFloat32Array(0.506579)
-colors = PackedColorArray(0.71125, 0.390697, 0.0957877, 1)
+colors = PackedColorArray(1, 0.717647, 0.176471, 1, 0.43, 0.07224, 0.0172, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_l8sjq"]
 gradient = SubResource("Gradient_0ivtn")
@@ -439,19 +698,19 @@ func _restart():
 	self_modulate.h = 0
 "
 
-[node name="Main" type="Node2D"]
-script = ExtResource("1_pihtv")
+[node name="v 0_0_1" type="Node2D"]
+script = ExtResource("1_cv2o0")
 
 [node name="ZoomCamera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 anchor_mode = 0
-script = ExtResource("2_i3drp")
+script = ExtResource("2_fhjjh")
 
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAIAAQAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAIAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
-script = ExtResource("4_0b7oy")
+script = ExtResource("4_rjmyh")
 
 [node name="UI Canvas" type="CanvasLayer" parent="."]
 
@@ -461,7 +720,7 @@ anchors_preset = 0
 offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
-theme = ExtResource("5_vutah")
+theme = ExtResource("5_fr735")
 script = SubResource("GDScript_ukba4")
 width = 960
 height = 540
@@ -475,7 +734,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_gh0i5")
-player1_scene = ExtResource("6_5gkat")
+player1_scene = ExtResource("6_r5tyf")
 row_1 = NodePath("VBoxContainer/Row1")
 row_2 = NodePath("VBoxContainer/Row2")
 
@@ -526,9 +785,37 @@ offset_bottom = 528.0
 grow_horizontal = 0
 scale = Vector2(0.07, 0.07)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_1o46k")
-icon = ExtResource("7_v0cpn")
+icon = ExtResource("7_uqsui")
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
+
+[node name="PlayerCoins" type="PanelContainer" parent="UI Canvas/UI"]
+layout_mode = 0
+offset_left = 788.0
+offset_top = 11.0
+offset_right = 854.0
+offset_bottom = 48.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yx8jc")
+
+[node name="PlayerCoins" type="HBoxContainer" parent="UI Canvas/UI/PlayerCoins"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="CenterContainer" type="CenterContainer" parent="UI Canvas/UI/PlayerCoins/PlayerCoins"]
+layout_mode = 2
+
+[node name="CoinSprite" type="AnimatedSprite2D" parent="UI Canvas/UI/PlayerCoins/PlayerCoins/CenterContainer"]
+sprite_frames = SubResource("SpriteFrames_4w7cd")
+autoplay = "default"
+centered = false
+
+[node name="CoinAmount" type="RichTextLabel" parent="UI Canvas/UI/PlayerCoins/PlayerCoins"]
+layout_mode = 2
+bbcode_enabled = true
+text = "$0"
+fit_content = true
+autowrap_mode = 0
+script = SubResource("GDScript_e2se5")
 
 [node name="MuteButton" type="Button" parent="UI Canvas/UI" node_paths=PackedStringArray("mute_icon")]
 layout_mode = 1
@@ -562,14 +849,14 @@ metadata/_edit_lock_ = true
 [node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 visible = false
-material = ExtResource("10_tt22l")
+material = ExtResource("10_cihv7")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("11_gi1ht")
+texture = ExtResource("11_gingj")
 script = SubResource("GDScript_u0i5i")
 
 [node name="MainMenu" type="Control" parent="UI Canvas/Main_Control"]
@@ -595,7 +882,7 @@ offset_right = 160.0
 offset_bottom = 208.5
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("5_vutah")
+theme = ExtResource("5_fr735")
 
 [node name="CenterContainer" type="AspectRatioContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer"]
 layout_mode = 2
@@ -694,6 +981,143 @@ layout_mode = 2
 focus_mode = 0
 text = "Customize"
 
+[node name="ShopPanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -208.0
+offset_bottom = 538.0
+grow_horizontal = 0
+theme = ExtResource("12_vr5rq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mmsyw")
+script = SubResource("GDScript_xnpsr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = " [b][i]Shop"
+fit_content = true
+autowrap_mode = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Skins" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+bbcode_enabled = true
+text = "[b]Skins
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SkinInfo2" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("13_udn8p")]
+layout_mode = 2
+cost = 14
+skin = ExtResource("14_cu6cs")
+skin_name = "Bewilderment"
+
+[node name="SkinInfo3" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("13_udn8p")]
+layout_mode = 2
+cost = 14
+skin = ExtResource("15_diy6w")
+skin_name = "Kissy Missy"
+
+[node name="SkinInfo4" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("13_udn8p")]
+layout_mode = 2
+cost = 69
+skin = ExtResource("16_k6ddw")
+skin_name = "Pink Mustache"
+
+[node name="SkinInfo5" parent="UI Canvas/Main_Control/MainMenu/ShopPanel/VBoxContainer/ScrollContainer/VBoxContainer2/VBoxContainer2" instance=ExtResource("13_udn8p")]
+layout_mode = 2
+cost = 420
+skin = ExtResource("17_n4can")
+skin_name = "Blazing Fire"
+
+[node name="CustomizePanel" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("12_vr5rq")
+theme_override_styles/panel = SubResource("StyleBoxFlat_mmsyw")
+script = SubResource("GDScript_s7okt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = " [b][i]Customize
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 480)
+layout_mode = 2
+size_flags_vertical = 0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Items" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+bbcode_enabled = true
+text = "[b]Players"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+bbcode_enabled = true
+text = "[b]Skins"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Customize" type="VBoxContainer" parent="UI Canvas/Main_Control/MainMenu/CustomizePanel/VBoxContainer/ScrollContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 12
+script = SubResource("GDScript_c516a")
+skin_option = ExtResource("18_e34s1")
+
 [node name="WinnerPanel" type="PanelContainer" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 visible = false
@@ -765,47 +1189,51 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[node name="Background Audio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("19_fntxg")
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("19_xqquq")
+autoplay = true
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48879" to="SpawnersLayer/@Button@48879" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48880" to="SpawnersLayer/@Button@48880" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48881" to="SpawnersLayer/@Button@48881" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48882" to="SpawnersLayer/@Button@48882" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48883" to="SpawnersLayer/@Button@48883" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48884" to="SpawnersLayer/@Button@48884" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48885" to="SpawnersLayer/@Button@48885" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48886" to="SpawnersLayer/@Button@48886" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48887" to="SpawnersLayer/@Button@48887" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48888" to="SpawnersLayer/@Button@48888" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48889" to="SpawnersLayer/@Button@48889" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48890" to="SpawnersLayer/@Button@48890" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48891" to="SpawnersLayer/@Button@48891" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48892" to="SpawnersLayer/@Button@48892" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48893" to="SpawnersLayer/@Button@48893" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48894" to="SpawnersLayer/@Button@48894" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48895" to="SpawnersLayer/@Button@48895" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48896" to="SpawnersLayer/@Button@48896" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48897" to="SpawnersLayer/@Button@48897" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48898" to="SpawnersLayer/@Button@48898" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48899" to="SpawnersLayer/@Button@48899" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48900" to="SpawnersLayer/@Button@48900" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48901" to="SpawnersLayer/@Button@48901" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48902" to="SpawnersLayer/@Button@48902" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48903" to="SpawnersLayer/@Button@48903" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48904" to="SpawnersLayer/@Button@48904" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48905" to="SpawnersLayer/@Button@48905" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48906" to="SpawnersLayer/@Button@48906" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48907" to="SpawnersLayer/@Button@48907" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48908" to="SpawnersLayer/@Button@48908" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48909" to="SpawnersLayer/@Button@48909" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18378" to="SpawnersLayer/@Button@18378" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18379" to="SpawnersLayer/@Button@18379" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18380" to="SpawnersLayer/@Button@18380" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18381" to="SpawnersLayer/@Button@18381" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18382" to="SpawnersLayer/@Button@18382" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18383" to="SpawnersLayer/@Button@18383" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18384" to="SpawnersLayer/@Button@18384" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18385" to="SpawnersLayer/@Button@18385" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18386" to="SpawnersLayer/@Button@18386" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18387" to="SpawnersLayer/@Button@18387" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18388" to="SpawnersLayer/@Button@18388" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18389" to="SpawnersLayer/@Button@18389" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18390" to="SpawnersLayer/@Button@18390" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18391" to="SpawnersLayer/@Button@18391" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18392" to="SpawnersLayer/@Button@18392" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18393" to="SpawnersLayer/@Button@18393" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18394" to="SpawnersLayer/@Button@18394" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18395" to="SpawnersLayer/@Button@18395" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18396" to="SpawnersLayer/@Button@18396" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18397" to="SpawnersLayer/@Button@18397" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18398" to="SpawnersLayer/@Button@18398" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18399" to="SpawnersLayer/@Button@18399" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18400" to="SpawnersLayer/@Button@18400" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18401" to="SpawnersLayer/@Button@18401" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18402" to="SpawnersLayer/@Button@18402" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18403" to="SpawnersLayer/@Button@18403" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18404" to="SpawnersLayer/@Button@18404" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18405" to="SpawnersLayer/@Button@18405" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18406" to="SpawnersLayer/@Button@18406" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18407" to="SpawnersLayer/@Button@18407" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@18408" to="SpawnersLayer/@Button@18408" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/MuteButton" to="UI Canvas/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/CustomizePanel" method="_on_start_pressed"]
 [connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Shop" to="UI Canvas/Main_Control/MainMenu/ShopPanel" method="_on_shop_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Customize" to="UI Canvas/Main_Control/MainMenu/CustomizePanel" method="_on_customize_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]

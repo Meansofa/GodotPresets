@@ -1,9 +1,9 @@
 [gd_scene load_steps=19 format=3 uid="uid://br4saftotodpv"]
 
 [ext_resource type="Texture2D" uid="uid://2mfj87nihya7" path="res://Assets/AngerFace.png" id="1_6wr5s"]
-[ext_resource type="Script" path="res://skin_info.gd" id="1_tojgx"]
+[ext_resource type="Script" path="res://V0_0_1 Scenes/skin_info.gd" id="1_tojgx"]
 [ext_resource type="Texture2D" uid="uid://c1wvjc3plp5ev" path="res://Assets/Coin_Gold.png" id="1_un3uw"]
-[ext_resource type="Script" path="res://buy.gd" id="2_8orjp"]
+[ext_resource type="Script" path="res://V0_0_1 Scenes/buy.gd" id="2_8orjp"]
 
 [sub_resource type="Theme" id="Theme_fslyi"]
 
