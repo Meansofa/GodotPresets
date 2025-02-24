@@ -1,6 +1,5 @@
-[gd_scene load_steps=11 format=3 uid="uid://cr4gytts7sw74"]
+[gd_scene load_steps=10 format=3 uid="uid://cr4gytts7sw74"]
 
-[ext_resource type="Texture2D" uid="uid://2mfj87nihya7" path="res://Assets/AngerFace.png" id="1_howof"]
 [ext_resource type="Texture2D" uid="uid://bmnff63evbdhv" path="res://addons/SignalVisualizer/Clear.svg" id="1_lsxnp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s0ogf"]
@@ -64,6 +63,7 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [node name="OptionButton" type="OptionButton"]
+custom_minimum_size = Vector2(200, 60)
 size_flags_horizontal = 3
 theme_override_styles/focus = SubResource("StyleBoxEmpty_s0ogf")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_x3via")
@@ -73,11 +73,9 @@ theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1nxbx")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_uo7jp")
 flat = true
 selected = 0
-item_count = 2
+item_count = 1
 popup/item_0/icon = ExtResource("1_lsxnp")
 popup/item_0/id = 1
-popup/item_1/icon = ExtResource("1_howof")
-popup/item_1/id = 1
 script = SubResource("GDScript_3r6d6")
 
 [node name="Panel" type="Panel" parent="."]

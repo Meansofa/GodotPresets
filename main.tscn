@@ -422,6 +422,9 @@ extends Control
 		else:
 			size = Vector2(width, height)
 
+func _ready() -> void:
+	visible = false
+
 func _on_shop_pressed() -> void:
 	self.visible = !self.visible
 "
@@ -447,7 +450,8 @@ extends Control
 		else:
 			size = Vector2(width, height)
 
-
+func _ready() -> void:
+	visible = false
 
 func _on_customize_pressed() -> void:
 	self.visible = !self.visible
@@ -1189,38 +1193,6 @@ metadata/_edit_lock_ = true
 stream = ExtResource("18_q6r3k")
 autoplay = true
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234015" to="SpawnersLayer/@Button@234015" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234016" to="SpawnersLayer/@Button@234016" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234017" to="SpawnersLayer/@Button@234017" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234018" to="SpawnersLayer/@Button@234018" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234019" to="SpawnersLayer/@Button@234019" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234020" to="SpawnersLayer/@Button@234020" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234021" to="SpawnersLayer/@Button@234021" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234022" to="SpawnersLayer/@Button@234022" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234023" to="SpawnersLayer/@Button@234023" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234024" to="SpawnersLayer/@Button@234024" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234025" to="SpawnersLayer/@Button@234025" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234026" to="SpawnersLayer/@Button@234026" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234027" to="SpawnersLayer/@Button@234027" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234028" to="SpawnersLayer/@Button@234028" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234029" to="SpawnersLayer/@Button@234029" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234030" to="SpawnersLayer/@Button@234030" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234031" to="SpawnersLayer/@Button@234031" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234032" to="SpawnersLayer/@Button@234032" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234033" to="SpawnersLayer/@Button@234033" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234034" to="SpawnersLayer/@Button@234034" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234035" to="SpawnersLayer/@Button@234035" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234036" to="SpawnersLayer/@Button@234036" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234037" to="SpawnersLayer/@Button@234037" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234038" to="SpawnersLayer/@Button@234038" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234039" to="SpawnersLayer/@Button@234039" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234040" to="SpawnersLayer/@Button@234040" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234041" to="SpawnersLayer/@Button@234041" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234042" to="SpawnersLayer/@Button@234042" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234043" to="SpawnersLayer/@Button@234043" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234044" to="SpawnersLayer/@Button@234044" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@234045" to="SpawnersLayer/@Button@234045" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/MuteButton" to="UI Canvas/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
