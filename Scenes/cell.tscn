@@ -50,12 +50,12 @@ func change_skin_sprite(player_index : int):
 [sub_resource type="CircleShape2D" id="CircleShape2D_fwjrn"]
 radius = 0.01
 
-[sub_resource type="Gradient" id="Gradient_r5lxx"]
-offsets = PackedFloat32Array(0, 0.276316, 0.453947, 0.5, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.788235, 0.203922, 1, 1, 0.13, 0.13, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+[sub_resource type="Gradient" id="Gradient_2oh77"]
+offsets = PackedFloat32Array(0.453947, 0.493421, 0.5, 0.539474, 1, 5)
+colors = PackedColorArray(1, 0, 0.0941176, 1, 0.0588235, 0.0156863, 0, 1, 0.0588235, 0.0156863, 0, 1, 0.0588235, 0.0156863, 0, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_5o0f1"]
-gradient = SubResource("Gradient_r5lxx")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_namt3"]
+gradient = SubResource("Gradient_2oh77")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.25)
@@ -177,7 +177,7 @@ face = NodePath("face")
 shape = SubResource("CircleShape2D_fwjrn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("GradientTexture2D_5o0f1")
+texture = SubResource("GradientTexture2D_namt3")
 script = SubResource("GDScript_nyx2a")
 
 [node name="ShakerComponent2D" type="Node2D" parent="."]

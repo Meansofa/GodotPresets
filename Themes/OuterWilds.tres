@@ -1,32 +1,23 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://ccjkt4x566cc"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://ccjkt4x566cc"]
 
 [ext_resource type="FontFile" uid="uid://bqmr8sd7u3rea" path="res://Themes/ATOMIC__.TTF" id="1_ts4dj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4txw1"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.724303, 0.322983, 0.0881074, 1)
+bg_color = Color(0.898039, 0.894118, 0.894118, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 12
+border_width_bottom = 6
+border_color = Color(0.0588235, 0.0156863, 0, 1)
 expand_margin_left = 5.0
 expand_margin_top = 2.0
-expand_margin_right = 5.0
+expand_margin_right = 12.0
 expand_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pudr8"]
-bg_color = Color(0.0600139, 0.0144964, 0, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(1, 0.843137, 0.752941, 1)
-
 [resource]
-Button/colors/font_color = Color(0.930719, 0.453261, 0.200893, 1)
+Button/colors/font_color = Color(0.0588235, 0.0156863, 0, 1)
 Button/styles/normal = SubResource("StyleBoxFlat_4txw1")
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_pudr8")
-RichTextLabel/font_sizes/bold_italics_font_size = 32
+RichTextLabel/font_sizes/bold_italics_font_size = 16
 RichTextLabel/font_sizes/normal_font_size = 24
 RichTextLabel/fonts/bold_italics_font = null
 RichTextLabel/fonts/normal_font = ExtResource("1_ts4dj")

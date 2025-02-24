@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=37 format=4 uid="uid://cunlaacoggqyv"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_pihtv"]
 [ext_resource type="Script" path="res://zoom_camera.gd" id="2_i3drp"]
@@ -360,7 +360,7 @@ shader_parameter/Shift_Hue = 0.0
 
 [sub_resource type="Gradient" id="Gradient_0ivtn"]
 offsets = PackedFloat32Array(0.506579)
-colors = PackedColorArray(0.71125, 0.390697, 0.0957877, 1)
+colors = PackedColorArray(1, 0, 0.0941176, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_l8sjq"]
 gradient = SubResource("Gradient_0ivtn")
@@ -399,59 +399,20 @@ func _restart():
 	material = null
 "
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cmf08"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0.72549, 0.321569, 0.0862745, 1)
-
-[sub_resource type="GDScript" id="GDScript_jl880"]
-resource_name = "BackgroundBorder"
-script/source = "@tool
-extends Control
-
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
-
-func _ready() -> void:
-	PlayerData.connect(\"player_change\", change_spawner_color) #connect to the Player_data signal on player_change change the spawner color
-	GameState.connect(\"restart\", _restart)
-
-func change_spawner_color(): #change the color of the spawner
-	self_modulate.h = 1.0 / PlayerData.players.size() * PlayerData.current_player #change the border color by hue
-
-func _restart():
-	self_modulate.h = 0
-"
-
 [node name="Main" type="Node2D"]
 script = ExtResource("1_pihtv")
+
+[node name="SpawnersLayer" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+position = Vector2(1, 2)
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAIAAQAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAIAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
+tile_set = SubResource("TileSet_hf2hk")
+script = ExtResource("4_0b7oy")
 
 [node name="ZoomCamera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 anchor_mode = 0
 script = ExtResource("2_i3drp")
-
-[node name="SpawnersLayer" type="TileMapLayer" parent="."]
-unique_name_in_owner = true
-tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAIAAQAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAIAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
-tile_set = SubResource("TileSet_hf2hk")
-script = ExtResource("4_0b7oy")
 
 [node name="UI Canvas" type="CanvasLayer" parent="."]
 
@@ -561,7 +522,6 @@ metadata/_edit_lock_ = true
 
 [node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
-visible = false
 material = ExtResource("10_tt22l")
 layout_mode = 1
 anchors_preset = 15
@@ -584,15 +544,12 @@ metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 14
 anchor_top = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -208.5
-offset_right = 160.0
-offset_bottom = 208.5
+offset_top = -102.0
+offset_bottom = 102.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("5_vutah")
@@ -608,7 +565,8 @@ theme_override_constants/separation = 12
 [node name="Title" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[center][b][i]Chain Reaction : Expanded
+text = "
+[center][b][i]Chain Reaction : Expanded
 
 "
 fit_content = true
@@ -684,16 +642,6 @@ value = 20.0
 tick_count = 5
 script = SubResource("GDScript_6iiwh")
 
-[node name="Shop" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-text = "Shop"
-
-[node name="Customize" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-text = "Customize"
-
 [node name="WinnerPanel" type="PanelContainer" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
 visible = false
@@ -755,51 +703,9 @@ width = 960
 height = 540
 metadata/_edit_lock_ = true
 
-[node name="BackgroundBorder" type="Panel" parent="Background"]
-self_modulate = Color(1, 0.7575, 0.03, 1)
-offset_right = 960.0
-offset_bottom = 540.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_cmf08")
-script = SubResource("GDScript_jl880")
-width = 960
-height = 540
-metadata/_edit_lock_ = true
-
 [node name="Background Audio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("19_fntxg")
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48879" to="SpawnersLayer/@Button@48879" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48880" to="SpawnersLayer/@Button@48880" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48881" to="SpawnersLayer/@Button@48881" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48882" to="SpawnersLayer/@Button@48882" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48883" to="SpawnersLayer/@Button@48883" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48884" to="SpawnersLayer/@Button@48884" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48885" to="SpawnersLayer/@Button@48885" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48886" to="SpawnersLayer/@Button@48886" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48887" to="SpawnersLayer/@Button@48887" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48888" to="SpawnersLayer/@Button@48888" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48889" to="SpawnersLayer/@Button@48889" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48890" to="SpawnersLayer/@Button@48890" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48891" to="SpawnersLayer/@Button@48891" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48892" to="SpawnersLayer/@Button@48892" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48893" to="SpawnersLayer/@Button@48893" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48894" to="SpawnersLayer/@Button@48894" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48895" to="SpawnersLayer/@Button@48895" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48896" to="SpawnersLayer/@Button@48896" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48897" to="SpawnersLayer/@Button@48897" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48898" to="SpawnersLayer/@Button@48898" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48899" to="SpawnersLayer/@Button@48899" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48900" to="SpawnersLayer/@Button@48900" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48901" to="SpawnersLayer/@Button@48901" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48902" to="SpawnersLayer/@Button@48902" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48903" to="SpawnersLayer/@Button@48903" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48904" to="SpawnersLayer/@Button@48904" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48905" to="SpawnersLayer/@Button@48905" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48906" to="SpawnersLayer/@Button@48906" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48907" to="SpawnersLayer/@Button@48907" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48908" to="SpawnersLayer/@Button@48908" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@48909" to="SpawnersLayer/@Button@48909" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/MuteButton" to="UI Canvas/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]

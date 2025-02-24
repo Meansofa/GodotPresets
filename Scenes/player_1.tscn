@@ -55,12 +55,12 @@ resource_local_to_scene = true
 shader = SubResource("Shader_pv65v")
 shader_parameter/Shift_Hue = 0.0
 
-[sub_resource type="Gradient" id="Gradient_r5lxx"]
-offsets = PackedFloat32Array(0, 0.276316, 0.453947, 0.5, 1, 5)
-colors = PackedColorArray(1, 0.788235, 0.203922, 1, 1, 0.788235, 0.203922, 1, 1, 0.13, 0.13, 1, 0.678431, 0.678431, 0.678431, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+[sub_resource type="Gradient" id="Gradient_hchrr"]
+offsets = PackedFloat32Array(0.355263, 0.453947, 0.539474, 1, 5)
+colors = PackedColorArray(1, 0, 0.0941176, 1, 1, 0, 0.0941176, 1, 0.219501, 0.219501, 0.219501, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_mr6vo"]
-gradient = SubResource("Gradient_r5lxx")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qjwgr"]
+gradient = SubResource("Gradient_hchrr")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.25)
@@ -107,7 +107,7 @@ func _ready() -> void:
 
 [node name="Player 1" type="TextureRect" node_paths=PackedStringArray("face")]
 material = SubResource("ShaderMaterial_8kt3m")
-texture = SubResource("GradientTexture2D_mr6vo")
+texture = SubResource("GradientTexture2D_qjwgr")
 script = SubResource("GDScript_pgm1i")
 face = NodePath("face")
 
