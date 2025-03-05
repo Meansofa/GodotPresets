@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=36 format=4 uid="uid://cunlaacoggqyv"]
 
 [ext_resource type="Script" uid="uid://cow608qcxtkcm" path="res://main.gd" id="1_pihtv"]
 [ext_resource type="Script" uid="uid://1ocx2kqcmuqm" path="res://Scripts/zoom_camera.gd" id="2_i3drp"]
@@ -19,6 +19,31 @@ scenes/1/scene = ExtResource("3_4xfu3")
 tile_size = Vector2i(96, 96)
 sources/0 = SubResource("TileSetScenesCollectionSource_qb3a6")
 
+[sub_resource type="GDScript" id="GDScript_u0i5i"]
+resource_name = "LOD"
+script/source = "extends TextureRect
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_title_screen_visibility_changed() -> void:
+	self.visible = %MainMenu.visible
+
+func _on_winner_panel_visibility_changed() -> void:
+	self.visible = %WinnerPanel.visible
+
+func _on_change_map_visibility_changed() -> void:
+	self.visible = %ChangeMap.visible
+"
+
 [sub_resource type="GDScript" id="GDScript_ukba4"]
 script/source = "@tool
 extends Control
@@ -38,6 +63,12 @@ extends Control
 			size = Vector2(height, width)
 		else:
 			size = Vector2(width, height)
+
+func _ready() -> void:
+	GameState.connect(\"restart\", _restart)
+
+func _restart():
+	self.visible = true
 "
 
 [sub_resource type="GDScript" id="GDScript_gh0i5"]
@@ -156,37 +187,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="GDScript" id="GDScript_fgwkh"]
-resource_name = "Main_Control"
-script/source = "@tool
-extends Control
-"
-
-[sub_resource type="GDScript" id="GDScript_u0i5i"]
-resource_name = "LOD"
-script/source = "extends TextureRect
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func _on_title_screen_visibility_changed() -> void:
-	self.visible = %MainMenu.visible
-
-func _on_winner_panel_visibility_changed() -> void:
-	self.visible = %WinnerPanel.visible
-
-func _on_change_map_visibility_changed() -> void:
-	self.visible = %ChangeMap.visible
-"
-
 [sub_resource type="GDScript" id="GDScript_0obg5"]
 resource_name = "TitleScreen"
 script/source = "@tool
@@ -203,7 +203,10 @@ func _restart():
 	self.visible = true
 
 func _toggle_menu():
-	%MainMenu.visible = !%MainMenu.visible
+	#%MainMenu.visible = !%MainMenu.visible
+	#%UI.visible = !%UI.visible
+	%WinnerPanel.visible = false
+	GameState.emit_signal(\"restart\")
 "
 
 [sub_resource type="GDScript" id="GDScript_qpbas"]
@@ -212,13 +215,17 @@ script/source = "extends Button
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed(\"ui_accept\") and %MainMenu.visible:
-		_hide_title_screen()
+		emit_signal(\"pressed\")
 
 func _on_pressed() -> void:
 	_hide_title_screen()
+	_hide_UI()
 
 func _hide_title_screen():
 	%MainMenu.visible = false
+
+func _hide_UI():
+	%UI.visible = false
 "
 
 [sub_resource type="GDScript" id="GDScript_jhgu0"]
@@ -434,113 +441,12 @@ script = ExtResource("2_i3drp")
 
 [node name="UI Canvas" type="CanvasLayer" parent="."]
 
-[node name="UI" type="Control" parent="UI Canvas"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 540.0
-mouse_filter = 2
-theme = ExtResource("5_vutah")
-script = SubResource("GDScript_ukba4")
-width = 960
-height = 540
-metadata/_edit_lock_ = true
-
-[node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/UI" node_paths=PackedStringArray("row_1", "row_2")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = SubResource("GDScript_gh0i5")
-player1_scene = ExtResource("6_5gkat")
-row_1 = NodePath("VBoxContainer/Row1")
-row_2 = NodePath("VBoxContainer/Row2")
-metadata/_edit_lock_ = true
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/UI/Player_Display"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 120
-metadata/_edit_lock_ = true
-
-[node name="Row1" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-theme_override_constants/separation = 0
-alignment = 2
-
-[node name="Row2" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 10
-theme_override_constants/separation = 0
-alignment = 2
-
-[node name="Version" type="RichTextLabel" parent="UI Canvas/UI"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -85.0
-offset_top = -40.0
-grow_horizontal = 0
-grow_vertical = 0
-bbcode_enabled = true
-text = "Version 0.0.0"
-fit_content = true
-autowrap_mode = 0
-
-[node name="RestartButton" type="Button" parent="UI Canvas/UI" groups=["Buttons"]]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -48.0
-offset_top = 12.0
-offset_right = 468.0
-offset_bottom = 528.0
-grow_horizontal = 0
-scale = Vector2(0.07, 0.07)
-mouse_default_cursor_shape = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1o46k")
-icon = ExtResource("7_v0cpn")
-expand_icon = true
-script = SubResource("GDScript_s8lf3")
-
-[node name="MuteButton" type="Button" parent="UI Canvas/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -59.9999
-offset_top = 63.0
-offset_right = 150.0
-offset_bottom = 227.0
-grow_horizontal = 0
-scale = Vector2(0.3, 0.3)
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tj6g6")
-script = SubResource("GDScript_bdb2u")
-mute_icon = NodePath("mute_icon")
-
-[node name="mute_icon" type="AnimatedSprite2D" parent="UI Canvas/UI/MuteButton"]
-sprite_frames = SubResource("SpriteFrames_5d341")
-centered = false
-
 [node name="Main_Control" type="Control" parent="UI Canvas"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
-script = SubResource("GDScript_fgwkh")
 metadata/_edit_lock_ = true
 
 [node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
@@ -555,6 +461,115 @@ grow_vertical = 2
 texture = ExtResource("11_gi1ht")
 script = SubResource("GDScript_u0i5i")
 metadata/_edit_lock_ = true
+
+[node name="UI" type="Control" parent="UI Canvas/Main_Control"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 540.0
+mouse_filter = 2
+theme = ExtResource("5_vutah")
+script = SubResource("GDScript_ukba4")
+width = 960
+height = 540
+metadata/_edit_lock_ = true
+
+[node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("row_1", "row_2")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("GDScript_gh0i5")
+player1_scene = ExtResource("6_5gkat")
+row_1 = NodePath("VBoxContainer/Row1")
+row_2 = NodePath("VBoxContainer/Row2")
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/UI/Player_Display"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 120
+metadata/_edit_lock_ = true
+
+[node name="Row1" type="HBoxContainer" parent="UI Canvas/Main_Control/UI/Player_Display/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Row2" type="HBoxContainer" parent="UI Canvas/Main_Control/UI/Player_Display/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Version" type="RichTextLabel" parent="UI Canvas/Main_Control/UI"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -85.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+bbcode_enabled = true
+text = "Version 0.0.3"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/UI" groups=["Buttons"]]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -48.0
+offset_top = 12.0
+offset_right = 468.0
+offset_bottom = 528.0
+grow_horizontal = 0
+scale = Vector2(0.07, 0.07)
+mouse_filter = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1o46k")
+disabled = true
+icon = ExtResource("7_v0cpn")
+expand_icon = true
+script = SubResource("GDScript_s8lf3")
+
+[node name="MuteButton" type="Button" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -59.9999
+offset_top = 63.0
+offset_right = 150.0
+offset_bottom = 227.0
+grow_horizontal = 0
+scale = Vector2(0.3, 0.3)
+focus_mode = 0
+mouse_filter = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tj6g6")
+disabled = true
+flat = true
+script = SubResource("GDScript_bdb2u")
+mute_icon = NodePath("mute_icon")
+
+[node name="mute_icon" type="AnimatedSprite2D" parent="UI Canvas/Main_Control/UI/MuteButton"]
+sprite_frames = SubResource("SpriteFrames_5d341")
+centered = false
 
 [node name="MainMenu" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -737,42 +752,43 @@ stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43537" to="SpawnersLayer/@Button@43537" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43538" to="SpawnersLayer/@Button@43538" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43539" to="SpawnersLayer/@Button@43539" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43540" to="SpawnersLayer/@Button@43540" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43541" to="SpawnersLayer/@Button@43541" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43542" to="SpawnersLayer/@Button@43542" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43543" to="SpawnersLayer/@Button@43543" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43544" to="SpawnersLayer/@Button@43544" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43545" to="SpawnersLayer/@Button@43545" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43546" to="SpawnersLayer/@Button@43546" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43547" to="SpawnersLayer/@Button@43547" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43548" to="SpawnersLayer/@Button@43548" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43549" to="SpawnersLayer/@Button@43549" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43550" to="SpawnersLayer/@Button@43550" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43551" to="SpawnersLayer/@Button@43551" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43552" to="SpawnersLayer/@Button@43552" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43553" to="SpawnersLayer/@Button@43553" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43554" to="SpawnersLayer/@Button@43554" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43555" to="SpawnersLayer/@Button@43555" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43556" to="SpawnersLayer/@Button@43556" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43557" to="SpawnersLayer/@Button@43557" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43558" to="SpawnersLayer/@Button@43558" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43559" to="SpawnersLayer/@Button@43559" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43560" to="SpawnersLayer/@Button@43560" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43561" to="SpawnersLayer/@Button@43561" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43562" to="SpawnersLayer/@Button@43562" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43563" to="SpawnersLayer/@Button@43563" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43564" to="SpawnersLayer/@Button@43564" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43565" to="SpawnersLayer/@Button@43565" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43566" to="SpawnersLayer/@Button@43566" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@43567" to="SpawnersLayer/@Button@43567" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/UI/MuteButton" to="UI Canvas/UI/MuteButton" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22059" to="SpawnersLayer/@Button@22059" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22060" to="SpawnersLayer/@Button@22060" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22061" to="SpawnersLayer/@Button@22061" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22062" to="SpawnersLayer/@Button@22062" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22063" to="SpawnersLayer/@Button@22063" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22064" to="SpawnersLayer/@Button@22064" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22065" to="SpawnersLayer/@Button@22065" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22066" to="SpawnersLayer/@Button@22066" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22067" to="SpawnersLayer/@Button@22067" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22068" to="SpawnersLayer/@Button@22068" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22069" to="SpawnersLayer/@Button@22069" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22070" to="SpawnersLayer/@Button@22070" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22071" to="SpawnersLayer/@Button@22071" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22072" to="SpawnersLayer/@Button@22072" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22073" to="SpawnersLayer/@Button@22073" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22074" to="SpawnersLayer/@Button@22074" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22075" to="SpawnersLayer/@Button@22075" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22076" to="SpawnersLayer/@Button@22076" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22077" to="SpawnersLayer/@Button@22077" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22078" to="SpawnersLayer/@Button@22078" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22079" to="SpawnersLayer/@Button@22079" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22080" to="SpawnersLayer/@Button@22080" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22081" to="SpawnersLayer/@Button@22081" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22082" to="SpawnersLayer/@Button@22082" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22083" to="SpawnersLayer/@Button@22083" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22084" to="SpawnersLayer/@Button@22084" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22085" to="SpawnersLayer/@Button@22085" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22086" to="SpawnersLayer/@Button@22086" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22087" to="SpawnersLayer/@Button@22087" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22088" to="SpawnersLayer/@Button@22088" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22089" to="SpawnersLayer/@Button@22089" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/UI/RestartButton" to="UI Canvas/Main_Control/UI/RestartButton" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
-[connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
+[connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/Main_Control/UI/Player_Display" method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
