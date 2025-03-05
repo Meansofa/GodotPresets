@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://diimhw6lk5yth"]
+[gd_scene load_steps=7 format=3 uid="uid://diimhw6lk5yth"]
 
 [ext_resource type="Theme" uid="uid://cd3emeqj5ahbc" path="res://Themes/Cell_Spawner.tres" id="1_xf86b"]
 [ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://Scenes/cell.tscn" id="1_y6xxv"]
+[ext_resource type="AudioStream" uid="uid://yi7ubx4tkhdc" path="res://Assets/SFX/spawn_cell.wav" id="3_5g6sr"]
+[ext_resource type="AudioStream" uid="uid://3wq56mcmgtvc" path="res://Assets/SFX/pop_cell.wav" id="4_juoew"]
 
 [sub_resource type="GDScript" id="GDScript_p5304"]
 script/source = "extends Button
@@ -9,6 +11,10 @@ script/source = "extends Button
 @export var cell : PackedScene
 @export var center : CenterContainer
 @export var area_2d : Area2D
+
+@export_category(\"Sound Effects\")
+@export var spawn_sound : AudioStream
+@export var pop_sound : AudioStream
 
 var cells = [] 
 var spawner_owner := -1 : #who currently is the owner of this spawner, -1 if there is no owner
@@ -26,10 +32,10 @@ var spawner_directions : Array[Vector2] :#where cells can go when it pops, to av
 		else:
 			spawner_type = \"Inner\"
 
-var spawn_sound = load(\"res://Assets/mixkit-message-pop-alert-2354.mp3\")
-var pop_sound = load(\"res://Assets/mixkit-hard-pop-click-2364.wav\")
+var audioPlayer = AudioPlayerFunctions.new()
 
 func _ready() -> void:
+	add_child(audioPlayer)
 	GameState.connect(\"restart\", _restart)
 
 func _on_pressed() -> void:
@@ -39,6 +45,7 @@ func _on_pressed() -> void:
 
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells() #add a cell to account for the press
+		audioPlayer.play_sound(spawn_sound)
 		PlayerData.next_player() #switch to the next player in queue
 
 func spawn_cell():
@@ -51,12 +58,10 @@ func spawn_cell():
 	cell_instance.scale = self.scale
 	
 	for i in cells.size(): #change cell's shake based on the amount of cells
-		cells[i].change_phase(cells.size())
 		cells[i].change_shake(cells.size() * 0.15)
 		cells[i].change_intensity(cells.size() * 0.15)
 	
 	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
-	play_sound(spawn_sound)
 
 func check_cells(): #check how many cells you have and either add or pop
 	if spawner_directions.is_empty(): #if this spawner doesnt have directions yet(directions that the cells can go when it pops)
@@ -74,7 +79,7 @@ func pop(): #launch the cells in adjacent directions
 		PlayerData.calculate_cell_count(spawner_owner, -1) #remove cell count on the player -1 for each cells since they're now popped
 	cells.clear() #clear the array of cells
 	spawner_owner = -1 #since there are no more cells in this spawner means there are no owners
-	play_sound(pop_sound)
+	audioPlayer.play_sound(pop_sound)
 
 func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
 	if body.is_in_group(\"Cell\"): #Check if a cell enters
@@ -101,22 +106,6 @@ func _restart():
 		cells[i].queue_free()
 	cells.clear()
 	spawner_owner = -1
-
-func play_sound(stream : AudioStream):
-	 # Step 1: Create a new AudioStreamPlayer
-	var audio_player = AudioStreamPlayer.new()
-	
-	# Step 3: Set the audio stream to the AudioStreamPlayer
-	audio_player.stream = stream
-	
-	# Step 4: Add the audio player to the scene tree
-	add_child(audio_player)
-	
-	# Step 5: Play the audio
-	audio_player.play()
-	
-	# Optional: Queue free the audio player after it's done playing if it's a one-time sound
-	audio_player.connect(\"finished\", audio_player.queue_free)
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
@@ -138,6 +127,8 @@ script = SubResource("GDScript_p5304")
 cell = ExtResource("1_y6xxv")
 center = NodePath("CenterContainer")
 area_2d = NodePath("CenterContainer/Area2D")
+spawn_sound = ExtResource("3_5g6sr")
+pop_sound = ExtResource("4_juoew")
 metadata/_edit_use_anchors_ = true
 
 [node name="CenterContainer" type="CenterContainer" parent="."]

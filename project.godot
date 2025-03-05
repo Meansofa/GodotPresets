@@ -12,23 +12,27 @@ config_version=5
 
 config/name="Chain Reaction"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+config/icon="uid://5x6gcisq3ddl"
 
 [autoload]
 
-PlayerData="*res://player_data.gd"
-GameState="*res://Game_State.gd"
-Inventory="res://V0_0_1 Scenes/Inventory.gd"
+PlayerData="*res://Scripts/Global Scripts/player_data.gd"
+GameState="*res://Scripts/Global Scripts/Game_State.gd"
 Shaker="*res://addons/shaker/src/Shaker.gd"
 
 [display]
 
 window/size/viewport_width=960.0
 window/size/viewport_height=540.0
+window/size/transparent=true
 window/size/window_width_override=640.0
 window/size/window_height_override=360.0
 window/stretch/mode="canvas_items"
+
+[editor]
+
+movie_writer/movie_file="C:/Users/Admin/Documents/Godot Games/MovieMaker/ChainReaction/ChainReactionFootage.avi"
 
 [editor_plugins]
 
@@ -37,6 +41,7 @@ enabled=PackedStringArray("res://addons/shaker/plugin.cfg")
 [global_group]
 
 Cell=""
+Buttons=""
 
 [input]
 
@@ -59,3 +64,4 @@ Escape={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+viewport/transparent_background=true

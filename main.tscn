@@ -1,16 +1,15 @@
 [gd_scene load_steps=37 format=4 uid="uid://cunlaacoggqyv"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_pihtv"]
-[ext_resource type="Script" path="res://zoom_camera.gd" id="2_i3drp"]
+[ext_resource type="Script" uid="uid://cow608qcxtkcm" path="res://main.gd" id="1_pihtv"]
+[ext_resource type="Script" uid="uid://1ocx2kqcmuqm" path="res://Scripts/zoom_camera.gd" id="2_i3drp"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="3_4xfu3"]
-[ext_resource type="Script" path="res://Map.gd" id="4_0b7oy"]
+[ext_resource type="Script" uid="uid://bxahqirdiwl02" path="res://Scripts/Map.gd" id="4_0b7oy"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/OuterWilds.tres" id="5_vutah"]
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_5gkat"]
-[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://restart_icon.png" id="7_v0cpn"]
-[ext_resource type="Texture2D" uid="uid://5j8echwc54ik" path="res://Assets/sound.png" id="9_lnweu"]
+[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://Assets/Icons/restart_icon.png" id="7_v0cpn"]
+[ext_resource type="AudioStream" uid="uid://cntads1w7sujf" path="res://Assets/SFX/button_click.wav" id="10_4c57u"]
 [ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="10_tt22l"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="11_gi1ht"]
-[ext_resource type="AudioStream" uid="uid://chhu2uycig58p" path="res://Assets/chill-abstract_intention-12099.mp3" id="19_fntxg"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 resource_name = "Spawner"
@@ -138,11 +137,9 @@ func _on_pressed() -> void:
 "
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6575x"]
-atlas = ExtResource("9_lnweu")
 region = Rect2(0, 0, 200, 200)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s474w"]
-atlas = ExtResource("9_lnweu")
 region = Rect2(200, 0, 200, 200)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_5d341"]
@@ -399,12 +396,29 @@ func _restart():
 	material = null
 "
 
+[sub_resource type="GDScript" id="GDScript_efxa6"]
+resource_name = "Group  SFX Button"
+script/source = "extends AudioStreamPlayer
+
+var audioPlayer = AudioPlayerFunctions.new()
+
+func _ready()->void:
+	add_child(audioPlayer)
+	var buttons: Array = get_tree().get_nodes_in_group(\"Buttons\")
+	print(\"buttons: \", buttons)
+	for button in buttons:
+		print(\"button.name: \", button.name)
+		button.connect(\"pressed\", on_button_pressed)
+
+func on_button_pressed()->void:
+	audioPlayer.play_sound(stream)
+"
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_pihtv")
 
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
-position = Vector2(1, 2)
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAIAAQAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAIAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
 script = ExtResource("4_0b7oy")
@@ -426,6 +440,7 @@ theme = ExtResource("5_vutah")
 script = SubResource("GDScript_ukba4")
 width = 960
 height = 540
+metadata/_edit_lock_ = true
 
 [node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/UI" node_paths=PackedStringArray("row_1", "row_2")]
 layout_mode = 1
@@ -439,11 +454,13 @@ script = SubResource("GDScript_gh0i5")
 player1_scene = ExtResource("6_5gkat")
 row_1 = NodePath("VBoxContainer/Row1")
 row_2 = NodePath("VBoxContainer/Row2")
+metadata/_edit_lock_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/UI/Player_Display"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 120
+metadata/_edit_lock_ = true
 
 [node name="Row1" type="HBoxContainer" parent="UI Canvas/UI/Player_Display/VBoxContainer"]
 layout_mode = 2
@@ -475,7 +492,7 @@ text = "Version 0.0.0"
 fit_content = true
 autowrap_mode = 0
 
-[node name="RestartButton" type="Button" parent="UI Canvas/UI"]
+[node name="RestartButton" type="Button" parent="UI Canvas/UI" groups=["Buttons"]]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -491,7 +508,7 @@ icon = ExtResource("7_v0cpn")
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
-[node name="MuteButton" type="Button" parent="UI Canvas/UI" node_paths=PackedStringArray("mute_icon")]
+[node name="MuteButton" type="Button" parent="UI Canvas/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -531,6 +548,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_gi1ht")
 script = SubResource("GDScript_u0i5i")
+metadata/_edit_lock_ = true
 
 [node name="MainMenu" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -571,7 +589,7 @@ text = "
 "
 fit_content = true
 
-[node name="Start" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer"]
+[node name="Start" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer" groups=["Buttons"]]
 layout_mode = 2
 text = "Start
 "
@@ -587,7 +605,7 @@ text = "Players : "
 fit_content = true
 autowrap_mode = 0
 
-[node name="Amount" type="OptionButton" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count"]
+[node name="Amount" type="OptionButton" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count" groups=["Buttons"]]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
@@ -669,7 +687,7 @@ script = SubResource("GDScript_u5s5v")
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/Restart"]
+[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/Restart" groups=["Buttons"]]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -704,14 +722,17 @@ height = 540
 metadata/_edit_lock_ = true
 
 [node name="Background Audio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("19_fntxg")
+
+[node name="Buttons SFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_4c57u")
+script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="UI Canvas/UI/RestartButton" to="UI Canvas/UI/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/UI/MuteButton" to="UI Canvas/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Start" method="_on_pressed"]
 [connection signal="item_selected" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Player_Count/Amount" to="UI Canvas/UI/Player_Display" method="_on_option_button_item_selected"]
-[connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
+[connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/VBoxContainer/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]

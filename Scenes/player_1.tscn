@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cs86oyinomu1d"]
+[gd_scene load_steps=6 format=3 uid="uid://cs86oyinomu1d"]
 
 [sub_resource type="Shader" id="Shader_pv65v"]
 code = "shader_type canvas_item;
@@ -65,38 +65,6 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.25)
 
-[sub_resource type="GDScript" id="GDScript_pgm1i"]
-resource_name = "Player_texture"
-script/source = "@tool
-extends TextureRect
-
-@export var face : Sprite2D
-@export var face_texture : CompressedTexture2D :
-	set(value):
-		if value == null:
-			return
-		print(\"Face set: \", value)
-		face_texture = value
-		change_skin(face_texture)
-
-func change_skin(skin_texture : CompressedTexture2D):
-	if skin_texture == null:
-		face.texture = null
-		return
-	if face.texture == null:
-		face.texture = skin_texture
-		return
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-"
-
 [sub_resource type="GDScript" id="GDScript_by5qy"]
 resource_name = "player_name"
 script/source = "extends RichTextLabel
@@ -105,11 +73,9 @@ func _ready() -> void:
 	text = \"[center]\" + \"Player \" + str(PlayerData.players.size() + 1)
 "
 
-[node name="Player 1" type="TextureRect" node_paths=PackedStringArray("face")]
+[node name="Player 1" type="TextureRect"]
 material = SubResource("ShaderMaterial_8kt3m")
 texture = SubResource("GradientTexture2D_qjwgr")
-script = SubResource("GDScript_pgm1i")
-face = NodePath("face")
 
 [node name="player_name" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -126,8 +92,3 @@ text = "[center]Player 1"
 fit_content = true
 autowrap_mode = 0
 script = SubResource("GDScript_by5qy")
-
-[node name="face" type="Sprite2D" parent="."]
-position = Vector2(32, 30)
-scale = Vector2(0.3, 0.3)
-hframes = 3
