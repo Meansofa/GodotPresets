@@ -57,7 +57,7 @@ shader_parameter/Shift_Hue = 0.0
 
 [sub_resource type="Gradient" id="Gradient_hchrr"]
 offsets = PackedFloat32Array(0.355263, 0.453947, 0.539474, 1, 5)
-colors = PackedColorArray(1, 0, 0.0941176, 1, 1, 0, 0.0941176, 1, 0.219501, 0.219501, 0.219501, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+colors = PackedColorArray(1, 0, 0.0941176, 1, 1, 0, 0.0166664, 1, 0.219501, 0.219501, 0.219501, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_qjwgr"]
 gradient = SubResource("Gradient_hchrr")

@@ -122,6 +122,7 @@ pivot_offset = Vector2(48, 48)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 0
+mouse_default_cursor_shape = 2
 theme = ExtResource("1_xf86b")
 script = SubResource("GDScript_p5304")
 cell = ExtResource("1_y6xxv")
