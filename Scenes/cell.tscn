@@ -44,8 +44,8 @@ func pop(direction : Vector2):
 radius = 0.01
 
 [sub_resource type="Gradient" id="Gradient_hchrr"]
-offsets = PackedFloat32Array(0.355263, 0.453947, 0.539474, 1, 5)
-colors = PackedColorArray(1, 0, 0.0941176, 1, 1, 0, 0.0941176, 1, 0.219501, 0.219501, 0.219501, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0.355263, 0.453947, 0.526316, 0.559211, 0.592105, 1, 5)
+colors = PackedColorArray(1, 0, 0.0941176, 1, 1, 0, 0.0941176, 1, 0.791866, 0.0585339, 0.127553, 0.733332, 0.438723, 0.438723, 0.438723, 0, 0.219501, 0.219501, 0.219501, 0, 0.631373, 0.631373, 0.631373, 0, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_mknqo"]
 gradient = SubResource("Gradient_hchrr")

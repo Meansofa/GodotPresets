@@ -5,7 +5,7 @@ var main_menu_zoom : float = 0.5
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	GameState.connect("restart", _restart)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -25,3 +25,6 @@ func _on_main_menu_visibility_changed() -> void:
 	if !%MainMenu.visible: #once the main menu is not visible return to natural zoom
 		zoom = zoom * 2
 		print(self.name, ">camera zoom: ", zoom)
+
+func _restart(): #revert the zoom to normal
+	zoom = zoom * main_menu_zoom

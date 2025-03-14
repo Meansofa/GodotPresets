@@ -1,15 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://diimhw6lk5yth"]
+[gd_scene load_steps=9 format=3 uid="uid://diimhw6lk5yth"]
 
 [ext_resource type="Theme" uid="uid://cd3emeqj5ahbc" path="res://Themes/Cell_Spawner.tres" id="1_xf86b"]
 [ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://Scenes/cell.tscn" id="1_y6xxv"]
 [ext_resource type="AudioStream" uid="uid://yi7ubx4tkhdc" path="res://Assets/SFX/spawn_cell.wav" id="3_5g6sr"]
 [ext_resource type="AudioStream" uid="uid://3wq56mcmgtvc" path="res://Assets/SFX/pop_cell.wav" id="4_juoew"]
+[ext_resource type="Material" uid="uid://dj2nlqquchnfu" path="res://Themes/canvasborder_shader.tres" id="5_juoew"]
 
 [sub_resource type="GDScript" id="GDScript_p5304"]
 script/source = "extends Button
 
+@export_category(\"Child Nodes\")
 @export var cell : PackedScene
 @export var center : CenterContainer
+@export var cells_parent : CanvasGroup
 @export var area_2d : Area2D
 
 @export_category(\"Sound Effects\")
@@ -37,6 +40,7 @@ var audioPlayer = AudioPlayerFunctions.new()
 func _ready() -> void:
 	add_child(audioPlayer)
 	GameState.connect(\"restart\", _restart)
+	PlayerData.connect(\"player_change\", _is_current_player_spawner_owner)
 
 func _on_pressed() -> void:
 	if spawner_owner == -1: #if no owner of this spawner, 
@@ -48,9 +52,17 @@ func _on_pressed() -> void:
 		audioPlayer.play_sound(spawn_sound)
 		PlayerData.next_player() #switch to the next player in queue
 
+func _is_current_player_spawner_owner(): # if the current player is the owner
+	if spawner_owner == PlayerData.current_player: 
+		cells_parent.add_border()
+		return true
+	else:
+		cells_parent.remove_border()
+		return false
+
 func spawn_cell():
 	var cell_instance = cell.instantiate() #create an instance of the cell
-	center.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the center(to spawn to center)
+	cells_parent.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the cells_parent(to spawn to center)
 	cells.append(cell_instance) #append to the cells array
 	
 	cell_instance.set(\"parent_ref\", self) #brand the cell as your own child
@@ -111,7 +123,23 @@ func _restart():
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
 radius = 32.0
 
-[node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "area_2d")]
+[sub_resource type="GDScript" id="GDScript_v6jyy"]
+resource_name = "cells_parent"
+script/source = "extends CanvasGroup
+
+@export var shader_material : Material
+
+#func _ready() -> void:
+	#PlayerData.connect(\"player_change\", )
+
+func add_border():
+	material = shader_material
+
+func remove_border():
+	material = null
+"
+
+[node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "cells_parent", "area_2d")]
 z_index = -1
 custom_minimum_size = Vector2(96, 96)
 offset_left = -48.0
@@ -127,6 +155,7 @@ theme = ExtResource("1_xf86b")
 script = SubResource("GDScript_p5304")
 cell = ExtResource("1_y6xxv")
 center = NodePath("CenterContainer")
+cells_parent = NodePath("CenterContainer/CellsParent")
 area_2d = NodePath("CenterContainer/Area2D")
 spawn_sound = ExtResource("3_5g6sr")
 pop_sound = ExtResource("4_juoew")
@@ -149,6 +178,11 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CenterContainer/Area2D"]
 shape = SubResource("CircleShape2D_1wp5y")
+
+[node name="CellsParent" type="CanvasGroup" parent="CenterContainer"]
+material = ExtResource("5_juoew")
+script = SubResource("GDScript_v6jyy")
+shader_material = ExtResource("5_juoew")
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
 [connection signal="body_entered" from="CenterContainer/Area2D" to="." method="_on_area_2d_body_entered"]
