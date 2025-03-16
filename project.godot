@@ -10,10 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Chain Reaction"
+config/name="Chain Reaction : Expanded"
+config/description="The good old classic Chain Reaction Game with more to offer for players."
+config/version="0.0.3"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="uid://5x6gcisq3ddl"
+boot_splash/bg_color=Color(0.0588235, 0.0156863, 0, 1)
+boot_splash/image="uid://bmw15b42dc46g"
+config/icon="uid://bmw15b42dc46g"
 
 [autoload]
 

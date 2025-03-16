@@ -22,6 +22,7 @@ signal player_change #emit signal everytime the current player has changed
 signal game_finished #when there is a winner
 signal player_count_changed #emitted when the amount of players when choosing how many players to play changes
 
+
 func _ready() -> void:
 	print(self.name, "> Instantiated")
 	GameState.connect("restart", _restart)
