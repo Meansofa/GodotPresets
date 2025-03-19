@@ -16,32 +16,39 @@ var simulation_playing : bool #True everytime the simulation(chain reaction) is 
 var simulation_time : float : #When reaches zero meaning the simulation is done, for every chain reaction the timer resets
 	set(value):
 		simulation_time = value
-		simulation_playing = true
+		if simulation_time > 0:
+			simulation_playing = true
 var simulation_total_time : float
-
-
 
 signal player_change #emit signal everytime the current player has changed
 signal game_finished #when there is a winner
 signal player_count_changed #emitted when the amount of players when choosing how many players to play changes
 
-#func _input(event: InputEvent) -> void:
-	#if Input.is_key_pressed(KEY_9):
-		#check_eliminations()
+func _input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_9):
+		print(self.name, ">KEY_9 pressed")
+		check_eliminations()
+	if Input.is_key_pressed(KEY_8):
+		print(self.name, ">KEY_8 pressed")
+		_print_datas()
 
 func _ready() -> void:
 	print(self.name, "> Instantiated")
 	GameState.connect("restart", _restart)
+	GameState.connect("start", clear_cells)
 
 func _process(delta: float) -> void:
+	if GameState.Game_Over:
+		return
 	if simulation_playing: #If simulation is occuring
 		if simulation_time > 0.0:#run simulation until simulation time reaches zero
 			simulation_time -= delta #reduces simulation time
 			simulation_total_time += delta
-			if simulation_total_time > 5:
+			if simulation_total_time > 3: #if you think that the simulation is taking so long, check if it's been going on a loop and there is already a winner
 				check_eliminations()
 
 		else:#when reaches zero 
+			print("WHY")
 			print(self.name, ">Simulation finished")
 			simulation_playing = false #simulation is done
 
@@ -55,7 +62,7 @@ func reset_simulation_timer(): #the board is still simulating and  player can't 
 	#print(self.name, ">Simulation start")
 
 func check_eliminations():
-	print("simulation_total_time: ", simulation_total_time)
+	print(self.name, ">simulation_total_time: ", simulation_total_time)
 	
 	for i in players.size(): #Check if there are any more players eliminated after the simulation
 		is_player_still_inGame(i)
@@ -97,12 +104,16 @@ func calculate_cell_count(player : int, value : int): #called everytime a cell i
 	#print(self.name, ">Cell Counts> ", players_cell_count)
 
 func is_player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
+	print(self.name, ">player: ", player)
 	if players[player] == null:
 		return false
+	
+	print(self.name, ">registered_players: ", registered_players)
 	if not registered_players.has(player): #check if this player is not yet registered(player have already put their first cell)
 		_register_player(player) #if not registered, register the player by adding it's index in the array 
 		return true
-
+	
+	print(self.name, ">registered_players2: ", registered_players)
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print(self.name, ">Player ", player + 1, " Lost!")
 		players[player].queue_free()
@@ -133,15 +144,14 @@ func check_winner():
 
 func _restart():
 	print(self.name, ">_restart")
+	_print_datas()
+	
 	if players != []: #remove all players from the players array
 		for player in players:
 			if player != null:
 				player.queue_free() #delete them before erasing the array
 	
-	var Cells = get_tree().get_nodes_in_group("Cell") #Erase all cells by calling all Cell group
-	for cell in Cells:
-		cell.queue_free()
-
+	clear_cells()
 	players = [] #holds the amount of players and there corresponding color, no values on restart
 	current_player = 0 #index of the current player, changes upon pressing a grid from cell_spawner script
 	previous_player = 0 #used to check who was the last player that pressed the spawner
@@ -149,3 +159,34 @@ func _restart():
 	registered_players = [] #players who have registered, meaning they've already put their first cell
 	players_cell_count = {} #how many cells each registered players have
 	amount_of_players_still_in_game = 0 #amount of players that are still in game
+	simulation_playing = false
+	simulation_time = 0
+	simulation_total_time = 0 
+	
+	_print_datas()
+
+func clear_cells():
+	var Cells = get_tree().get_nodes_in_group("Cell") #Erase all cells by calling all Cell group
+	for cell in Cells:
+		cell.queue_free()
+
+func _print_datas():
+	print(self.name, ">players: ", players, " current_player: ", current_player, " previous_player: ", previous_player, " registered_players: ", registered_players, " players_cell_count: ", players_cell_count, " amount_of_players_still_in_game: ", amount_of_players_still_in_game, " simulation_total_time: ", simulation_total_time, " simulation_playing: ", simulation_playing, " simulation_time: ", simulation_time)
+ 
+#RESTART BUTTON
+#PlayerData>_restart
+#PlayerData>players: [<null>, Player 2:<TextureRect#44761613916>] current_player: 1 previous_player: 1 registered_players: [0, 1] players_cell_count: { 0: 0, 1: 78 } amount_of_players_still_in_game: 1 simulation_total_time: 0.0 simulation_playing: true simulation_time: 0.14579044444444
+#PlayerData>players: [] current_player: 0 previous_player: 0 registered_players: [] players_cell_count: {  } amount_of_players_still_in_game: 0 simulation_total_time: 0.0 simulation_playing: false simulation_time: 0.0
+#GameState> Game Restarted!
+#Player_Display> Players Amount: 2
+#START BUTTON
+#@Button@135>spawner_owner: -1
+#PlayerData>player: 0
+#PlayerData>registered_players: []
+#PlayerData>Player 1 registered!
+#@Button@135>spawner_owner2: 0
+#@Button@31>spawner_owner: -1
+#PlayerData>player: 1
+#PlayerData>registered_players: [0]
+#PlayerData>Player 2 registered!
+#PlayerData>all players are registered!

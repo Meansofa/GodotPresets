@@ -25,7 +25,7 @@ func play_sound(stream : AudioStream):
 	audio_player.connect("finished", _remove_audio_player.bind(audio_player))
 
 func _remove_audio_player(audio_player : AudioStreamPlayer):
-	print("audio_player: ", audio_player)
+	#print("audio_player: ", audio_player)
 	remove_child(audio_player)
 	audio_player.queue_free()
-	print("audio_player removed: ", audio_player)
+	#print("audio_player removed: ", audio_player)

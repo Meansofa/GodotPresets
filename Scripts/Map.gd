@@ -14,7 +14,7 @@ var bottom_row : int = 0
 var left_column : int = 0
 var right_column : int = 0
 
-var last_value : int
+var last_value := -1
 
 signal map_size_changed
 
@@ -133,10 +133,8 @@ func _on_map_size_value_changed(value: int) -> void:
 	var additional_rows : int
 	match value:
 		0: 
-			additional_columns = 2
-			additional_rows = 1
-			#additional_columns = 5
-			#additional_rows = 3
+			additional_columns = 5
+			additional_rows = 3
 		20:
 			additional_columns = 6
 			additional_rows = 3
