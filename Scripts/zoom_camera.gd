@@ -14,8 +14,8 @@ func _process(delta: float) -> void:
 
 
 func _on_h_slider_value_changed(value: float) -> void:
-	zoom.x = (1.0 - value * 0.01)
-	zoom.y = (1.0 - value * 0.01)
+	zoom.x = (1.0 - value * 0.01) - 0.01
+	zoom.y = (1.0 - value * 0.01) - 0.01
 	
 	zoom = zoom * main_menu_zoom
 	print(self.name, ">camera zoom: ", zoom)
@@ -27,4 +27,4 @@ func _on_main_menu_visibility_changed() -> void:
 		print(self.name, ">camera zoom: ", zoom)
 
 func _restart(): #revert the zoom to normal
-	zoom = zoom * main_menu_zoom
+	zoom = zoom * main_menu_zoom 

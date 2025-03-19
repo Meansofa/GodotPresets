@@ -110,7 +110,7 @@ func calculate_cell_count(): #Calculate the cell count for the player's cells
 	PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
 
 	check_cells() #add a cell to account for the cell that just entered but deleted after
-	PlayerData.reset_simulation_timer()
+	PlayerData.cell_was_popped() #call when a cell was just popped to say that the board is still in simulation
 
 func _change_player(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
 	for i in cells.size():

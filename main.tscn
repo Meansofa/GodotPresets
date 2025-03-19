@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=35 format=4 uid="uid://cunlaacoggqyv"]
 
 [ext_resource type="Script" uid="uid://cow608qcxtkcm" path="res://main.gd" id="1_pihtv"]
 [ext_resource type="Script" uid="uid://1ocx2kqcmuqm" path="res://Scripts/zoom_camera.gd" id="2_i3drp"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://bxahqirdiwl02" path="res://Scripts/Map.gd" id="4_0b7oy"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/MainMenu.tres" id="5_vutah"]
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_5gkat"]
-[ext_resource type="Texture2D" uid="uid://dnm43a2vcl30d" path="res://Assets/Icons/restart_icon.png" id="7_v0cpn"]
 [ext_resource type="AudioStream" uid="uid://cntads1w7sujf" path="res://Assets/SFX/button_click.wav" id="10_4c57u"]
 [ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="10_tt22l"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="11_gi1ht"]
@@ -117,28 +116,6 @@ func change_players_colors():
 
 func _restart():
 	change_players(player_amount)
-"
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1o46k"]
-
-[sub_resource type="GDScript" id="GDScript_s8lf3"]
-resource_name = "RestartButton"
-script/source = "extends Button
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func _on_pressed() -> void:
-	%WinnerPanel.visible = false
-	GameState.emit_signal(\"restart\")
 "
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tj6g6"]
@@ -297,22 +274,57 @@ extends Control
 			size = Vector2(height, width)
 		else:
 			size = Vector2(width, height)
-"
 
-[sub_resource type="GDScript" id="GDScript_u5s5v"]
-resource_name = "WinnerLabel"
-script/source = "extends RichTextLabel
-
-var winner
-signal game_finished
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	get_parent().visible = false
-	PlayerData.connect(\"game_finished\", _show_winner_panel)
+	get_tree().paused = false
+	self.visible = false
+	PlayerData.connect(\"game_finished\", _Win)
+	GameState.connect(\"restart\", _restart)
+	
 
-func _show_winner_panel(player : String):
-	text = \"[center][b][i]\" + player + \" Won!\"
-	get_parent().visible = true
+func _restart():
+	self.visible = false
+
+func _Win(player : String):
+	%WinnerLabel.text = \"[center][b][i]\" + player + \" Won!\"
+	get_tree().paused = true
+	self.visible = true
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_s8lf3"]
+resource_name = "RestartButton"
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_pressed() -> void:
+	_restart()
+
+func _restart():
+	get_tree().paused = false
+	GameState.emit_signal(\"restart\")
+"
+
+[sub_resource type="GDScript" id="GDScript_kek77"]
+resource_name = "In_Game_UI_Panel"
+script/source = "extends Control
+
+func _ready() -> void:
+	GameState.connect(\"restart\", _restart)
+
+func _restart():
+	self.visible = false
 "
 
 [sub_resource type="GDScript" id="GDScript_4c57u"]
@@ -323,7 +335,8 @@ func _ready() -> void:
 	PlayerData.connect(\"player_change\", change_player)
 
 func change_player():
-	text = \"[center]Player \" + str(PlayerData.current_player + 1) + \"'s Turn\"
+	
+	text = \"[center]Player [b][i]\" + str(PlayerData.current_player + 1) + \"[/i][/b] 's Turn\"
 "
 
 [sub_resource type="Shader" id="Shader_v2yx8"]
@@ -543,26 +556,6 @@ text = "Version 0.0.3"
 fit_content = true
 autowrap_mode = 0
 
-[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/UI" groups=["Buttons"]]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -48.0
-offset_top = 12.0
-offset_right = 468.0
-offset_bottom = 528.0
-grow_horizontal = 0
-scale = Vector2(0.07, 0.07)
-mouse_filter = 2
-mouse_default_cursor_shape = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1o46k")
-disabled = true
-icon = ExtResource("7_v0cpn")
-expand_icon = true
-script = SubResource("GDScript_s8lf3")
-
 [node name="MuteButton" type="Button" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
 layout_mode = 1
 anchors_preset = 1
@@ -733,19 +726,20 @@ grow_vertical = 2
 script = SubResource("GDScript_jgltk")
 
 [node name="WinnerLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/WinnerPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/bold_italics_font_size = 32
 bbcode_enabled = true
 text = "[center][b][i]Winner!"
 fit_content = true
 autowrap_mode = 0
-script = SubResource("GDScript_u5s5v")
 
 [node name="Restart" type="Panel" parent="UI Canvas/Main_Control/WinnerPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 
 [node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/Restart" groups=["Buttons"]]
+process_mode = 3
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -766,22 +760,40 @@ anchors_preset = 0
 offset_right = 960.0
 offset_bottom = 540.0
 mouse_filter = 2
+script = SubResource("GDScript_kek77")
 
-[node name="Player_Turn" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
+[node name="North" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
 custom_minimum_size = Vector2(960, 0)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+theme = ExtResource("5_vutah")
+
+[node name="Player_Turn" type="PanelContainer" parent="UI Canvas/In_Game_UI/North"]
+layout_mode = 2
 mouse_filter = 2
 
-[node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/Player_Turn"]
+[node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/North/Player_Turn"]
 layout_mode = 2
 mouse_filter = 2
 bbcode_enabled = true
-text = "[center]Player 1's Turn"
+text = "[center]Player [b][i]1[/i][/b] 's Turn"
 fit_content = true
 vertical_alignment = 1
 script = SubResource("GDScript_4c57u")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="UI Canvas/In_Game_UI/North"]
+layout_mode = 2
+alignment_horizontal = 0
+
+[node name="RestartButton" type="Button" parent="UI Canvas/In_Game_UI/North/AspectRatioContainer" groups=["Buttons"]]
+clip_contents = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Restart "
+alignment = 0
+expand_icon = true
+script = SubResource("GDScript_s8lf3")
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
@@ -811,39 +823,6 @@ metadata/_edit_lock_ = true
 stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111186" to="SpawnersLayer/@Button@111186" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111187" to="SpawnersLayer/@Button@111187" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111188" to="SpawnersLayer/@Button@111188" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111189" to="SpawnersLayer/@Button@111189" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111190" to="SpawnersLayer/@Button@111190" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111191" to="SpawnersLayer/@Button@111191" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111192" to="SpawnersLayer/@Button@111192" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111193" to="SpawnersLayer/@Button@111193" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111194" to="SpawnersLayer/@Button@111194" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111195" to="SpawnersLayer/@Button@111195" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111196" to="SpawnersLayer/@Button@111196" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111197" to="SpawnersLayer/@Button@111197" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111198" to="SpawnersLayer/@Button@111198" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111199" to="SpawnersLayer/@Button@111199" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111200" to="SpawnersLayer/@Button@111200" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111201" to="SpawnersLayer/@Button@111201" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111202" to="SpawnersLayer/@Button@111202" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111203" to="SpawnersLayer/@Button@111203" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111204" to="SpawnersLayer/@Button@111204" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111205" to="SpawnersLayer/@Button@111205" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111206" to="SpawnersLayer/@Button@111206" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111207" to="SpawnersLayer/@Button@111207" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111208" to="SpawnersLayer/@Button@111208" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111209" to="SpawnersLayer/@Button@111209" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111210" to="SpawnersLayer/@Button@111210" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111211" to="SpawnersLayer/@Button@111211" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111212" to="SpawnersLayer/@Button@111212" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111213" to="SpawnersLayer/@Button@111213" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111214" to="SpawnersLayer/@Button@111214" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111215" to="SpawnersLayer/@Button@111215" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@111216" to="SpawnersLayer/@Button@111216" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/Main_Control/UI/RestartButton" to="UI Canvas/Main_Control/UI/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
@@ -855,3 +834,4 @@ script = SubResource("GDScript_efxa6")
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/AI Mode" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/AI Mode" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" to="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" method="_on_pressed"]

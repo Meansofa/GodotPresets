@@ -17,11 +17,17 @@ var simulation_time : float : #When reaches zero meaning the simulation is done,
 	set(value):
 		simulation_time = value
 		simulation_playing = true
+var simulation_total_time : float
+
+
 
 signal player_change #emit signal everytime the current player has changed
 signal game_finished #when there is a winner
 signal player_count_changed #emitted when the amount of players when choosing how many players to play changes
 
+#func _input(event: InputEvent) -> void:
+	#if Input.is_key_pressed(KEY_9):
+		#check_eliminations()
 
 func _ready() -> void:
 	print(self.name, "> Instantiated")
@@ -31,19 +37,33 @@ func _process(delta: float) -> void:
 	if simulation_playing: #If simulation is occuring
 		if simulation_time > 0.0:#run simulation until simulation time reaches zero
 			simulation_time -= delta #reduces simulation time
+			simulation_total_time += delta
+			if simulation_total_time > 5:
+				check_eliminations()
+
 		else:#when reaches zero 
 			print(self.name, ">Simulation finished")
 			simulation_playing = false #simulation is done
-			
-			for i in players.size(): #Check if there are any more players eliminated after the simulation
-				is_player_still_inGame(i)
-			emit_signal("player_change") #emit signal incase there are players eliminated
-			if amount_of_players_still_in_game == 1: #Check if the amount of players left is 1, meaning that remaining player won
-				check_winner()
 
-func reset_simulation_timer():
+			check_eliminations()
+			
+func cell_was_popped(): #called when a cell was popped
+	reset_simulation_timer()
+
+func reset_simulation_timer(): #the board is still simulating and  player can't intervene yet
 	simulation_time = 0.2
 	#print(self.name, ">Simulation start")
+
+func check_eliminations():
+	print("simulation_total_time: ", simulation_total_time)
+	
+	for i in players.size(): #Check if there are any more players eliminated after the simulation
+		is_player_still_inGame(i)
+	emit_signal("player_change") #emit signal incase there are players eliminated
+	if amount_of_players_still_in_game == 1: #Check if the amount of players left is 1, meaning that remaining player won
+		check_winner()
+	
+	simulation_total_time = 0.0
 
 func add_player(player):
 	players.append(player)
@@ -67,11 +87,13 @@ func next_player():
 
 	emit_signal("player_change")
 
-func calculate_cell_count(player : int, value : int): #called everytime a cell is added or removed from a player's cell
+func calculate_cell_count(player : int, value : int): #called everytime a cell is added or removed from a player's cell. 
+	#player is the index value while value is the amount of cell to be added or removed
 	if player == -1: #-1 means there is no player
 		return
-
-	players_cell_count[player] += value #add or remove a cell to the player's cell count
+	
+	if player >= 0 and player < players_cell_count.size():
+		players_cell_count[player] += value #add or remove a cell to the player's cell count
 	#print(self.name, ">Cell Counts> ", players_cell_count)
 
 func is_player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
@@ -102,18 +124,25 @@ func _register_player(player : int):
 		amount_of_players_still_in_game = players.size()
 
 func check_winner():
+	print(self.name, ">check_winner")
 	for player in players.size():
+		#if index >= 0 and index < my_array.size()
 		if player != null and players_cell_count[player] != 0:
 			print(self.name, ">Player won!: Player ", player + 1, " with ", players_cell_count[player], " cells!")
 			emit_signal("game_finished", "Player " + str(player + 1))
 
 func _restart():
-	if players != []:
+	print(self.name, ">_restart")
+	if players != []: #remove all players from the players array
 		for player in players:
 			if player != null:
-				player.queue_free()
+				player.queue_free() #delete them before erasing the array
+	
+	var Cells = get_tree().get_nodes_in_group("Cell") #Erase all cells by calling all Cell group
+	for cell in Cells:
+		cell.queue_free()
 
-	players = [] #holds the amount of players and there corresponding color
+	players = [] #holds the amount of players and there corresponding color, no values on restart
 	current_player = 0 #index of the current player, changes upon pressing a grid from cell_spawner script
 	previous_player = 0 #used to check who was the last player that pressed the spawner
 
