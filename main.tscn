@@ -644,6 +644,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 mouse_default_cursor_shape = 2
+alignment = 1
 selected = 0
 item_count = 11
 popup/item_0/text = "2"
@@ -690,6 +691,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 max_value = 80.0
 step = 20.0
+value = 20.0
 tick_count = 5
 script = SubResource("GDScript_6iiwh")
 
@@ -797,6 +799,29 @@ alignment = 0
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
+[node name="Player_Turn2" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = -40.0
+offset_right = 480.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/Player_Turn2"]
+layout_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Player [b][i]1[/i][/b] 's Turn"
+fit_content = true
+vertical_alignment = 1
+script = SubResource("GDScript_4c57u")
+
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
@@ -826,37 +851,37 @@ stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36518" to="SpawnersLayer/@Button@36518" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36519" to="SpawnersLayer/@Button@36519" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36520" to="SpawnersLayer/@Button@36520" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36521" to="SpawnersLayer/@Button@36521" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36522" to="SpawnersLayer/@Button@36522" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36523" to="SpawnersLayer/@Button@36523" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36524" to="SpawnersLayer/@Button@36524" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36525" to="SpawnersLayer/@Button@36525" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36526" to="SpawnersLayer/@Button@36526" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36527" to="SpawnersLayer/@Button@36527" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36528" to="SpawnersLayer/@Button@36528" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36529" to="SpawnersLayer/@Button@36529" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36530" to="SpawnersLayer/@Button@36530" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36531" to="SpawnersLayer/@Button@36531" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36532" to="SpawnersLayer/@Button@36532" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36533" to="SpawnersLayer/@Button@36533" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36534" to="SpawnersLayer/@Button@36534" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36535" to="SpawnersLayer/@Button@36535" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36536" to="SpawnersLayer/@Button@36536" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36537" to="SpawnersLayer/@Button@36537" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36538" to="SpawnersLayer/@Button@36538" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36539" to="SpawnersLayer/@Button@36539" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36540" to="SpawnersLayer/@Button@36540" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36541" to="SpawnersLayer/@Button@36541" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36542" to="SpawnersLayer/@Button@36542" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36543" to="SpawnersLayer/@Button@36543" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36544" to="SpawnersLayer/@Button@36544" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36545" to="SpawnersLayer/@Button@36545" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36546" to="SpawnersLayer/@Button@36546" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36547" to="SpawnersLayer/@Button@36547" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@36548" to="SpawnersLayer/@Button@36548" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78154" to="SpawnersLayer/@Button@78154" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78155" to="SpawnersLayer/@Button@78155" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78156" to="SpawnersLayer/@Button@78156" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78157" to="SpawnersLayer/@Button@78157" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78158" to="SpawnersLayer/@Button@78158" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78159" to="SpawnersLayer/@Button@78159" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78160" to="SpawnersLayer/@Button@78160" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78161" to="SpawnersLayer/@Button@78161" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78162" to="SpawnersLayer/@Button@78162" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78163" to="SpawnersLayer/@Button@78163" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78164" to="SpawnersLayer/@Button@78164" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78165" to="SpawnersLayer/@Button@78165" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78166" to="SpawnersLayer/@Button@78166" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78167" to="SpawnersLayer/@Button@78167" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78168" to="SpawnersLayer/@Button@78168" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78169" to="SpawnersLayer/@Button@78169" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78170" to="SpawnersLayer/@Button@78170" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78171" to="SpawnersLayer/@Button@78171" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78172" to="SpawnersLayer/@Button@78172" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78173" to="SpawnersLayer/@Button@78173" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78174" to="SpawnersLayer/@Button@78174" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78175" to="SpawnersLayer/@Button@78175" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78176" to="SpawnersLayer/@Button@78176" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78177" to="SpawnersLayer/@Button@78177" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78178" to="SpawnersLayer/@Button@78178" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78179" to="SpawnersLayer/@Button@78179" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78180" to="SpawnersLayer/@Button@78180" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78181" to="SpawnersLayer/@Button@78181" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78182" to="SpawnersLayer/@Button@78182" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78183" to="SpawnersLayer/@Button@78183" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@78184" to="SpawnersLayer/@Button@78184" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]

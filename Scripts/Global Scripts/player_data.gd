@@ -62,8 +62,10 @@ func reset_simulation_timer(): #the board is still simulating and  player can't 
 	#print(self.name, ">Simulation start")
 
 func check_eliminations():
-	print(self.name, ">simulation_total_time: ", simulation_total_time)
+	print(self.name, ">simulation_total_time: ", simulation_total_time, " GameState.Game_Over: ", GameState.Game_Over)
 	
+	if GameState.Game_Over:
+		return
 	for i in players.size(): #Check if there are any more players eliminated after the simulation
 		is_player_still_inGame(i)
 	emit_signal("player_change") #emit signal incase there are players eliminated
