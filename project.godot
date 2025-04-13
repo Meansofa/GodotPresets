@@ -27,12 +27,13 @@ Shaker="*res://addons/shaker/src/Shaker.gd"
 
 [display]
 
-window/size/viewport_width=960.0
-window/size/viewport_height=540.0
+window/size/viewport_width=720
+window/size/viewport_height=1280
 window/size/transparent=true
-window/size/window_width_override=640.0
-window/size/window_height_override=360.0
+window/size/window_width_override=360
+window/size/window_height_override=640
 window/stretch/mode="canvas_items"
+window/handheld/orientation=1
 
 [editor]
 

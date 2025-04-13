@@ -133,20 +133,20 @@ func _on_map_size_value_changed(value: int) -> void:
 	var additional_rows : int
 	match value:
 		0: 
-			additional_columns = 5
-			additional_rows = 2
-		20:
-			additional_columns = 6
-			additional_rows = 3
-		40:
-			additional_columns = 8
-			additional_rows = 4
-		60:
-			additional_columns = 12
+			additional_columns = 3
 			additional_rows = 6
+		20:
+			additional_columns = 4
+			additional_rows = 7
+		40:
+			additional_columns = 5
+			additional_rows = 9
+		60:
+			additional_columns = 8
+			additional_rows = 15
 		80:
-			additional_columns = 25
-			additional_rows = 12
+			additional_columns = 15
+			additional_rows = 30
 	
 	_generate_grid(additional_columns, additional_rows)
 	

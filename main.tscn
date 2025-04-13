@@ -44,24 +44,7 @@ func _on_change_map_visibility_changed() -> void:
 "
 
 [sub_resource type="GDScript" id="GDScript_ukba4"]
-script/source = "@tool
-extends Control
-
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
+script/source = "extends Control
 
 func _ready() -> void:
 	GameState.connect(\"restart\", _restart)
@@ -166,8 +149,7 @@ animations = [{
 
 [sub_resource type="GDScript" id="GDScript_0obg5"]
 resource_name = "TitleScreen"
-script/source = "@tool
-extends Control
+script/source = "extends Control
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed(\"Escape\") and !%MainMenu.visible:
@@ -259,24 +241,7 @@ func _process(delta: float) -> void:
 
 [sub_resource type="GDScript" id="GDScript_jgltk"]
 resource_name = "WinnerPanel"
-script/source = "@tool
-extends Control
-
-@export_range(0, 1920, 320) var width: int :
-	set(value):
-		width = value
-		size.x = width
-@export_range(0, 1080, 180) var height: int :
-	set(value):
-		height = value
-		size.y = height
-@export var portrait_mode : bool :
-	set(value):
-		portrait_mode = value
-		if portrait_mode:
-			size = Vector2(height, width)
-		else:
-			size = Vector2(width, height)
+script/source = "extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -464,7 +429,7 @@ script = ExtResource("1_pihtv")
 
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
-tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAEAAQAAAAAAAAAAQAFAAQAAAAAAAAAAQAGAAQAAAAAAAAAAQAHAAQAAAAAAAAAAQAIAAQAAAAAAAAAAQAIAAMAAAAAAAAAAQAIAAIAAAAAAAAAAQAIAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAGAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAIAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAHAAIAAAAAAAAAAQA=")
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQA=")
 tile_set = SubResource("TileSet_hf2hk")
 script = ExtResource("4_0b7oy")
 
@@ -476,9 +441,11 @@ script = ExtResource("2_i3drp")
 
 [node name="Main_Control" type="Control" parent="UI Canvas"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 540.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_lock_ = true
 
@@ -497,18 +464,19 @@ metadata/_edit_lock_ = true
 
 [node name="UI" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 540.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("5_vutah")
 script = SubResource("GDScript_ukba4")
-width = 960
-height = 540
 metadata/_edit_lock_ = true
 
 [node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("row_1", "row_2")]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -586,10 +554,12 @@ centered = false
 
 [node name="MainMenu" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 540.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_0obg5")
 
@@ -617,10 +587,12 @@ theme_override_constants/separation = 12
 layout_mode = 2
 bbcode_enabled = true
 text = "
-[center][b][i]Chain Reaction : Expanded
+[center][b][i]Chain Reaction : 
+Expanded Edition
 
 "
 fit_content = true
+autowrap_mode = 0
 
 [node name="Start" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components" groups=["Buttons"]]
 layout_mode = 2
@@ -689,13 +661,14 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-max_value = 80.0
+max_value = 60.0
 step = 20.0
 value = 20.0
-tick_count = 5
+tick_count = 4
 script = SubResource("GDScript_6iiwh")
 
 [node name="Online Multiplayer" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components" groups=["Buttons"]]
+visible = false
 self_modulate = Color(1, 1, 1, 0.352941)
 layout_mode = 2
 mouse_filter = 2
@@ -706,6 +679,7 @@ text = "Online Multiplayer
 script = SubResource("GDScript_qpbas")
 
 [node name="AI Mode" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components" groups=["Buttons"]]
+visible = false
 self_modulate = Color(1, 1, 1, 0.352941)
 layout_mode = 2
 mouse_filter = 2
@@ -719,39 +693,34 @@ script = SubResource("GDScript_qpbas")
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -26.0
-offset_bottom = 19.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_jgltk")
 
-[node name="WinnerLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/WinnerPanel"]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/WinnerPanel"]
 layout_mode = 2
+size_flags_vertical = 4
+
+[node name="WinnerLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/WinnerPanel/VBoxContainer"]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/bold_italics_font_size = 32
 bbcode_enabled = true
 text = "[center][b][i]Winner!"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Restart" type="Panel" parent="UI Canvas/Main_Control/WinnerPanel"]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/Restart" groups=["Buttons"]]
+[node name="RestartButton" type="Button" parent="UI Canvas/Main_Control/WinnerPanel/VBoxContainer" groups=["Buttons"]]
 process_mode = 3
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -34.0
-offset_right = 34.0
-offset_bottom = 27.0
-grow_horizontal = 2
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 mouse_default_cursor_shape = 2
 text = "Restart?"
 script = SubResource("GDScript_s8lf3")
@@ -760,17 +729,20 @@ script = SubResource("GDScript_s8lf3")
 unique_name_in_owner = true
 visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 540.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_kek77")
 
 [node name="North" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
-custom_minimum_size = Vector2(960, 0)
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 36.0
+grow_horizontal = 2
 theme = ExtResource("5_vutah")
 
 [node name="Player_Turn" type="PanelContainer" parent="UI Canvas/In_Game_UI/North"]
@@ -799,21 +771,22 @@ alignment = 0
 expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
-[node name="Player_Turn2" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
+[node name="South" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -480.0
-offset_top = -40.0
-offset_right = 480.0
+offset_top = -23.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("5_vutah")
+
+[node name="Player_Turn2" type="PanelContainer" parent="UI Canvas/In_Game_UI/South"]
+layout_mode = 2
 mouse_filter = 2
 
-[node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/Player_Turn2"]
+[node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/South/Player_Turn2"]
 layout_mode = 2
 mouse_filter = 2
 bbcode_enabled = true
@@ -827,21 +800,13 @@ layer = -1
 
 [node name="BackgroundColor" type="TextureRect" parent="Background"]
 material = SubResource("ShaderMaterial_anmme")
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = -270.0
-offset_right = 480.0
-offset_bottom = 270.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_l8sjq")
 script = SubResource("GDScript_v1lwo")
-width = 960
-height = 540
 metadata/_edit_lock_ = true
 
 [node name="Background Audio" type="AudioStreamPlayer" parent="."]
@@ -851,37 +816,17 @@ stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78154" to="SpawnersLayer/@Button@78154" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78155" to="SpawnersLayer/@Button@78155" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78156" to="SpawnersLayer/@Button@78156" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78157" to="SpawnersLayer/@Button@78157" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78158" to="SpawnersLayer/@Button@78158" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78159" to="SpawnersLayer/@Button@78159" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78160" to="SpawnersLayer/@Button@78160" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78161" to="SpawnersLayer/@Button@78161" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78162" to="SpawnersLayer/@Button@78162" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78163" to="SpawnersLayer/@Button@78163" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78164" to="SpawnersLayer/@Button@78164" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78165" to="SpawnersLayer/@Button@78165" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78166" to="SpawnersLayer/@Button@78166" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78167" to="SpawnersLayer/@Button@78167" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78168" to="SpawnersLayer/@Button@78168" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78169" to="SpawnersLayer/@Button@78169" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78170" to="SpawnersLayer/@Button@78170" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78171" to="SpawnersLayer/@Button@78171" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78172" to="SpawnersLayer/@Button@78172" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78173" to="SpawnersLayer/@Button@78173" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78174" to="SpawnersLayer/@Button@78174" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78175" to="SpawnersLayer/@Button@78175" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78176" to="SpawnersLayer/@Button@78176" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78177" to="SpawnersLayer/@Button@78177" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78178" to="SpawnersLayer/@Button@78178" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78179" to="SpawnersLayer/@Button@78179" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78180" to="SpawnersLayer/@Button@78180" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78181" to="SpawnersLayer/@Button@78181" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78182" to="SpawnersLayer/@Button@78182" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78183" to="SpawnersLayer/@Button@78183" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@78184" to="SpawnersLayer/@Button@78184" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22066" to="SpawnersLayer/@Button@22066" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22067" to="SpawnersLayer/@Button@22067" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22068" to="SpawnersLayer/@Button@22068" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22069" to="SpawnersLayer/@Button@22069" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22070" to="SpawnersLayer/@Button@22070" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22071" to="SpawnersLayer/@Button@22071" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22072" to="SpawnersLayer/@Button@22072" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22073" to="SpawnersLayer/@Button@22073" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22074" to="SpawnersLayer/@Button@22074" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22075" to="SpawnersLayer/@Button@22075" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22076" to="SpawnersLayer/@Button@22076" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
@@ -892,5 +837,5 @@ script = SubResource("GDScript_efxa6")
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Online Multiplayer" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Online Multiplayer" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/AI Mode" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/AI Mode" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
-[connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/Restart/RestartButton" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" to="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" method="_on_pressed"]
