@@ -24,6 +24,7 @@ config/icon="uid://bmw15b42dc46g"
 PlayerData="*res://Scripts/Global Scripts/player_data.gd"
 GameState="*res://Scripts/Global Scripts/Game_State.gd"
 Shaker="*res://addons/shaker/src/Shaker.gd"
+GameplayOptions="*res://Scripts/Global Scripts/GameplayOptions.gd"
 
 [display]
 

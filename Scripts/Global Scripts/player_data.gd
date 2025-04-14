@@ -6,7 +6,6 @@ var current_player : int #index of the current player, changes upon pressing a g
 var previous_player : int :#used to check who was the last player that pressed the spawner
 	set(value):
 		previous_player = value
-		#print(self.name, ">previous_player: ", previous_player)
 
 var registered_players : Array[int] #players who have registered, meaning they've already put their first cell
 var players_cell_count : Dictionary #how many cells each registered players have
@@ -26,10 +25,10 @@ signal player_count_changed #emitted when the amount of players when choosing ho
 
 func _input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_9):
-		print(self.name, ">KEY_9 pressed")
+		print(self.name, ">KEY_9 pressed: check_eliminations")
 		check_eliminations()
 	if Input.is_key_pressed(KEY_8):
-		print(self.name, ">KEY_8 pressed")
+		print(self.name, ">KEY_8 pressed: _print_datas")
 		_print_datas()
 
 func _ready() -> void:
@@ -60,7 +59,7 @@ func reset_simulation_timer(): #the board is still simulating and  player can't 
 	simulation_time = 0.2
 	#print(self.name, ">Simulation start")
 
-func check_eliminations():
+func check_eliminations(): #Check if there are any eliminated players after/during a simulation
 	print(self.name, ">simulation_total_time: ", simulation_total_time, " GameState.Game_Over: ", GameState.Game_Over)
 	
 	if GameState.Game_Over:
@@ -73,11 +72,13 @@ func check_eliminations():
 	
 	simulation_total_time = 0.0
 
-func add_player(player):
+func add_player(player): #Called when the amount of players set for the game is increased
+	print(self.name, ">add_player: ", player)
 	players.append(player)
 	emit_signal("player_count_changed")
 
-func reduce_player():
+func reduce_player(): #Called when the amount of players set for the game is decreased
+	print(self.name, ">reduce_player")
 	PlayerData.players.pop_back().queue_free()
 	emit_signal("player_count_changed")
 
@@ -88,11 +89,15 @@ func next_player():
 	current_player += 1 #change the current player to the new value
 	if current_player > players.size() - 1: #if the value surpasses the players size, go back to 0
 		current_player = 0
-	while players[current_player] == null:
+	while players[current_player] == null: #skip the eliminated(null) players
 		current_player += 1
 		if current_player > players.size() - 1: #if the value surpasses the players size, go back to 0
 			current_player = 0
 	print("current_player: ", current_player)
+	emit_signal("player_change")
+
+func change_player(player):
+	current_player = player
 	emit_signal("player_change")
 
 func calculate_cell_count(player : int, value : int): #called everytime a cell is added or removed from a player's cell. 
@@ -109,12 +114,17 @@ func is_player_still_inGame(player) -> bool: #run first before a player can put 
 	if players[player] == null:
 		return false
 	
-
 	if not registered_players.has(player): #check if this player is not yet registered(player have already put their first cell)
 		_register_player(player) #if not registered, register the player by adding it's index in the array 
 		return true
 	
-	#print(self.name, ">registered_players: ", registered_players)
+	if players_cell_count[player] <= 0:  #meaning the player has no more cells
+		eliminate(player)
+		return false
+	
+	return true
+
+func eliminate(player):
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print(self.name, ">Player ", player + 1, " Lost!")
 		players[player].queue_free()
@@ -122,11 +132,10 @@ func is_player_still_inGame(player) -> bool: #run first before a player can put 
 		amount_of_players_still_in_game -= 1
 		print(self.name, ">amount_of_players_still_in_game: ", amount_of_players_still_in_game)
 		print("players: ", players)
+		if GameplayOptions.get_a_turn_on_kill: 
+			change_player(previous_player)  #the player that killed the eliminated player
 		if players[current_player] == null: #check if the current player is the player that just lost so move to the next player
 			next_player()
-		return false
-
-	return true
 
 func _register_player(player : int):
 	registered_players.append(player) 

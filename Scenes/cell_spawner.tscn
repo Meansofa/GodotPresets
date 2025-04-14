@@ -146,11 +146,11 @@ func remove_border():
 [node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "cells_parent", "area_2d")]
 z_index = -1
 custom_minimum_size = Vector2(108, 108)
-offset_left = -48.0
-offset_top = -48.0
-offset_right = 48.0
-offset_bottom = 48.0
-pivot_offset = Vector2(48, 48)
+offset_left = -54.0
+offset_top = -54.0
+offset_right = 54.0
+offset_bottom = 54.0
+pivot_offset = Vector2(54, 54)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 0
