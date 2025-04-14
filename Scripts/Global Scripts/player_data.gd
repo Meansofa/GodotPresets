@@ -48,7 +48,6 @@ func _process(delta: float) -> void:
 				check_eliminations()
 
 		else:#when reaches zero 
-			print("WHY")
 			print(self.name, ">Simulation finished")
 			simulation_playing = false #simulation is done
 
@@ -93,7 +92,7 @@ func next_player():
 		current_player += 1
 		if current_player > players.size() - 1: #if the value surpasses the players size, go back to 0
 			current_player = 0
-
+	print("current_player: ", current_player)
 	emit_signal("player_change")
 
 func calculate_cell_count(player : int, value : int): #called everytime a cell is added or removed from a player's cell. 
@@ -106,23 +105,25 @@ func calculate_cell_count(player : int, value : int): #called everytime a cell i
 	#print(self.name, ">Cell Counts> ", players_cell_count)
 
 func is_player_still_inGame(player) -> bool: #run first before a player can put a cell in a spawner
-	print(self.name, ">player: ", player)
+	#print(self.name, ">player: ", player)
 	if players[player] == null:
 		return false
 	
-	print(self.name, ">registered_players: ", registered_players)
+
 	if not registered_players.has(player): #check if this player is not yet registered(player have already put their first cell)
 		_register_player(player) #if not registered, register the player by adding it's index in the array 
 		return true
 	
-	print(self.name, ">registered_players2: ", registered_players)
+	#print(self.name, ">registered_players: ", registered_players)
 	if players_cell_count[player] <= 0:  #meaning the player has no more cells
 		print(self.name, ">Player ", player + 1, " Lost!")
 		players[player].queue_free()
 		players[player] = null
 		amount_of_players_still_in_game -= 1
 		print(self.name, ">amount_of_players_still_in_game: ", amount_of_players_still_in_game)
-		next_player()
+		print("players: ", players)
+		if players[current_player] == null: #check if the current player is the player that just lost so move to the next player
+			next_player()
 		return false
 
 	return true

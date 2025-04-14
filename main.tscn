@@ -818,18 +818,6 @@ metadata/_edit_lock_ = true
 stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
-[connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24587" to="SpawnersLayer/@Button@24587" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24588" to="SpawnersLayer/@Button@24588" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24589" to="SpawnersLayer/@Button@24589" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24590" to="SpawnersLayer/@Button@24590" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24591" to="SpawnersLayer/@Button@24591" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24592" to="SpawnersLayer/@Button@24592" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24593" to="SpawnersLayer/@Button@24593" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24594" to="SpawnersLayer/@Button@24594" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24595" to="SpawnersLayer/@Button@24595" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24596" to="SpawnersLayer/@Button@24596" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@24597" to="SpawnersLayer/@Button@24597" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]

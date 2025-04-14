@@ -46,11 +46,11 @@ func _ready() -> void:
 func _on_pressed() -> void:
 	if PlayerData.simulation_playing: #check if there are still cells moving/popping meaning the player can't press anything yet not until it's finished
 		return
-	print(self.name, \">spawner_owner: \", spawner_owner)
+	
 	if spawner_owner == -1: #if no owner of this spawner, 
 		if PlayerData.is_player_still_inGame(PlayerData.current_player): #check if the current player is in the game
 			spawner_owner = PlayerData.current_player #assign the current player as the owner
-	print(self.name, \">spawner_owner2: \", spawner_owner)
+	#print(self.name, \">spawner_owner: \", spawner_owner)
 	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
 		check_cells() #add a cell to account for the press
 		audioPlayer.play_sound(spawn_sound)

@@ -123,7 +123,7 @@ func _remove_row():
 		erase_cell(top_left_pos)
 
 func _on_map_size_value_changed(value: int) -> void:
-	print(self.name, ">value: ", value, " last value: ", last_value)
+	#print(self.name, ">value: ", value, " last value: ", last_value)
 	if value == last_value:
 		return
 	_reset_grid()
