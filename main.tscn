@@ -460,7 +460,6 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_gi1ht")
 script = SubResource("GDScript_u0i5i")
-metadata/_edit_lock_ = true
 
 [node name="UI" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -816,17 +815,17 @@ stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22066" to="SpawnersLayer/@Button@22066" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22067" to="SpawnersLayer/@Button@22067" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22068" to="SpawnersLayer/@Button@22068" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22069" to="SpawnersLayer/@Button@22069" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22070" to="SpawnersLayer/@Button@22070" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22071" to="SpawnersLayer/@Button@22071" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22072" to="SpawnersLayer/@Button@22072" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22073" to="SpawnersLayer/@Button@22073" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22074" to="SpawnersLayer/@Button@22074" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22075" to="SpawnersLayer/@Button@22075" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22076" to="SpawnersLayer/@Button@22076" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21589" to="SpawnersLayer/@Button@21589" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21590" to="SpawnersLayer/@Button@21590" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21591" to="SpawnersLayer/@Button@21591" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21592" to="SpawnersLayer/@Button@21592" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21593" to="SpawnersLayer/@Button@21593" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21594" to="SpawnersLayer/@Button@21594" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21595" to="SpawnersLayer/@Button@21595" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21596" to="SpawnersLayer/@Button@21596" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21597" to="SpawnersLayer/@Button@21597" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21598" to="SpawnersLayer/@Button@21598" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21599" to="SpawnersLayer/@Button@21599" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
