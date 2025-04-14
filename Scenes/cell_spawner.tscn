@@ -42,6 +42,8 @@ func _ready() -> void:
 	GameState.connect(\"restart\", _restart)
 	PlayerData.connect(\"player_change\", _is_current_player_spawner_owner)
 	spawner_owner = -1
+	if GameplayOptions.include_unclickable_grids:
+		include_unclickable_grids()
 
 func _on_pressed() -> void:
 	if PlayerData.simulation_playing: #check if there are still cells moving/popping meaning the player can't press anything yet not until it's finished
@@ -122,6 +124,12 @@ func _restart():
 		#cells[i].queue_free()
 	cells.clear()
 	spawner_owner = -1
+
+func include_unclickable_grids():
+	var random := randi_range(0, 100)
+	if random <= 20:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		disabled = true
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]

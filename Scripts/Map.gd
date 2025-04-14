@@ -29,10 +29,10 @@ func _input(event: InputEvent) -> void:
 		_remove_row()
 
 func _ready() -> void:
-	_reset_grid()
+	clear_grid()
 	#_generate_grid(4, 2)
 
-func _reset_grid():
+func clear_grid():
 	clear()
 	top_row = 0
 	bottom_row = 0
@@ -66,7 +66,15 @@ func _add_column(): #add left and right cells
 	right_column += 1
 	left_column += 1
 	columns += 2
-	
+
+func reload_grid():
+	var temp_rows = rows
+	var temp_columns = columns
+	clear_grid()
+	_generate_grid(temp_columns/2, temp_rows/2)
+	columns = temp_columns
+	rows = temp_rows
+
 func _add_row(): #add top and bottom cells
 	for column in range(right_column):  #starts at 0 index
 		var bottom_right_pos = Vector2i(column, bottom_row)
@@ -126,7 +134,7 @@ func _on_map_size_value_changed(value: int) -> void:
 	#print(self.name, ">value: ", value, " last value: ", last_value)
 	if value == last_value:
 		return
-	_reset_grid()
+	clear_grid()
 	
 	
 	var additional_columns : int
