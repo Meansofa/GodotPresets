@@ -140,7 +140,7 @@ func _on_map_size_value_changed(value: int) -> void:
 			additional_rows = 7
 		40:
 			additional_columns = 5
-			additional_rows = 9
+			additional_rows = 10
 		60:
 			additional_columns = 8
 			additional_rows = 15
