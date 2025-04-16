@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=19 format=3 uid="uid://ccjkt4x566cc"]
+[gd_resource type="Theme" load_steps=20 format=3 uid="uid://ccjkt4x566cc"]
 
-[ext_resource type="FontFile" uid="uid://bqmr8sd7u3rea" path="res://Themes/ATOMIC__.TTF" id="1_ts4dj"]
+[ext_resource type="FontFile" uid="uid://c4ni8qcqp7wdp" path="res://Themes/Typo_Round_Regular_Demo.otf" id="1_i5fhn"]
+[ext_resource type="FontFile" uid="uid://dsdh6777l0q8e" path="res://Themes/TypoGraphica_demo.otf" id="2_fm7i0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4c57u"]
 bg_color = Color(0.898039, 0.894118, 0.894118, 1)
@@ -17,13 +18,15 @@ border_width_left = 16
 border_width_top = 1
 border_width_bottom = 12
 border_color = Color(0.0588235, 0.0156863, 0, 1)
+expand_margin_left = 1.0
 expand_margin_top = 2.0
+expand_margin_right = 1.0
 expand_margin_bottom = 2.0
 
 [sub_resource type="Gradient" id="Gradient_i5fhn"]
 interpolation_mode = 2
 offsets = PackedFloat32Array(0.31875, 0.575, 0.71875, 0.85, 0.89375, 1)
-colors = PackedColorArray(0.24, 0.8, 0.417333, 1, 0.078, 0.26, 0.135633, 1, 1, 1, 1, 1, 0, 0, 0, 0.92549, 0, 0, 0, 0.847059, 0, 0, 0, 0)
+colors = PackedColorArray(0.24, 0.8, 0.417333, 1, 0.078, 0.26, 0.135633, 1, 1, 1, 1, 1, 0.0588235, 0.0156863, 0, 1, 0.0588235, 0.0156863, 0, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_fm7i0"]
 gradient = SubResource("Gradient_i5fhn")
@@ -33,7 +36,7 @@ fill_to = Vector2(0.598214, 0.0714286)
 
 [sub_resource type="Gradient" id="Gradient_0v71m"]
 offsets = PackedFloat32Array(0.54375, 0.7125, 0.78125, 0.89375, 1)
-colors = PackedColorArray(1, 1, 1, 0.987891, 1, 1, 1, 1, 0, 0, 0, 0.92549, 0, 0, 0, 0.847059, 0, 0, 0, 0)
+colors = PackedColorArray(1, 1, 1, 0.987891, 1, 1, 1, 1, 0.0588235, 0.0156863, 0, 1, 0.0588235, 0.0156863, 0, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_m06r6"]
 gradient = SubResource("Gradient_0v71m")
@@ -114,8 +117,8 @@ Button/styles/normal = SubResource("StyleBoxFlat_kek77")
 CheckButton/colors/font_color = Color(1, 0.985, 0.7, 1)
 CheckButton/colors/font_pressed_color = Color(0.52, 1, 0.576, 1)
 CheckButton/constants/align_to_largest_stylebox = 1
-CheckButton/font_sizes/font_size = 48
-CheckButton/fonts/font = ExtResource("1_ts4dj")
+CheckButton/font_sizes/font_size = 24
+CheckButton/fonts/font = ExtResource("1_i5fhn")
 CheckButton/icons/checked = SubResource("GradientTexture2D_fm7i0")
 CheckButton/icons/unchecked = SubResource("GradientTexture2D_m06r6")
 CheckButton/styles/focus = SubResource("StyleBoxFlat_fm7i0")
@@ -127,12 +130,12 @@ LineEdit/colors/font_color = Color(0, 0, 0, 1)
 LineEdit/font_sizes/font_size = 32
 LineEdit/styles/normal = SubResource("StyleBoxFlat_h0eky")
 PanelContainer/styles/panel = null
+RichTextLabel/font_sizes/bold_font_size = 32
 RichTextLabel/font_sizes/bold_italics_font_size = 64
-RichTextLabel/font_sizes/italics_font_size = 32
-RichTextLabel/font_sizes/normal_font_size = 64
+RichTextLabel/font_sizes/italics_font_size = 24
+RichTextLabel/font_sizes/normal_font_size = 32
 RichTextLabel/fonts/bold_italics_font = null
-RichTextLabel/fonts/italics_font = ExtResource("1_ts4dj")
-RichTextLabel/fonts/normal_font = ExtResource("1_ts4dj")
+RichTextLabel/fonts/italics_font = ExtResource("2_fm7i0")
 SpinBox/colors/down_hover_icon_modulate = Color(0.95, 0, 0, 1)
 SpinBox/colors/down_pressed_icon_modulate = Color(0.95, 0, 0, 1)
 SpinBox/colors/up_hover_icon_modulate = Color(0.94902, 0.0862745, 0.0862745, 1)

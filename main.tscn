@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=45 format=4 uid="uid://cunlaacoggqyv"]
 
 [ext_resource type="Script" uid="uid://cow608qcxtkcm" path="res://main.gd" id="1_pihtv"]
 [ext_resource type="Script" uid="uid://1ocx2kqcmuqm" path="res://Scripts/zoom_camera.gd" id="2_i3drp"]
@@ -6,9 +6,12 @@
 [ext_resource type="Script" uid="uid://bxahqirdiwl02" path="res://Scripts/Map.gd" id="4_0b7oy"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/MainMenu.tres" id="5_vutah"]
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_5gkat"]
+[ext_resource type="Script" uid="uid://cprv6mt8nbod" path="res://Assets/RichTextEffects/colormod.gd" id="9_4c57u"]
 [ext_resource type="AudioStream" uid="uid://cntads1w7sujf" path="res://Assets/SFX/button_click.wav" id="10_4c57u"]
+[ext_resource type="Script" uid="uid://yry8dl416l7v" path="res://Assets/RichTextEffects/jump.gd" id="10_dg77c"]
 [ext_resource type="Material" uid="uid://ce0u4cwfdklkn" path="res://Themes/BackgroundBlur.tres" id="10_tt22l"]
 [ext_resource type="Texture2D" uid="uid://63i4gcnvsn7h" path="res://icon.svg" id="11_gi1ht"]
+[ext_resource type="Script" uid="uid://dbqffhoplkjf1" path="res://Assets/RichTextEffects/nervous.gd" id="11_ycdy4"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qb3a6"]
 resource_name = "Spawner"
@@ -173,6 +176,18 @@ func _toggle_menu():
 	GameState.emit_signal(\"restart\")
 "
 
+[sub_resource type="RichTextEffect" id="RichTextEffect_efxa6"]
+script = ExtResource("9_4c57u")
+metadata/_custom_type_script = "uid://cprv6mt8nbod"
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_w48qg"]
+script = ExtResource("10_dg77c")
+metadata/_custom_type_script = "uid://yry8dl416l7v"
+
+[sub_resource type="RichTextEffect" id="RichTextEffect_vivmo"]
+script = ExtResource("11_ycdy4")
+metadata/_custom_type_script = "uid://dbqffhoplkjf1"
+
 [sub_resource type="GDScript" id="GDScript_qpbas"]
 resource_name = "StartButton"
 script/source = "extends Button
@@ -217,7 +232,7 @@ func _ready() -> void:
 	%SpawnersLayer.connect(\"map_size_changed\", _change_text)
 
 func _change_text(columns : int, rows : int):
-	text = \"Map Size: \" + str(columns) + \"x\" + str(rows)
+	text = \"[b]Map Size: [/b]\" + str(columns) + \"x\" + str(rows)
 "
 
 [sub_resource type="GDScript" id="GDScript_6iiwh"]
@@ -384,12 +399,12 @@ void fragment() {
 shader = SubResource("Shader_v2yx8")
 shader_parameter/Shift_Hue = 0.0
 
-[sub_resource type="Gradient" id="Gradient_0ivtn"]
-offsets = PackedFloat32Array(0, 0.473684, 0.901316)
-colors = PackedColorArray(0.8, 0.16, 0.224, 1, 0.636364, 0.127273, 0.178182, 1, 0.4, 0.08, 0.112, 1)
+[sub_resource type="Gradient" id="Gradient_4c57u"]
+offsets = PackedFloat32Array(0, 0.381579, 0.769737, 1)
+colors = PackedColorArray(0.8, 0.16, 0.224, 1, 0.636364, 0.127273, 0.178182, 1, 0.216058, 0.0267665, 0.0444539, 1, 0.13, 0.0156, 0.0175066, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_l8sjq"]
-gradient = SubResource("Gradient_0ivtn")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_efxa6"]
+gradient = SubResource("Gradient_4c57u")
 fill = 2
 fill_from = Vector2(0.5, 0.526316)
 fill_to = Vector2(1, 0.5)
@@ -427,6 +442,17 @@ func change_spawner_color(): #change the color of the spawner
 func _restart():
 	material = null
 "
+
+[sub_resource type="Gradient" id="Gradient_kek77"]
+offsets = PackedFloat32Array(0, 0.15, 0.3, 0.5, 0.7, 0.85, 1)
+colors = PackedColorArray(0.0705882, 0.00784314, 0.00784314, 1, 0.129412, 0.0156863, 0.0156863, 1, 0.25098, 0.0313726, 0.0509804, 1, 0.636364, 0.127273, 0.178182, 1, 0.25, 0.03, 0.052, 1, 0.13, 0.0156, 0.0175066, 1, 0.07, 0.0084, 0.00942665, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4c57u"]
+gradient = SubResource("Gradient_kek77")
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 38
 
 [sub_resource type="GDScript" id="GDScript_efxa6"]
 resource_name = "Group  SFX Button"
@@ -540,14 +566,16 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -143.0
-offset_top = -23.0
+offset_left = -188.0
+offset_top = -34.0
 grow_horizontal = 0
 grow_vertical = 0
 bbcode_enabled = true
-text = "[center][i]Version 0.0.3"
+text = "[center][i]Version 0.2.4
+"
 fit_content = true
 autowrap_mode = 0
+vertical_alignment = 2
 
 [node name="MuteButton" type="Button" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
 layout_mode = 1
@@ -611,10 +639,21 @@ bbcode_enabled = true
 text = "
 [center][b][i]Chain Reaction : 
 Expanded Edition
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Warning" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components"]
+clip_contents = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][nervous][jump][i][color=#FFEE8C]!Warning  Flashing  Effects!
+
 
 "
 fit_content = true
 autowrap_mode = 0
+custom_effects = [SubResource("RichTextEffect_efxa6"), SubResource("RichTextEffect_w48qg"), SubResource("RichTextEffect_vivmo")]
 
 [node name="Start" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components" groups=["Buttons"]]
 layout_mode = 2
@@ -629,7 +668,7 @@ layout_mode = 2
 [node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Player_Count"]
 layout_mode = 2
 bbcode_enabled = true
-text = "Players : "
+text = "[b]Players : "
 fit_content = true
 autowrap_mode = 0
 
@@ -649,7 +688,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 bbcode_enabled = true
-text = "Map Size :"
+text = "[b]Map Size :"
 fit_content = true
 autowrap_mode = 0
 script = SubResource("GDScript_f85ls")
@@ -729,6 +768,7 @@ offset_top = -40.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_vutah")
 script = SubResource("GDScript_jgltk")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI Canvas/Main_Control/WinnerPanel"]
@@ -741,7 +781,6 @@ clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_font_sizes/bold_italics_font_size = 32
 bbcode_enabled = true
 text = "[center][b][i]Winner!"
 fit_content = true
@@ -753,7 +792,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_default_cursor_shape = 2
-text = "Restart?"
+text = " Restart? "
 script = SubResource("GDScript_s8lf3")
 
 [node name="In_Game_UI" type="Control" parent="UI Canvas"]
@@ -772,7 +811,7 @@ script = SubResource("GDScript_kek77")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 36.0
+offset_bottom = 86.0
 grow_horizontal = 2
 theme = ExtResource("5_vutah")
 
@@ -792,6 +831,7 @@ script = SubResource("GDScript_4c57u")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="UI Canvas/In_Game_UI/North"]
 layout_mode = 2
+size_flags_vertical = 8
 alignment_horizontal = 0
 
 [node name="RestartButton" type="Button" parent="UI Canvas/In_Game_UI/North/AspectRatioContainer" groups=["Buttons"]]
@@ -829,16 +869,28 @@ vertical_alignment = 1
 script = SubResource("GDScript_4c57u")
 
 [node name="Background" type="CanvasLayer" parent="."]
-layer = -1
+layer = -100
 
 [node name="BackgroundColor" type="TextureRect" parent="Background"]
+visible = false
 material = SubResource("ShaderMaterial_anmme")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_l8sjq")
+texture = SubResource("GradientTexture2D_efxa6")
+script = SubResource("GDScript_v1lwo")
+metadata/_edit_lock_ = true
+
+[node name="BackgroundColor2" type="TextureRect" parent="Background"]
+material = SubResource("ShaderMaterial_anmme")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_4c57u")
 script = SubResource("GDScript_v1lwo")
 metadata/_edit_lock_ = true
 
@@ -849,17 +901,6 @@ stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21836" to="SpawnersLayer/@Button@21836" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21837" to="SpawnersLayer/@Button@21837" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21838" to="SpawnersLayer/@Button@21838" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21839" to="SpawnersLayer/@Button@21839" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21840" to="SpawnersLayer/@Button@21840" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21841" to="SpawnersLayer/@Button@21841" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21842" to="SpawnersLayer/@Button@21842" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21843" to="SpawnersLayer/@Button@21843" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21844" to="SpawnersLayer/@Button@21844" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21845" to="SpawnersLayer/@Button@21845" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@21846" to="SpawnersLayer/@Button@21846" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@21847" to="SpawnersLayer/@Button@21847" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@21848" to="SpawnersLayer/@Button@21848" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@21849" to="SpawnersLayer/@Button@21849" method="_on_pressed"]
@@ -898,6 +939,17 @@ script = SubResource("GDScript_efxa6")
 [connection signal="pressed" from="SpawnersLayer/@Button@21882" to="SpawnersLayer/@Button@21882" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@21883" to="SpawnersLayer/@Button@21883" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@21884" to="SpawnersLayer/@Button@21884" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21885" to="SpawnersLayer/@Button@21885" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21886" to="SpawnersLayer/@Button@21886" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21887" to="SpawnersLayer/@Button@21887" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21888" to="SpawnersLayer/@Button@21888" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21889" to="SpawnersLayer/@Button@21889" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21890" to="SpawnersLayer/@Button@21890" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21891" to="SpawnersLayer/@Button@21891" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21892" to="SpawnersLayer/@Button@21892" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21893" to="SpawnersLayer/@Button@21893" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21894" to="SpawnersLayer/@Button@21894" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@21895" to="SpawnersLayer/@Button@21895" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
