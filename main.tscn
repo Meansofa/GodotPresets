@@ -344,9 +344,12 @@ script/source = "extends RichTextLabel
 
 func _ready() -> void:
 	PlayerData.connect(\"player_change\", change_player)
+	GameState.connect(\"restart\", _restart)
+
+func _restart():
+	change_player()
 
 func change_player():
-	
 	text = \"[center]Player [b][i]\" + str(PlayerData.current_player + 1) + \"[/i][/b] 's Turn\"
 "
 
