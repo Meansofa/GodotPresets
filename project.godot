@@ -43,7 +43,7 @@ movie_writer/movie_file="C:/Users/Admin/Documents/Godot Games/MovieMaker/ChainRe
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/shaker/plugin.cfg")
+enabled=PackedStringArray("res://addons/AdmobPlugin/plugin.cfg", "res://addons/shaker/plugin.cfg")
 
 [global_group]
 
