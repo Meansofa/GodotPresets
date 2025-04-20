@@ -363,6 +363,10 @@ script/source = "extends PanelContainer
 
 func _on_guide_button_pressed() -> void:
 	self.visible = !self.visible
+
+
+func _on_close_button_pressed() -> void:
+	self.visible = !self.visible
 "
 
 [sub_resource type="Shader" id="Shader_v2yx8"]
@@ -682,6 +686,26 @@ text = "Start
 "
 script = SubResource("GDScript_qpbas")
 
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Help:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="GuideButton" type="Button" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer" groups=["Buttons"]]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 32
+text = "Instructions"
+expand_icon = true
+
 [node name="Player_Count" type="HBoxContainer" parent="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components"]
 layout_mode = 2
 
@@ -876,18 +900,17 @@ expand_icon = true
 script = SubResource("GDScript_s8lf3")
 
 [node name="AspectRatioContainer2" type="AspectRatioContainer" parent="UI Canvas/In_Game_UI/North"]
-z_index = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 alignment_horizontal = 0
 
-[node name="GuideButton" type="Button" parent="UI Canvas/In_Game_UI/North/AspectRatioContainer2" groups=["Buttons"]]
+[node name="InstructionsButton" type="Button" parent="UI Canvas/In_Game_UI/North/AspectRatioContainer2" groups=["Buttons"]]
 clip_contents = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 32
-text = " Guide "
+text = " Instructions "
 alignment = 0
 expand_icon = true
 
@@ -915,33 +938,38 @@ fit_content = true
 vertical_alignment = 1
 script = SubResource("GDScript_4c57u")
 
-[node name="Center" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
-layout_mode = 1
+[node name="Center" type="PanelContainer" parent="UI Canvas"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("5_vutah")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_vivmo")
 
-[node name="GuidePanel" type="PanelContainer" parent="UI Canvas/In_Game_UI/Center"]
+[node name="GuidePanel" type="PanelContainer" parent="UI Canvas/Center"]
 visible = false
 layout_mode = 2
 mouse_filter = 2
 script = SubResource("GDScript_vivmo")
 
-[node name="GuideLOD" type="TextureRect" parent="UI Canvas/In_Game_UI/Center/GuidePanel"]
+[node name="GuideLOD" type="TextureRect" parent="UI Canvas/Center/GuidePanel"]
 material = ExtResource("10_tt22l")
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("12_w48qg")
 
-[node name="GuideImage" type="TextureRect" parent="UI Canvas/In_Game_UI/Center/GuidePanel"]
+[node name="GuideImage" type="TextureRect" parent="UI Canvas/Center/GuidePanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("12_ycdy4")
+
+[node name="CloseButton" type="Button" parent="UI Canvas/Center/GuidePanel" groups=["Buttons"]]
+layout_mode = 2
+size_flags_vertical = 8
+text = "      CLOSE      "
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -100
@@ -991,7 +1019,6 @@ real_rewarded_interstitial_id = "ca-app-pub-5371806359960064/7348036198"
 metadata/_custom_type_script = "uid://cq6aan161v70v"
 
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22063" to="SpawnersLayer/@Button@22063" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22064" to="SpawnersLayer/@Button@22064" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22065" to="SpawnersLayer/@Button@22065" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22066" to="SpawnersLayer/@Button@22066" method="_on_pressed"]
@@ -1040,10 +1067,13 @@ metadata/_custom_type_script = "uid://cq6aan161v70v"
 [connection signal="pressed" from="SpawnersLayer/@Button@22109" to="SpawnersLayer/@Button@22109" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22110" to="SpawnersLayer/@Button@22110" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22111" to="SpawnersLayer/@Button@22111" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22112" to="SpawnersLayer/@Button@22112" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" method="_on_pressed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer/GuideButton" to="UI Canvas/Center/GuidePanel" method="_on_guide_button_pressed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer/GuideButton" to="UI Canvas/Main_Control/LOD" method="_on_guide_button_visibility_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Player_Count/SpinBox" to="UI Canvas/Main_Control/UI/Player_Display" method="_on_spin_box_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Map Change/MapSize" to="ZoomCamera" method="_on_h_slider_value_changed"]
@@ -1056,6 +1086,7 @@ metadata/_custom_type_script = "uid://cq6aan161v70v"
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/In_Game_UI" to="." method="_on_in_game_ui_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" to="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/GuideButton" to="UI Canvas/In_Game_UI/Center/GuidePanel" method="_on_guide_button_pressed"]
-[connection signal="visibility_changed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/GuideButton" to="UI Canvas/Main_Control/LOD" method="_on_guide_button_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/InstructionsButton" to="UI Canvas/Center/GuidePanel" method="_on_guide_button_pressed"]
+[connection signal="visibility_changed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/InstructionsButton" to="UI Canvas/Main_Control/LOD" method="_on_guide_button_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Center/GuidePanel/CloseButton" to="UI Canvas/Center/GuidePanel" method="_on_close_button_pressed"]
 [connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialization_completed"]
