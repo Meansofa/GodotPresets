@@ -1,10 +1,11 @@
-[gd_scene load_steps=50 format=4 uid="uid://cunlaacoggqyv"]
+[gd_scene load_steps=45 format=4 uid="uid://cunlaacoggqyv"]
 
 [ext_resource type="Script" uid="uid://cow608qcxtkcm" path="res://main.gd" id="1_pihtv"]
 [ext_resource type="Script" uid="uid://1ocx2kqcmuqm" path="res://Scripts/zoom_camera.gd" id="2_i3drp"]
 [ext_resource type="PackedScene" uid="uid://diimhw6lk5yth" path="res://Scenes/cell_spawner.tscn" id="3_4xfu3"]
 [ext_resource type="Script" uid="uid://bxahqirdiwl02" path="res://Scripts/Map.gd" id="4_0b7oy"]
 [ext_resource type="Theme" uid="uid://ccjkt4x566cc" path="res://Themes/MainMenu.tres" id="5_vutah"]
+[ext_resource type="Script" uid="uid://cki6cmytccybi" path="res://main_control.gd" id="6_2cqfq"]
 [ext_resource type="PackedScene" uid="uid://cs86oyinomu1d" path="res://Scenes/player_1.tscn" id="6_5gkat"]
 [ext_resource type="Script" uid="uid://cprv6mt8nbod" path="res://Assets/RichTextEffects/colormod.gd" id="9_4c57u"]
 [ext_resource type="AudioStream" uid="uid://cntads1w7sujf" path="res://Assets/SFX/button_click.wav" id="10_4c57u"]
@@ -23,48 +24,6 @@ scenes/1/scene = ExtResource("3_4xfu3")
 [sub_resource type="TileSet" id="TileSet_hf2hk"]
 tile_size = Vector2i(108, 108)
 sources/0 = SubResource("TileSetScenesCollectionSource_qb3a6")
-
-[sub_resource type="GDScript" id="GDScript_u0i5i"]
-resource_name = "LOD"
-script/source = "extends TextureRect
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func _on_title_screen_visibility_changed() -> void:
-	self.visible = %MainMenu.visible
-	print(\"_on_title_screen_visibility_changed: \", visible)
-
-func _on_winner_panel_visibility_changed() -> void:
-	if %WinnerPanel.visible: #since when the WinnerPanel is not visible it is likely on the title screen, this is to avoid both signals triggering and making LOD invisible instead of visible
-		self.visible = true
-		print(\"_on_winner_panel_visibility_changed: \", visible)
-
-func _on_change_map_visibility_changed() -> void:
-	self.visible = %ChangeMap.visible
-	print(\"_on_change_map_visibility_changed: \", visible)
-
-func _on_guide_button_visibility_changed() -> void:
-	pass # Replace with function body.
-"
-
-[sub_resource type="GDScript" id="GDScript_ukba4"]
-script/source = "extends Control
-
-func _ready() -> void:
-	GameState.connect(\"restart\", _restart)
-
-func _restart():
-	self.visible = true
-"
 
 [sub_resource type="GDScript" id="GDScript_gh0i5"]
 resource_name = "player_display"
@@ -159,29 +118,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="GDScript" id="GDScript_0obg5"]
-resource_name = "TitleScreen"
-script/source = "extends Control
-
-func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed(\"Escape\") and !%MainMenu.visible:
-		_toggle_menu()
-
-func _ready() -> void:
-	GameState.connect(\"restart\", _restart)
-
-func _restart():
-	self.visible = true
-
-func _toggle_menu():
-	GameState.Game_Over = true
-	#%MainMenu.visible = !%MainMenu.visible
-	#%UI.visible = !%UI.visible
-	%In_Game_UI.visible = false
-	%WinnerPanel.visible = false
-	GameState.emit_signal(\"restart\")
-"
-
 [sub_resource type="RichTextEffect" id="RichTextEffect_efxa6"]
 script = ExtResource("9_4c57u")
 metadata/_custom_type_script = "uid://cprv6mt8nbod"
@@ -199,24 +135,12 @@ resource_name = "StartButton"
 script/source = "extends Button
 
 func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed(\"ui_accept\") and %MainMenu.visible:
+	if Input.is_action_just_pressed(\"Start\") and %MainMenu.visible:
 		emit_signal(\"pressed\")
 
 func _on_pressed() -> void:
 	print(\"START BUTTON\")
-	_hide_title_screen()
-	_hide_UI()
-	_show_in_game_ui()
 	GameState.Game_Over = false
-
-func _hide_title_screen():
-	%MainMenu.visible = false
-
-func _hide_UI():
-	%UI.visible = false
-
-func _show_in_game_ui():
-	%In_Game_UI.visible = true
 "
 
 [sub_resource type="GDScript" id="GDScript_w48qg"]
@@ -289,54 +213,39 @@ script/source = "extends Control
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	get_tree().paused = false
-	self.visible = false
 	PlayerData.connect(\"game_finished\", _Win)
-	GameState.connect(\"restart\", _restart)
-	
 
-func _restart():
-	self.visible = false
 
 func _Win(player : String):
-	%WinnerLabel.text = \"[center][b][i]\" + player + \" Won!\"
-	get_tree().paused = true
 	self.visible = true
-	
+	%WinnerLabel.text = \"[center][b][i]\" + player + \" Won!\"
 "
 
 [sub_resource type="GDScript" id="GDScript_s8lf3"]
 resource_name = "RestartButton"
 script/source = "extends Button
 
+@onready var admob = %Admob
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"Restart\") and !%MainMenu.visible:
+		_restart()
 
 func _on_pressed() -> void:
 	print(\"RESTART BUTTON\")
 	_restart()
 
 func _restart():
+	
 	get_tree().paused = false
 	GameState.emit_signal(\"restart\")
-"
-
-[sub_resource type="GDScript" id="GDScript_kek77"]
-resource_name = "In_Game_UI_Panel"
-script/source = "extends Control
-
-func _ready() -> void:
-	GameState.connect(\"restart\", _restart)
-
-func _restart():
-	self.visible = false
+	var rand_ad = randi_range(0, 100)
+	if rand_ad <= 30:
+		print(self.name, \">Showing Interstitial Ad: \", rand_ad)
+		admob.load_interstitial_ad()
+		await admob.interstitial_ad_loaded
+		if not admob.interstitial_ad_failed_to_load:
+			admob.show_interstitial_ad()
 "
 
 [sub_resource type="GDScript" id="GDScript_4c57u"]
@@ -423,14 +332,13 @@ void fragment() {
 shader = SubResource("Shader_v2yx8")
 shader_parameter/Shift_Hue = 0.0
 
-[sub_resource type="Gradient" id="Gradient_4c57u"]
-offsets = PackedFloat32Array(0, 0.381579, 0.769737, 1)
-colors = PackedColorArray(0.8, 0.16, 0.224, 1, 0.636364, 0.127273, 0.178182, 1, 0.216058, 0.0267665, 0.0444539, 1, 0.13, 0.0156, 0.0175066, 1)
+[sub_resource type="Gradient" id="Gradient_kek77"]
+offsets = PackedFloat32Array(0, 0.2, 0.5, 0.8, 1)
+colors = PackedColorArray(0.188235, 0.0235294, 0.0352941, 1, 0.320151, 0.0485855, 0.0738115, 1, 0.48, 0.096, 0.1344, 1, 0.321569, 0.0470588, 0.0745098, 1, 0.189211, 0.0227053, 0.0345264, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_efxa6"]
-gradient = SubResource("Gradient_4c57u")
-fill = 2
-fill_from = Vector2(0.5, 0.526316)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4c57u"]
+gradient = SubResource("Gradient_kek77")
+fill_from = Vector2(0, 0.5)
 fill_to = Vector2(1, 0.5)
 metadata/_snap_enabled = true
 metadata/_snap_count = 38
@@ -467,17 +375,6 @@ func _restart():
 	material = null
 "
 
-[sub_resource type="Gradient" id="Gradient_kek77"]
-offsets = PackedFloat32Array(0, 0.2, 0.5, 0.8, 1)
-colors = PackedColorArray(0.188235, 0.0235294, 0.0352941, 1, 0.320151, 0.0485855, 0.0738115, 1, 0.48, 0.096, 0.1344, 1, 0.321569, 0.0470588, 0.0745098, 1, 0.189211, 0.0227053, 0.0345264, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_4c57u"]
-gradient = SubResource("Gradient_kek77")
-fill_from = Vector2(0, 0.5)
-fill_to = Vector2(1, 0.5)
-metadata/_snap_enabled = true
-metadata/_snap_count = 38
-
 [sub_resource type="GDScript" id="GDScript_efxa6"]
 resource_name = "Group  SFX Button"
 script/source = "extends AudioStreamPlayer
@@ -499,6 +396,22 @@ func on_button_pressed()->void:
 [node name="Main" type="Node2D"]
 script = ExtResource("1_pihtv")
 
+[node name="Admob" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("15_vivmo")
+banner_position = 1
+debug_application_id = "ca-app-pub-3940256099942544~3347511713"
+debug_banner_id = "ca-app-pub-3940256099942544/9214589741"
+debug_interstitial_id = "ca-app-pub-3940256099942544/1033173712"
+debug_rewarded_id = "ca-app-pub-5371806359960064/7348036198"
+debug_rewarded_interstitial_id = "ca-app-pub-3940256099942544/5354046379"
+real_application_id = "ca-app-pub-5371806359960064~1048375243"
+real_banner_id = "ca-app-pub-5371806359960064/2929676394"
+real_interstitial_id = "ca-app-pub-5371806359960064/7132413771"
+real_rewarded_id = "ca-app-pub-5371806359960064/7348036198"
+real_rewarded_interstitial_id = "ca-app-pub-5371806359960064/7348036198"
+metadata/_custom_type_script = "uid://cq6aan161v70v"
+
 [node name="SpawnersLayer" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAQABAAIAAAAAAAAAAQABAAMAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQACAAIAAAAAAAAAAQACAAMAAAAAAAAAAQADAAMAAAAAAAAAAQADAAIAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAEAAAAAAAAAAQAFAAIAAAAAAAAAAQAFAAMAAAAAAAAAAQAEAAIAAAAAAAAAAQAEAAMAAAAAAAAAAQAEAAQAAAAAAAAAAQAEAAUAAAAAAAAAAQADAAUAAAAAAAAAAQADAAYAAAAAAAAAAQACAAUAAAAAAAAAAQABAAUAAAAAAAAAAQABAAYAAAAAAAAAAQABAAcAAAAAAAAAAQABAAgAAAAAAAAAAQABAAkAAAAAAAAAAQABAAoAAAAAAAAAAQACAAoAAAAAAAAAAQADAAoAAAAAAAAAAQAEAAoAAAAAAAAAAQAFAAoAAAAAAAAAAQAFAAkAAAAAAAAAAQAEAAgAAAAAAAAAAQAEAAcAAAAAAAAAAQAEAAYAAAAAAAAAAQAFAAQAAAAAAAAAAQAFAAUAAAAAAAAAAQAFAAYAAAAAAAAAAQAFAAcAAAAAAAAAAQAFAAgAAAAAAAAAAQAEAAkAAAAAAAAAAQADAAkAAAAAAAAAAQACAAkAAAAAAAAAAQACAAgAAAAAAAAAAQACAAcAAAAAAAAAAQACAAYAAAAAAAAAAQADAAcAAAAAAAAAAQADAAgAAAAAAAAAAQA=")
@@ -519,6 +432,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("6_2cqfq")
 metadata/_edit_lock_ = true
 
 [node name="LOD" type="TextureRect" parent="UI Canvas/Main_Control"]
@@ -531,7 +445,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_gi1ht")
-script = SubResource("GDScript_u0i5i")
 
 [node name="UI" type="Control" parent="UI Canvas/Main_Control"]
 unique_name_in_owner = true
@@ -543,7 +456,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("5_vutah")
-script = SubResource("GDScript_ukba4")
 metadata/_edit_lock_ = true
 
 [node name="Player_Display" type="AspectRatioContainer" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("row_1", "row_2")]
@@ -602,6 +514,7 @@ autowrap_mode = 0
 vertical_alignment = 2
 
 [node name="MuteButton" type="Button" parent="UI Canvas/Main_Control/UI" node_paths=PackedStringArray("mute_icon") groups=["Buttons"]]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -634,7 +547,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = SubResource("GDScript_0obg5")
 
 [node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Main_Control/MainMenu"]
 layout_mode = 1
@@ -860,7 +772,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = SubResource("GDScript_kek77")
 
 [node name="North" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
 layout_mode = 1
@@ -920,7 +831,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -128.0
+offset_top = -185.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("5_vutah")
@@ -931,6 +842,7 @@ mouse_filter = 2
 
 [node name="Player_Turn_Label" type="RichTextLabel" parent="UI Canvas/In_Game_UI/South/Player_Turn2"]
 layout_mode = 2
+size_flags_vertical = 0
 mouse_filter = 2
 bbcode_enabled = true
 text = "[center]Player [b][i]1[/i][/b] 's Turn"
@@ -938,7 +850,8 @@ fit_content = true
 vertical_alignment = 1
 script = SubResource("GDScript_4c57u")
 
-[node name="Center" type="PanelContainer" parent="UI Canvas"]
+[node name="Display" type="PanelContainer" parent="UI Canvas"]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -948,45 +861,40 @@ mouse_filter = 2
 theme = ExtResource("5_vutah")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_vivmo")
 
-[node name="GuidePanel" type="PanelContainer" parent="UI Canvas/Center"]
+[node name="GuidePanel" type="PanelContainer" parent="UI Canvas/Display"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 mouse_filter = 2
 script = SubResource("GDScript_vivmo")
 
-[node name="GuideLOD" type="TextureRect" parent="UI Canvas/Center/GuidePanel"]
+[node name="GuideLOD" type="TextureRect" parent="UI Canvas/Display/GuidePanel"]
 material = ExtResource("10_tt22l")
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("12_w48qg")
 
-[node name="GuideImage" type="TextureRect" parent="UI Canvas/Center/GuidePanel"]
+[node name="GuideImage" type="TextureRect" parent="UI Canvas/Display/GuidePanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("12_ycdy4")
 
-[node name="CloseButton" type="Button" parent="UI Canvas/Center/GuidePanel" groups=["Buttons"]]
+[node name="PanelContainer" type="PanelContainer" parent="UI Canvas/Display/GuidePanel"]
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
+size_flags_vertical = 0
+
+[node name="CloseButton" type="Button" parent="UI Canvas/Display/GuidePanel/PanelContainer" groups=["Buttons"]]
+layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 8
-text = "      CLOSE      "
+text = "      Back      "
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -100
 
 [node name="BackgroundColor" type="TextureRect" parent="Background"]
-visible = false
-material = SubResource("ShaderMaterial_anmme")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture2D_efxa6")
-script = SubResource("GDScript_v1lwo")
-metadata/_edit_lock_ = true
-
-[node name="BackgroundColor2" type="TextureRect" parent="Background"]
 material = SubResource("ShaderMaterial_anmme")
 anchors_preset = 15
 anchor_right = 1.0
@@ -1003,45 +911,8 @@ metadata/_edit_lock_ = true
 stream = ExtResource("10_4c57u")
 script = SubResource("GDScript_efxa6")
 
-[node name="Admob" type="Node" parent="."]
-unique_name_in_owner = true
-script = ExtResource("15_vivmo")
-debug_application_id = "ca-app-pub-3940256099942544~3347511713"
-debug_banner_id = "ca-app-pub-3940256099942544/9214589741"
-debug_interstitial_id = "ca-app-pub-3940256099942544/1033173712"
-debug_rewarded_id = "ca-app-pub-5371806359960064/7348036198"
-debug_rewarded_interstitial_id = "ca-app-pub-3940256099942544/5354046379"
-real_application_id = "ca-app-pub-5371806359960064~1048375243"
-real_banner_id = "ca-app-pub-5371806359960064/2929676394"
-real_interstitial_id = "ca-app-pub-5371806359960064/7132413771"
-real_rewarded_id = "ca-app-pub-5371806359960064/7348036198"
-real_rewarded_interstitial_id = "ca-app-pub-5371806359960064/7348036198"
-metadata/_custom_type_script = "uid://cq6aan161v70v"
-
+[connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialization_completed"]
 [connection signal="pressed" from="SpawnersLayer/Cell_spawner" to="SpawnersLayer/Cell_spawner" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22064" to="SpawnersLayer/@Button@22064" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22065" to="SpawnersLayer/@Button@22065" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22066" to="SpawnersLayer/@Button@22066" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22067" to="SpawnersLayer/@Button@22067" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22068" to="SpawnersLayer/@Button@22068" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22069" to="SpawnersLayer/@Button@22069" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22070" to="SpawnersLayer/@Button@22070" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22071" to="SpawnersLayer/@Button@22071" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22072" to="SpawnersLayer/@Button@22072" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22073" to="SpawnersLayer/@Button@22073" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22074" to="SpawnersLayer/@Button@22074" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22075" to="SpawnersLayer/@Button@22075" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22076" to="SpawnersLayer/@Button@22076" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22077" to="SpawnersLayer/@Button@22077" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22078" to="SpawnersLayer/@Button@22078" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22079" to="SpawnersLayer/@Button@22079" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22080" to="SpawnersLayer/@Button@22080" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22081" to="SpawnersLayer/@Button@22081" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22082" to="SpawnersLayer/@Button@22082" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22083" to="SpawnersLayer/@Button@22083" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22084" to="SpawnersLayer/@Button@22084" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22085" to="SpawnersLayer/@Button@22085" method="_on_pressed"]
-[connection signal="pressed" from="SpawnersLayer/@Button@22086" to="SpawnersLayer/@Button@22086" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22087" to="SpawnersLayer/@Button@22087" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22088" to="SpawnersLayer/@Button@22088" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22089" to="SpawnersLayer/@Button@22089" method="_on_pressed"]
@@ -1068,11 +939,36 @@ metadata/_custom_type_script = "uid://cq6aan161v70v"
 [connection signal="pressed" from="SpawnersLayer/@Button@22110" to="SpawnersLayer/@Button@22110" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22111" to="SpawnersLayer/@Button@22111" method="_on_pressed"]
 [connection signal="pressed" from="SpawnersLayer/@Button@22112" to="SpawnersLayer/@Button@22112" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22113" to="SpawnersLayer/@Button@22113" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22114" to="SpawnersLayer/@Button@22114" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22115" to="SpawnersLayer/@Button@22115" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22116" to="SpawnersLayer/@Button@22116" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22117" to="SpawnersLayer/@Button@22117" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22118" to="SpawnersLayer/@Button@22118" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22119" to="SpawnersLayer/@Button@22119" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22120" to="SpawnersLayer/@Button@22120" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22121" to="SpawnersLayer/@Button@22121" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22122" to="SpawnersLayer/@Button@22122" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22123" to="SpawnersLayer/@Button@22123" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22124" to="SpawnersLayer/@Button@22124" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22125" to="SpawnersLayer/@Button@22125" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22126" to="SpawnersLayer/@Button@22126" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22127" to="SpawnersLayer/@Button@22127" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22128" to="SpawnersLayer/@Button@22128" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22129" to="SpawnersLayer/@Button@22129" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22130" to="SpawnersLayer/@Button@22130" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22131" to="SpawnersLayer/@Button@22131" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22132" to="SpawnersLayer/@Button@22132" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22133" to="SpawnersLayer/@Button@22133" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22134" to="SpawnersLayer/@Button@22134" method="_on_pressed"]
+[connection signal="pressed" from="SpawnersLayer/@Button@22135" to="SpawnersLayer/@Button@22135" method="_on_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/UI/MuteButton" to="UI Canvas/Main_Control/UI/MuteButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="ZoomCamera" method="_on_main_menu_visibility_changed"]
-[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control/LOD" method="_on_title_screen_visibility_changed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu" to="UI Canvas/Main_Control" method="_on_main_menu_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" to="UI Canvas/Main_Control" method="_on_start_pressed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer/GuideButton" to="UI Canvas/Center/GuidePanel" method="_on_guide_button_pressed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Start" to="UI Canvas/Main_Control/WinnerPanel" method="_on_start_visibility_changed"]
+[connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer/GuideButton" to="UI Canvas/Display/GuidePanel" method="_on_guide_button_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/HBoxContainer/GuideButton" to="UI Canvas/Main_Control/LOD" method="_on_guide_button_visibility_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Player_Count/SpinBox" to="UI Canvas/Main_Control/UI/Player_Display" method="_on_spin_box_value_changed"]
 [connection signal="value_changed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Map Change/MapSize" to="SpawnersLayer" method="_on_map_size_value_changed"]
@@ -1082,11 +978,10 @@ metadata/_custom_type_script = "uid://cq6aan161v70v"
 [connection signal="toggled" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Gameplay Options/Get a turn On Kill" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Gameplay Options/Get a turn On Kill" method="_on_toggled"]
 [connection signal="toggled" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Gameplay Options/Include Unclickable Grids" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Gameplay Options/Include Unclickable Grids" method="_on_toggled"]
 [connection signal="pressed" from="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Online Multiplayer2" to="UI Canvas/Main_Control/MainMenu/PanelContainer/CenterContainer/Components/Online Multiplayer2" method="_on_pressed"]
-[connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control/LOD" method="_on_winner_panel_visibility_changed"]
+[connection signal="visibility_changed" from="UI Canvas/Main_Control/WinnerPanel" to="UI Canvas/Main_Control" method="_on_winner_panel_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" to="UI Canvas/Main_Control/WinnerPanel/VBoxContainer/RestartButton" method="_on_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/In_Game_UI" to="." method="_on_in_game_ui_visibility_changed"]
 [connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" to="UI Canvas/In_Game_UI/North/AspectRatioContainer/RestartButton" method="_on_pressed"]
-[connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/InstructionsButton" to="UI Canvas/Center/GuidePanel" method="_on_guide_button_pressed"]
+[connection signal="pressed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/InstructionsButton" to="UI Canvas/Display/GuidePanel" method="_on_guide_button_pressed"]
 [connection signal="visibility_changed" from="UI Canvas/In_Game_UI/North/AspectRatioContainer2/InstructionsButton" to="UI Canvas/Main_Control/LOD" method="_on_guide_button_visibility_changed"]
-[connection signal="pressed" from="UI Canvas/Center/GuidePanel/CloseButton" to="UI Canvas/Center/GuidePanel" method="_on_close_button_pressed"]
-[connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialization_completed"]
+[connection signal="pressed" from="UI Canvas/Display/GuidePanel/PanelContainer/CloseButton" to="UI Canvas/Display/GuidePanel" method="_on_close_button_pressed"]
