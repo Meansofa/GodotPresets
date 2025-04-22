@@ -236,15 +236,18 @@ func _on_pressed() -> void:
 	_restart()
 
 func _restart():
-	
 	get_tree().paused = false
 	GameState.emit_signal(\"restart\")
+	_show_after_game_interstitial_ad()
+
+func _show_after_game_interstitial_ad():
 	var rand_ad = randi_range(0, 100)
 	if rand_ad <= 30:
 		print(self.name, \">Showing Interstitial Ad: \", rand_ad)
-		admob.load_interstitial_ad()
-		await admob.interstitial_ad_loaded
-		if not admob.interstitial_ad_failed_to_load:
+		print(\"admob.load_interstitial_ad(): \", admob.load_interstitial_ad())
+		print(\"admob.is_interstitial_ad_loaded(): \", admob.is_interstitial_ad_loaded())
+		if admob.is_interstitial_ad_loaded() != false:
+			await admob.interstitial_ad_loaded
 			admob.show_interstitial_ad()
 "
 
@@ -507,7 +510,7 @@ offset_top = -34.0
 grow_horizontal = 0
 grow_vertical = 0
 bbcode_enabled = true
-text = "[center][i]Version 0.2.4
+text = "[center][i]Version 0.2.9
 "
 fit_content = true
 autowrap_mode = 0
@@ -764,7 +767,6 @@ script = SubResource("GDScript_s8lf3")
 
 [node name="In_Game_UI" type="Control" parent="UI Canvas"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -777,12 +779,11 @@ mouse_filter = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 112.0
+offset_bottom = 142.0
 grow_horizontal = 2
 theme = ExtResource("5_vutah")
 
 [node name="Player_Turn" type="PanelContainer" parent="UI Canvas/In_Game_UI/North"]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -792,7 +793,7 @@ mouse_filter = 2
 bbcode_enabled = true
 text = "[center]Player [b][i]1[/i][/b] 's Turn"
 fit_content = true
-vertical_alignment = 1
+vertical_alignment = 2
 script = SubResource("GDScript_4c57u")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="UI Canvas/In_Game_UI/North"]
@@ -821,17 +822,21 @@ clip_contents = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 32
-text = " Instructions "
+text = "  Guide  "
 alignment = 0
 expand_icon = true
 
 [node name="South" type="PanelContainer" parent="UI Canvas/In_Game_UI"]
 layout_mode = 1
-anchors_preset = 12
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_top = -185.0
+offset_left = -360.0
+offset_top = -140.0
+offset_right = 360.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("5_vutah")
