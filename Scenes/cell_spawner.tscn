@@ -1,0 +1,200 @@
+[gd_scene load_steps=9 format=3 uid="uid://diimhw6lk5yth"]
+
+[ext_resource type="Theme" uid="uid://cd3emeqj5ahbc" path="res://Themes/Cell_Spawner.tres" id="1_xf86b"]
+[ext_resource type="PackedScene" uid="uid://btubenec55x0o" path="res://Scenes/cell.tscn" id="1_y6xxv"]
+[ext_resource type="AudioStream" uid="uid://yi7ubx4tkhdc" path="res://Assets/SFX/spawn_cell.wav" id="3_5g6sr"]
+[ext_resource type="AudioStream" uid="uid://3wq56mcmgtvc" path="res://Assets/SFX/pop_cell.wav" id="4_juoew"]
+[ext_resource type="Material" uid="uid://dj2nlqquchnfu" path="res://Themes/canvasborder_shader.tres" id="5_juoew"]
+
+[sub_resource type="GDScript" id="GDScript_p5304"]
+script/source = "extends Button
+
+@export_category(\"Child Nodes\")
+@export var cell : PackedScene
+@export var center : CenterContainer
+@export var cells_parent : CanvasGroup
+@export var area_2d : Area2D
+
+@export_category(\"Sound Effects\")
+@export var spawn_sound : AudioStream
+@export var pop_sound : AudioStream
+
+var cells = [] 
+var spawner_owner := -1 : #who currently is the owner of this spawner, -1 if there is no owner
+	set(value):
+		spawner_owner = value
+
+var spawner_type : String #based on the spawner types[\"Inner\", \"Sides\", \"Edge\"], it will have few cells needed until it pops
+var spawner_directions : Array[Vector2] :#where cells can go when it pops, to avoid cells going out of grid
+	set(value):
+		spawner_directions = value
+		if spawner_directions.size() == 2:
+			spawner_type = \"Edge\"
+		elif spawner_directions.size() == 3:
+			spawner_type = \"Side\"
+		else:
+			spawner_type = \"Inner\"
+
+var audioPlayer = AudioPlayerFunctions.new()
+
+func _ready() -> void:
+	add_child(audioPlayer)
+	GameState.connect(\"restart\", _restart)
+	PlayerData.connect(\"player_change\", _is_current_player_spawner_owner)
+	spawner_owner = -1
+	if GameplayOptions.include_unclickable_grids:
+		include_unclickable_grids()
+
+func _on_pressed() -> void:
+	if PlayerData.simulation_playing: #check if there are still cells moving/popping meaning the player can't press anything yet not until it's finished
+		return
+	
+	if spawner_owner == -1: #if no owner of this spawner, 
+		if PlayerData.is_player_still_inGame(PlayerData.current_player): #check if the current player is in the game
+			spawner_owner = PlayerData.current_player #assign the current player as the owner
+	#print(self.name, \">spawner_owner: \", spawner_owner)
+	if spawner_owner == PlayerData.current_player: #if there is an owner and the current player is the owner
+		check_cells() #add a cell to account for the press
+		audioPlayer.play_sound(spawn_sound)
+		PlayerData.next_player() #switch to the next player in queue
+
+func _is_current_player_spawner_owner(): # if the current player is the owner
+	if spawner_owner == PlayerData.current_player: 
+		cells_parent.add_border()
+		return true
+	else:
+		cells_parent.remove_border()
+		return false
+
+func spawn_cell():
+	var cell_instance = cell.instantiate() #create an instance of the cell
+	cells_parent.call_deferred(\"add_child\", cell_instance) #add the cell as a child of the cells_parent(to spawn to center)
+	cells.append(cell_instance) #append to the cells array
+	
+	cell_instance.set(\"parent_ref\", self) #brand the cell as your own child
+	cell_instance.change_player(spawner_owner) #set the color of the cell to match the owner's color
+	cell_instance.scale = self.scale
+	
+	for i in cells.size(): #change cell's shake based on the amount of cells
+		cells[i].change_shake(cells.size() * 0.15)
+		cells[i].change_intensity(cells.size() * 0.15)
+	
+	PlayerData.calculate_cell_count(spawner_owner, 1) #change the player's cell count by +1 since spawning
+
+func check_cells(): #check how many cells you have and either add or pop
+	if spawner_directions.is_empty(): #if this spawner doesnt have directions yet(directions that the cells can go when it pops)
+		spawner_directions = get_parent().get_available_directions(position) #get available directions
+
+	if cells.size() < spawner_directions.size() - 1: #check if the directions have not been met
+		spawn_cell()  
+	else: #else pop a chain reaction where each cell has a direction to go to
+		pop()
+
+func pop(): #launch the cells in adjacent directions
+	spawn_cell() #add the last cell before it pops
+	for i in spawner_directions.size(): #iterate through each cell
+		cells[i].pop(spawner_directions[i]) #iterated cell goes through the iterated directions
+		PlayerData.calculate_cell_count(spawner_owner, -1) #remove cell count on the player -1 for each cells since they're now popped
+	cells.clear() #clear the array of cells
+	spawner_owner = -1 #since there are no more cells in this spawner means there are no owners
+	audioPlayer.play_sound(pop_sound)
+
+func _on_area_2d_body_entered(body: Node2D) -> void: #when something enters this spawner
+	if body.is_in_group(\"Cell\"): #Check if a cell enters
+		if body.get(\"parent_ref\") == self: #if the cell entering is your own child
+			return  # Ignore if this is your own child
+		body.queue_free() #if it's not remove that cell
+		calculate_cell_count() #Calculate the cell count for the player's cells
+
+func calculate_cell_count(): #Calculate the cell count for the player's cells
+	PlayerData.calculate_cell_count(spawner_owner, -(cells.size())) #reduce the last owner's cell count by the amount of cells that was converted
+	spawner_owner = PlayerData.previous_player #change the owner of this spawner to the player that infected this spawner
+	_change_player(spawner_owner) #set the color of the cells to match to the new owner's color
+	PlayerData.calculate_cell_count(spawner_owner, +(cells.size())) #increase the new owner's cell count by the amount of cells that was converted
+
+	check_cells() #add a cell to account for the cell that just entered but deleted after
+	PlayerData.cell_was_popped() #call when a cell was just popped to say that the board is still in simulation
+
+func _change_player(spawner_owner : int): #replace the cell color of children cells(everytime another owner infects this cell)
+	for i in cells.size():
+		cells[i].change_player(spawner_owner)
+
+func _restart():
+	#for i in cells.size():
+		#cells[i].queue_free()
+	cells.clear()
+	spawner_owner = -1
+
+func include_unclickable_grids():
+	var random := randi_range(0, 100)
+	if random <= 20:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		disabled = true
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1wp5y"]
+radius = 32.0
+
+[sub_resource type="GDScript" id="GDScript_v6jyy"]
+resource_name = "cells_parent"
+script/source = "extends CanvasGroup
+
+@export var shader_material : Material
+
+#func _ready() -> void:
+	#PlayerData.connect(\"player_change\", )
+
+func add_border():
+	material = shader_material
+
+func remove_border():
+	material = null
+"
+
+[node name="Cell_spawner" type="Button" node_paths=PackedStringArray("center", "cells_parent", "area_2d")]
+z_index = -1
+custom_minimum_size = Vector2(108, 108)
+offset_left = -54.0
+offset_top = -54.0
+offset_right = 54.0
+offset_bottom = 54.0
+pivot_offset = Vector2(54, 54)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_xf86b")
+script = SubResource("GDScript_p5304")
+cell = ExtResource("1_y6xxv")
+center = NodePath("CenterContainer")
+cells_parent = NodePath("CenterContainer/CellsParent")
+area_2d = NodePath("CenterContainer/Area2D")
+spawn_sound = ExtResource("3_5g6sr")
+pop_sound = ExtResource("4_juoew")
+metadata/_edit_use_anchors_ = true
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+use_top_left = true
+
+[node name="Area2D" type="Area2D" parent="CenterContainer"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CenterContainer/Area2D"]
+shape = SubResource("CircleShape2D_1wp5y")
+
+[node name="CellsParent" type="CanvasGroup" parent="CenterContainer"]
+material = ExtResource("5_juoew")
+script = SubResource("GDScript_v6jyy")
+shader_material = ExtResource("5_juoew")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
+[connection signal="body_entered" from="CenterContainer/Area2D" to="." method="_on_area_2d_body_entered"]
